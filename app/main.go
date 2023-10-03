@@ -11,13 +11,19 @@ import (
 )
 
 func main() {
+
 	//Инициализируем базу данных
-	storage, err := storage.NewSqlite3("./data/sqlite3/main.db")
+	storage, err := storage.NewMongodb("mongodb://localhost:27017/", "test")
 	if err != nil {
 		log.Panic(err)
 	}
 	log.Print("storage is init")
 	defer storage.Close()
+
+	err = storage.AddGood("123", "hellso")
+	if err != nil {
+		log.Panic(err)
+	}
 
 	//Инициализируем роутер
 	router := chi.NewRouter()
@@ -37,6 +43,6 @@ func main() {
 	}
 
 	log.Printf("starting server on %s", srv.Addr)
-	err = srv.ListenAndServe()
-	log.Fatal(err)
+	// err = srv.ListenAndServe()
+	// log.Fatal(err)
 }

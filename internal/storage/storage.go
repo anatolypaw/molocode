@@ -7,15 +7,14 @@ type Storage interface {
 	Close() error
 
 	//Выводит список продуктов в хранилище
-	GetGoods() ([]good, error)
+	GetGoods() ([]Good, error)
 
 	//Добавляет продукт в хранилище
 	AddGood(gtin string, description string) error
 }
 
 // Структуры данных
-type good struct {
-	good_id     int
+type Good struct {
 	gtin        string
 	description string
 }

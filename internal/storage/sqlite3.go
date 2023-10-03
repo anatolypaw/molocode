@@ -52,20 +52,20 @@ func (s *sqlite3) Close() error {
 }
 
 // Вывести имеющиеся продукты
-func (s *sqlite3) GetGoods() ([]good, error) {
+func (s *sqlite3) GetGoods() ([]Good, error) {
 	const op = "storage.sqlite3.GetGoods"
 
-	rows, err := s.db.Query(`select good_id, gtin, description from goods;`)
+	rows, err := s.db.Query(`select gtin, description from goods;`)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	defer rows.Close()
 
-	var goods []good
+	var goods []Good
 
 	for rows.Next() {
-		var g good
-		err := rows.Scan(&g.good_id, &g.gtin, &g.description)
+		var g Good
+		err := rows.Scan(&g.gtin, &g.description)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}
