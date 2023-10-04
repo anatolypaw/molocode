@@ -62,15 +62,17 @@ func (m *mongodb) Close() error {
 }
 
 // Добавляет продукт в хранилище
-func (m *mongodb) AddGood(gtin string, description string) error {
+func (m *mongodb) AddGood(gtin string, desc string) error {
 	const op = "storage.mongodb.AddGood"
 
-	g := Good{gtin, description}
+	g := Good{
+		Gtin: gtin,
+		Desc: desc,
+	}
 
-	name, err := m.db.Collection("goods").InsertOne(*m.ctx, g)
+	_, err := m.db.Collection("goods").InsertOne(*m.ctx, g)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
-	fmt.Print(name)
 	return nil
 }

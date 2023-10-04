@@ -65,7 +65,7 @@ func (s *sqlite3) GetGoods() ([]Good, error) {
 
 	for rows.Next() {
 		var g Good
-		err := rows.Scan(&g.gtin, &g.description)
+		err := rows.Scan(&g.Gtin, &g.Desc)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}

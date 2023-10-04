@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"molocode/internal/storage"
 	"net/http"
@@ -13,16 +14,18 @@ import (
 func main() {
 
 	//Инициализируем базу данных
-	storage, err := storage.NewMongodb("mongodb://localhost:27017/", "test")
+	storage, err := storage.NewMongodb("mongodb://localhost:27017/", "molocode")
 	if err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	}
 	log.Print("storage is init")
 	defer storage.Close()
 
-	err = storage.AddGood("123", "hellso")
-	if err != nil {
-		log.Panic(err)
+	for i := 0; i < 3; i++ {
+		err = storage.AddGood(fmt.Sprintf("%d", i), "hellso")
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	//Инициализируем роутер
