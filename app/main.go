@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"molocode/internal/storage"
-	"molocode/internal/web"
+	"molocode/internal/ui"
 	"net/http"
 	"time"
 
@@ -22,23 +22,29 @@ func main() {
 	defer storage.Close()
 
 	//Инициализируем роутер для api web интерфейса
-	webRouter := chi.NewRouter()
+	uiRouter := chi.NewRouter()
 	//middleware
-	webRouter.Use(middleware.Logger)
-	webRouter.Use(middleware.Recoverer)
+	uiRouter.Use(middleware.Logger)
+	uiRouter.Use(middleware.Recoverer)
 
 	fs := http.FileServer(http.Dir("./www/build/"))
-	webRouter.Handle("/*", fs)
+	uiRouter.Handle("/*", fs)
 
-	webRouter.Get("/goods", web.GetGoods)
+	uiRouter.Get("/goods", ui.GetGoods)
 
-	webSrv := &http.Server{
+	uiSrv := &http.Server{
 		Addr:         ":80",
-		Handler:      webRouter,
+		Handler:      uiRouter,
 		IdleTimeout:  1 * time.Minute,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
+
+	//Запускаем сервер веб интерфейса
+	go func() {
+		log.Printf("starting web user interface server on %s", uiSrv.Addr)
+		log.Fatal(uiSrv.ListenAndServe())
+	}()
 
 	//Инициализируем роутер для api работы с терминалами
 	apiRouter := chi.NewRouter()
@@ -46,7 +52,7 @@ func main() {
 	apiRouter.Use(middleware.Logger)
 	apiRouter.Use(middleware.Recoverer)
 
-	apiRouter.Get("/v1/goods", web.GetGoods)
+	//apiRouter.Get("/v1/goods", web.GetGoods)
 
 	apiSrv := &http.Server{
 		Addr:         ":3000",
@@ -55,13 +61,7 @@ func main() {
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
-
-	go func() {
-		log.Printf("starting web interface server on %s", webSrv.Addr)
-		log.Fatal(webSrv.ListenAndServe())
-	}()
-
+	//Запускаем сервер работы с терминалами
 	log.Printf("starting terminal api server on %s", apiSrv.Addr)
 	log.Fatal(apiSrv.ListenAndServe())
-
 }

@@ -8,17 +8,26 @@
     <title>СМ МолоКод</title>
   </head>
   <body>
-    <noscript>Нужно включить в браузере поддержку JavaScript для запуска этого сайта</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <noscript
+      >Нужно включить в браузере поддержку JavaScript для запуска этого
+      сайта</noscript
+    >
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+    <div id="menu">
+      <a class="menu-heading" href="/">
+        <img src="%PUBLIC_URL%/dm-logo.png" /> СМ МолоКод</a
+      >
+      <ul class="menu-list">
+        <li class="menu-item">
+          <a class="menu-link" href="">Производство</a>
+        </li>
+        <li class="menu-item"><a class="menu-link" href="">Номенклатура</a></li>
+        <li class="menu-item"><a class="menu-link" href="">АРМ</a></li>
+        <li class="menu-item"><a class="menu-link" href="">Настройки</a></li>
+        <li class="menu-item"><a class="menu-link" href="">Помощь</a></li>
+      </ul>
+    </div>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    <div id="content"></div>
   </body>
 </html>

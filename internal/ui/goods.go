@@ -1,11 +1,11 @@
-package web
+package ui
 
 import (
 	"fmt"
 	"net/http"
 )
 
-// Возвращает список продуктов из базы
+// Возвращает  список продуктов из базы
 func GetGoods(w http.ResponseWriter, r *http.Request) {
 	const op = "api.web.good"
 	_ = op
