@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"molocode/internal/storage"
 	"net/http"
@@ -21,31 +20,31 @@ func main() {
 	log.Print("storage is init")
 	defer storage.Close()
 
-	for i := 0; i < 3; i++ {
-		err = storage.AddGood(fmt.Sprintf("%d", i), "hellso")
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
 	//Инициализируем роутер
 	router := chi.NewRouter()
 
 	//middleware
-	router.Use(middleware.RequestID)
-	router.Use(middleware.RealIP)
+	//router.Use(middleware.RequestID)
+	//router.Use(middleware.RealIP)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
-	router.Use(middleware.URLFormat)
+
+	fs := http.FileServer(http.Dir("./www/build/"))
+	router.Handle("/*", fs)
+
+	router.Get("/api/v1/hello", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("hello world"))
+	})
 
 	srv := &http.Server{
 		Addr:         ":3000",
+		Handler:      router,
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
 
 	log.Printf("starting server on %s", srv.Addr)
-	// err = srv.ListenAndServe()
-	// log.Fatal(err)
+	err = srv.ListenAndServe()
+	log.Fatal(err)
 }
