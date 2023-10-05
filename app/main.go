@@ -32,7 +32,7 @@ func main() {
 	fs := http.FileServer(http.Dir("./www/build/"))
 	router.Handle("/*", fs)
 
-	router.Get("/api/v1/hello", func(w http.ResponseWriter, r *http.Request) {
+	router.Get("/v1/hello", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hello world"))
 	})
 
