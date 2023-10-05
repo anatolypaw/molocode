@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"molocode/internal/storage"
+	"molocode/internal/web"
 	"net/http"
 	"time"
 
@@ -20,31 +21,47 @@ func main() {
 	log.Print("storage is init")
 	defer storage.Close()
 
-	//Инициализируем роутер
-	router := chi.NewRouter()
-
+	//Инициализируем роутер для api web интерфейса
+	webRouter := chi.NewRouter()
 	//middleware
-	//router.Use(middleware.RequestID)
-	//router.Use(middleware.RealIP)
-	router.Use(middleware.Logger)
-	router.Use(middleware.Recoverer)
+	webRouter.Use(middleware.Logger)
+	webRouter.Use(middleware.Recoverer)
 
 	fs := http.FileServer(http.Dir("./www/build/"))
-	router.Handle("/*", fs)
+	webRouter.Handle("/*", fs)
 
-	router.Get("/v1/hello", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hello world"))
-	})
+	webRouter.Get("/goods", web.GetGoods)
 
-	srv := &http.Server{
-		Addr:         ":3000",
-		Handler:      router,
-		IdleTimeout:  time.Minute,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 30 * time.Second,
+	webSrv := &http.Server{
+		Addr:         ":80",
+		Handler:      webRouter,
+		IdleTimeout:  1 * time.Minute,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
-	log.Printf("starting server on %s", srv.Addr)
-	err = srv.ListenAndServe()
-	log.Fatal(err)
+	//Инициализируем роутер для api работы с терминалами
+	apiRouter := chi.NewRouter()
+	//middleware
+	apiRouter.Use(middleware.Logger)
+	apiRouter.Use(middleware.Recoverer)
+
+	apiRouter.Get("/v1/goods", web.GetGoods)
+
+	apiSrv := &http.Server{
+		Addr:         ":3000",
+		Handler:      apiRouter,
+		IdleTimeout:  1 * time.Minute,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
+
+	go func() {
+		log.Printf("starting web interface server on %s", webSrv.Addr)
+		log.Fatal(webSrv.ListenAndServe())
+	}()
+
+	log.Printf("starting terminal api server on %s", apiSrv.Addr)
+	log.Fatal(apiSrv.ListenAndServe())
+
 }

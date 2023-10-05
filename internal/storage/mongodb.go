@@ -37,7 +37,7 @@ func NewMongodb(storagePath string, dbname string) (*mongodb, error) {
 	db := client.Database(dbname)
 
 	//Готовим структуру и индексы
-	//Для коллекции goods ставим ключевым поле gtin
+	//Для коллекции goods ставим ключевым и уникальным поле gtin
 	indexModel := mongo.IndexModel{
 		Keys:    bson.D{{"gtin", 1}},
 		Options: options.Index().SetUnique(true),
