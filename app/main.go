@@ -21,29 +21,18 @@ func main() {
 	log.Print("storage is init")
 	defer storage.Close()
 
-	//Инициализируем роутер для api web интерфейса
-	uiRouter := chi.NewRouter()
-	//middleware
-	uiRouter.Use(middleware.Logger)
-	uiRouter.Use(middleware.Recoverer)
-
-	fs := http.FileServer(http.Dir("./www/build/"))
-	uiRouter.Handle("/*", fs)
-
-	uiRouter.Get("/goods", ui.GetGoods)
-
-	uiSrv := &http.Server{
-		Addr:         ":80",
-		Handler:      uiRouter,
-		IdleTimeout:  1 * time.Minute,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-	}
-
 	//Запускаем сервер веб интерфейса
 	go func() {
-		log.Printf("starting web user interface server on %s", uiSrv.Addr)
-		log.Fatal(uiSrv.ListenAndServe())
+		s := &http.Server{
+			Addr:         ":80",
+			Handler:      ui.Router(),
+			IdleTimeout:  1 * time.Minute,
+			ReadTimeout:  5 * time.Second,
+			WriteTimeout: 10 * time.Second,
+		}
+
+		log.Printf("Запуск сервера веб интерфейса %s", s.Addr)
+		log.Fatal(s.ListenAndServe())
 	}()
 
 	//Инициализируем роутер для api работы с терминалами
