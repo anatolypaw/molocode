@@ -1,12 +1,14 @@
-package ui
+package ws
 
 import (
 	"fmt"
+	"molocode/internal/ws/wapi"
 	"net/http"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/jwtauth"
+	"github.com/lestrrat-go/jwx/jwt"
 )
 
 var tokenAuth *jwtauth.JWTAuth
@@ -25,36 +27,46 @@ func Router() http.Handler {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	// Protected routes
+	// Защищенные wapi маршруты
 	r.Group(func(r chi.Router) {
-		// Seek, verify and validate JWT tokens
 		r.Use(jwtauth.Verifier(tokenAuth))
-	
-		// Handle valid / invalid tokens. In this example, we use
-		// the provided authenticator middleware, but you can write your
-		// own very easily, look at the Authenticator method in jwtauth.go
-		// and tweak it, its not scary.
 		r.Use(jwtauth.Authenticator)
 	
-		r.Get("/admin", func(w http.ResponseWriter, r *http.Request) {
+		r.Get("/wapi/admin", func(w http.ResponseWriter, r *http.Request) {
 		  _, claims, _ := jwtauth.FromContext(r.Context())
 		  w.Write([]byte(fmt.Sprintf("protected area. hi %v", claims["user_id"])))
-		})
-
+		}) 
+		
 
 	  })
-	 
-		// Public routes
+
+	fs := http.FileServer(http.Dir("./www/build/"))
+
+	// Маршруты с редиректом на авторизацию 
 	r.Group(func(r chi.Router) {
-		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome anonymous"))
-		})
+		r.Use(UnloggedInRedirector)
+		r.Get("/", fs.ServeHTTP)
+		
 	})
 
-//	fs := http.FileServer(http.Dir("./www/build/"))
-//	uiRouter.Handle("/*", fs)
-
-//	uiRouter.Get("/goods", ui.GetGoods)
+	// Публичные маршруты
+	r.Group(func(r chi.Router) {
+		r.Get("/*", fs.ServeHTTP)
+		r.Get("/wapi/login", wapi.Test)
+	})
 
 	return r
+}
+
+
+func UnloggedInRedirector(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token, _, _ := jwtauth.FromContext(r.Context())
+
+		if token == nil || jwt.Validate(token) != nil {
+		http.Redirect(w, r, "/login.html", http.StatusFound)
+			}
+
+			next.ServeHTTP(w, r)
+	})
 }

@@ -1,4 +1,4 @@
-package ui
+package wapi
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 
 // Возвращает  список продуктов из базы
 func GetGoods(w http.ResponseWriter, r *http.Request) {
-	const op = "api.web.good"
+	const op = "ws.wapi.GetGoods"
 	_ = op
 	fmt.Fprintf(w, `
 	[
