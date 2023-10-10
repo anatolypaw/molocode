@@ -52,7 +52,7 @@ func Router() http.Handler {
 	// Публичные маршруты
 	r.Group(func(r chi.Router) {
 		r.Get("/*", fs.ServeHTTP)
-		r.Get("/wapi/login", wapi.Login)
+		r.Post("/wapi/login", wapi.Login)
 	})
 
 	return r

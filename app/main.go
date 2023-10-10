@@ -33,6 +33,8 @@ func main() {
 	log.Print("storage is init")
 	defer storage.Close()
 
+	storage.AddUser("admin","test", "admin")
+	
 	//Запускаем сервер веб интерфейса
 	go func() {
 		s := &http.Server{ 
