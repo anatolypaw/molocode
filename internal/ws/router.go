@@ -13,13 +13,16 @@ import (
 
 var tokenAuth *jwtauth.JWTAuth
 
-func Router() http.Handler {
-	tokenAuth = jwtauth.New("HS256", []byte("secret"), nil) // В проде установить секрет
+func init() {
+	tokenAuth = jwtauth.New("HS256", []byte("secret"), nil)
 
 	// For debugging/example purposes, we generate and print
 	// a sample jwt token with claims `user_id:123` here:
-	_, tokenString, _ := tokenAuth.Encode(map[string]interface{}{"user_id": 123})
+	_, tokenString, _ := tokenAuth.Encode(map[string]interface{}{"user_id": 123, "role": "admin"})
 	fmt.Printf("DEBUG: a sample jwt is %s\n\n", tokenString)
+}
+
+func Router() http.Handler {
 
 	r := chi.NewRouter()
 
@@ -32,10 +35,7 @@ func Router() http.Handler {
 		r.Use(jwtauth.Verifier(tokenAuth))
 		r.Use(jwtauth.Authenticator)
 	
-		r.Get("/wapi/admin", func(w http.ResponseWriter, r *http.Request) {
-		  _, claims, _ := jwtauth.FromContext(r.Context())
-		  w.Write([]byte(fmt.Sprintf("protected area. hi %v", claims["user_id"])))
-		}) 
+		r.Get("/wapi/test", wapi.Test)
 		
 
 	  })
@@ -52,13 +52,14 @@ func Router() http.Handler {
 	// Публичные маршруты
 	r.Group(func(r chi.Router) {
 		r.Get("/*", fs.ServeHTTP)
-		r.Get("/wapi/login", wapi.Test)
+		r.Get("/wapi/login", wapi.Login)
 	})
 
 	return r
 }
 
 
+//Если пользователь запросил защищенную ссылку, но не авторизован, возвращает страницу авторизации
 func UnloggedInRedirector(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token, _, _ := jwtauth.FromContext(r.Context())

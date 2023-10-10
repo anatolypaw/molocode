@@ -28,7 +28,7 @@ func main() {
 	//Инициализируем базу данных
 	storage, err := storage.NewMongodb("mongodb://localhost:27017/", "molocode")
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 	log.Print("storage is init")
 	defer storage.Close()
