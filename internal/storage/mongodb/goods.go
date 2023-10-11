@@ -1,4 +1,4 @@
-package storage
+package mongodb
 
 import "fmt"
 
@@ -14,7 +14,7 @@ type Good struct {
 }
 
 // Добавляет продукт в хранилище
-func (m *mongodb) AddGood(gtin string, desc string) error {
+func (m *Mongodb) AddGood(gtin string, desc string) error {
 	const op = "storage.AddGood"
 
 	g := Good{

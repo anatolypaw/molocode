@@ -1,31 +1,26 @@
 package storage
 
 import (
-	"context"
 	"fmt"
-	"time"
-
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"molocode/internal/storage/mongodb"
 )
 
 // Интерфейсы
 type Storage interface {
 
-	//Закрывает подключение к хранилищу
-	Close() error
+	// Выдает экзэмпляр хранилища
+	New()
 
 	/* Управление продуктами файл goods.go*/
 	//Выводит список продуктов в хранилище
-	GetGoods() ([]Good, error)
+	GetGoods()
 
 	//Добавляет продукт в хранилище
-	AddGood() error
+	AddGood()
 
 	/* Управление пользователями файл users.go*/
 	// Создать пользователя
-	AddUser() error
+	AddUser()
 
 }
 
@@ -37,70 +32,26 @@ type Code struct {
 	Crypto string // криптохвост
 }
 
-type mongodb struct {
-	client *mongo.Client
-	db     *mongo.Database
-	ctx    *context.Context
+type S struct {
+	mongodb *mongodb.Mongodb
 }
 
-// Возвращает подключение к базе данных
-// Инициализирует базу
-func NewMongodb(storagePath string, dbname string) (*mongodb, error) {
-	const op = "storage.NewMongodb"
 
-	var ctx = context.TODO()
-	opts := options.Client().ApplyURI(storagePath).SetTimeout(500 * time.Millisecond)
+/* Возвращает инициализированное хранилище */
+func New(mongoPath string, mongodbName string) (*S, error) {
+	const op = "storage.New"
 
-	client, err := mongo.Connect(ctx, opts)
+	/* Подключение MongoDB */
+	mdb, err := mongodb.NewMongodb(mongoPath, mongodbName)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	// Проверка подключения к базе
-	err = client.Ping(ctx, nil)
+	err = mdb.InitCollection()
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	db := client.Database(dbname)
-
-	/* Готовим структуру и индексы */
-	// Для коллекции goods ставим ключевым и уникальным поле gtin
-	indexModel := mongo.IndexModel{
-		Keys:    bson.D{{"gtin", 1}},
-		Options: options.Index().SetUnique(true),
-	}
-
-	_, err = db.Collection("goods").Indexes().CreateOne(ctx, indexModel)
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-
-	// Коллеция users
-	// ставим ключевым и уникальным поле login
-	indexModel = mongo.IndexModel{
-		Keys:    bson.D{{"login", 1}},
-		Options: options.Index().SetUnique(true),
-	}
-
-	_, err = db.Collection("users").Indexes().CreateOne(ctx, indexModel)
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-
-
-
-	return &mongodb{client: client, ctx: &ctx, db: db}, nil
+	return &S{mongodb: mdb}, nil
 }
-
-// Закрыть подключение к базе данных
-func (m *mongodb) Close() error {
-	const op = "storage.mongodb.Close"
-	err := m.client.Disconnect(*m.ctx)
-	if err != nil {
-		return fmt.Errorf("%s: %w", op, err)
-	}
-	return nil
-}
-
 

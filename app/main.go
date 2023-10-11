@@ -26,15 +26,14 @@ import (
 
 func main() {
 	//Инициализируем базу данных
-	storage, err := storage.NewMongodb("mongodb://localhost:27017/", "molocode")
+	storage, err := storage.New("mongodb://localhost:27017/", "molocode")
 	if err != nil {
 		log.Print(err)
 	}
-	log.Print("storage is init")
-	defer storage.Close()
+	log.Print("storage ready")
 
 	storage.AddUser("admin","test", "admin")
-	
+
 	//Запускаем сервер веб интерфейса
 	go func() {
 		s := &http.Server{ 

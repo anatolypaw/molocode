@@ -1,4 +1,4 @@
-package storage
+package mongodb
 
 import "fmt"
 
@@ -11,7 +11,7 @@ type User struct {
 
 
 //Добавляет пользователя в базу
-func (m *mongodb) AddUser(login string, password string, role string) error {
+func (m *Mongodb) AddUser(login string, password string, role string) error {
 	const op = "storage.AddUser"
 
 	u := User {Login: login, Password: password, Role: role}
