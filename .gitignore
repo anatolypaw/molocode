@@ -7,3 +7,5 @@
 /app/www/build
 
 # misc
+.DS_Store
+go.sum
