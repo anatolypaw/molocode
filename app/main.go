@@ -5,7 +5,7 @@
 //	├── public			- рабочие файлы React
 //	└── src				- рабочие файлы React
 // internal				- Исходники, используемые внутри приложения. Подключаются в main.go
-// ├── storage				- Работа с базой данных
+// ├── storage				- Хранилище данных
 // ├── ts					- terminal server. Сервер, работающий с терминалами маркировки
 // │   └── v1				- api версии 1
 // └── ws					- web server - Сервер веб интерфейса
@@ -17,6 +17,7 @@ import (
 	"bufio"
 	"log"
 	"molocode/internal/storage"
+	"molocode/internal/structs"
 	"molocode/internal/ts"
 	"molocode/internal/ws"
 	"net/http"
@@ -28,17 +29,18 @@ func main() {
 	//Инициализируем базу данных
 	storage, err := storage.New("mongodb://localhost:27017/", "molocode")
 	if err != nil {
-		log.Print(err)
+		log.Fatal(err)
 	}
 	log.Print("storage ready")
 
-	storage.AddUser("admin","test", "admin")
+	storage.AddUser(structs.User{Login: "admin", Password: "test", Role: "admin"})
 
+	
 	//Запускаем сервер веб интерфейса
 	go func() {
 		s := &http.Server{ 
 			Addr:         ":80",
-			Handler:      ws.Router(),
+			Handler:      ws.Router(storage),
 			IdleTimeout:  1 * time.Minute,
 			ReadTimeout:  5 * time.Second,
 			WriteTimeout: 10 * time.Second,

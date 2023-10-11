@@ -19,7 +19,7 @@ type Mongodb struct {
 
 // Возвращает подключение к базе данных
 func NewMongodb(path string, dbname string) (*Mongodb, error) {
-	const op = "storage.NewMongodb"
+	const op = "storage.mongodb.NewMongodb"
 
 	var ctx = context.TODO()
 	opts := options.Client().ApplyURI(path).SetTimeout(500 * time.Millisecond)

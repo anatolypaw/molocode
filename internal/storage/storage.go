@@ -3,10 +3,11 @@ package storage
 import (
 	"fmt"
 	"molocode/internal/storage/mongodb"
+	"molocode/internal/structs"
 )
 
 // Интерфейсы
-type Storage interface {
+type IStorage interface {
 
 	// Выдает экзэмпляр хранилища
 	New()
@@ -19,8 +20,10 @@ type Storage interface {
 	AddGood()
 
 	/* Управление пользователями файл users.go*/
-	// Создать пользователя
-	AddUser()
+	AddUser(structs.User) error
+	DeleteUser(login string) error
+	EditUserRole(login string, role string) error
+	GetUser(login string) ()
 
 }
 
@@ -32,13 +35,13 @@ type Code struct {
 	Crypto string // криптохвост
 }
 
-type S struct {
+type Storage struct {
 	mongodb *mongodb.Mongodb
 }
 
 
 /* Возвращает инициализированное хранилище */
-func New(mongoPath string, mongodbName string) (*S, error) {
+func New(mongoPath string, mongodbName string) (*Storage, error) {
 	const op = "storage.New"
 
 	/* Подключение MongoDB */
@@ -52,6 +55,6 @@ func New(mongoPath string, mongodbName string) (*S, error) {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	return &S{mongodb: mdb}, nil
+	return &Storage{mongodb: mdb}, nil
 }
 

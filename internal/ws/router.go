@@ -2,6 +2,7 @@ package ws
 
 import (
 	"fmt"
+	"molocode/internal/storage"
 	"molocode/internal/ws/wapi"
 	"net/http"
 
@@ -22,7 +23,7 @@ func init() {
 	fmt.Printf("DEBUG: a sample jwt is %s\n\n", tokenString)
 }
 
-func Router() http.Handler {
+func Router(s *storage.Storage) http.Handler {
 
 	r := chi.NewRouter()
 
@@ -52,7 +53,7 @@ func Router() http.Handler {
 	// Публичные маршруты
 	r.Group(func(r chi.Router) {
 		r.Get("/*", fs.ServeHTTP)
-		r.Post("/wapi/login", wapi.Login)
+		r.Post("/wapi/login", wapi.Login(s, tokenAuth))
 	})
 
 	return r

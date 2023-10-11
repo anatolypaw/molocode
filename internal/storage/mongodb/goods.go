@@ -15,7 +15,7 @@ type Good struct {
 
 // Добавляет продукт в хранилище
 func (m *Mongodb) AddGood(gtin string, desc string) error {
-	const op = "storage.AddGood"
+	const op = "storage.mongodb.AddGood"
 
 	g := Good{
 		Gtin: gtin,
