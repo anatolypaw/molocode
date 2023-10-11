@@ -17,12 +17,27 @@ func (s *Storage) AddUser(u structs.User) error {
 }
 
 
-/* Возвращает пользователя по его логину */
-func (s *Storage) CheckUserPassword(login string, password string) (bool, error) {
-	const op ="storage.ChekUserPassword"
+/* Возвращает пользователя */
+func (s *Storage) GetUser(login string) (structs.User, error) {
+	const op = "storage.GetUser"
+	// Запрашиваем пользователя из базы
 	u, err := s.mongodb.GetUser(login)
 	if err != nil {
-		return false, fmt.Errorf("%s: %w", op, err)
+		return structs.User{}, fmt.Errorf("%s: %w", op, err)
 	}
-	return "pass", err
+
+	return u, err
+}
+
+/* Возвращает пользователя, по паре логин и пароль */
+func (s *Storage) GetUserByLoginPass(login string, password string) (structs.User, error) {
+	const op ="storage.GetUserByLoginPass"
+
+	// Запрашиваем пользователя из базы
+	u, err := s.mongodb.GetUserByLoginPass(login, password)
+	if err != nil {
+		return structs.User{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return u, nil
 }

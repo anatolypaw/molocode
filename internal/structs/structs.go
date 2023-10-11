@@ -7,3 +7,11 @@ type User struct {
 	Role string 	`bson:"role" json:"role"`	  //admin, user
 }
 
+
+/* Коды маркировки */
+// Код
+type Code struct {
+	Gtin   string // gtin продукта
+	Serial string // серийный номер КМ
+	Crypto string // криптохвост
+}

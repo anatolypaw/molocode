@@ -13,10 +13,7 @@ type IStorage interface {
 	New()
 
 	/* Управление продуктами файл goods.go*/
-	//Выводит список продуктов в хранилище
 	GetGoods()
-
-	//Добавляет продукт в хранилище
 	AddGood()
 
 	/* Управление пользователями файл users.go*/
@@ -24,16 +21,13 @@ type IStorage interface {
 	DeleteUser(login string) error
 	EditUserRole(login string, role string) error
 	CheckUserPassword(login string, password string) 
+	GetUser()
+	GetUserByLoginPass()
 
 }
 
 
-// Код
-type Code struct {
-	Gtin   string // gtin продукта
-	Serial string // серийный номер КМ
-	Crypto string // криптохвост
-}
+
 
 type Storage struct {
 	mongodb *mongodb.Mongodb

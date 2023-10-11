@@ -17,15 +17,32 @@ func Login(s *storage.Storage, tokenAuth *jwtauth.JWTAuth) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request){
 		const op = "ws.wapi.Login"
 
-		var u structs.User
+		var user structs.User
 
-		err := json.NewDecoder(r.Body).Decode(&u)
+		//Считываем из тела запроса логин и пароль
+		err := json.NewDecoder(r.Body).Decode(&user)
+		if err != nil {
+			err := fmt.Sprintf("%s: %s", op, err)
+			http.Error(w, err, http.StatusBadRequest)
+			return
+		}
+		
+		// Запрашиваем пользователя из базы
+		user, err = s.GetUserByLoginPass(user.Login, user.Password)
+		if err != nil {
+			http.Error(w, "login/password incorrect", http.StatusBadRequest)
+			return 
+		}
+
+		//Если пользователь с парой логин/пароль найден, то возвращаем JWT токен
+		_, token, err := tokenAuth.Encode(map[string]interface{}{"login": user.Login, "role": user.Role})
 		if err != nil {
 			err := fmt.Sprintf("%s: %s", op, err)
 			http.Error(w, err, http.StatusBadRequest)
 			return
 		}
 
-		log.Print(u)
+		log.Printf("%s User %s succseful authorized", op, user.Login)
+		fmt.Fprint(w, token)
 }
 }

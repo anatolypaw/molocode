@@ -31,3 +31,18 @@ func (m *Mongodb) GetUser(login string) (structs.User, error) {
 	}
 	return u, nil
 }
+
+//Ищет пользователя по логину и паролю
+func (m *Mongodb) GetUserByLoginPass(login string, password string) (structs.User, error) {
+	const op = "storage.mongodb.GetUserByLoginPass"
+
+	filter := bson.D{{Key: "login", Value: login}, {Key: "password", Value: password}}
+
+	var u structs.User
+	err := m.db.Collection("users").FindOne(*m.ctx, filter).Decode(&u)
+	if err != nil {
+		return structs.User{}, fmt.Errorf("%s: %w", op, err)
+	}
+	return u, nil
+}
+
