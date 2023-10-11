@@ -23,7 +23,7 @@ type IStorage interface {
 	AddUser(structs.User) error
 	DeleteUser(login string) error
 	EditUserRole(login string, role string) error
-	GetUser(login string) ()
+	CheckUserPassword(login string, password string) 
 
 }
 
