@@ -41,17 +41,11 @@ func Router(s *storage.Storage) http.Handler {
 
 	  })
 
-	fs := http.FileServer(http.Dir("./www/build/"))
-
-	// Маршруты с редиректом на авторизацию 
-	r.Group(func(r chi.Router) {
-		r.Use(UnloggedInRedirector)
-		r.Get("/", fs.ServeHTTP)
-		
-	})
+	
 
 	// Публичные маршруты
 	r.Group(func(r chi.Router) {
+		fs := http.FileServer(http.Dir("./www/build/"))
 		r.Get("/*", fs.ServeHTTP)
 		r.Post("/wapi/login", wapi.Login(s, tokenAuth))
 	})
