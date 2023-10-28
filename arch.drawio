@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-10-28T05:45:05.066Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="zEyrP3g2XYxJeBxz2k6G" version="22.0.6" type="device">
+<mxfile host="app.diagrams.net" modified="2023-10-28T05:53:33.883Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="eM6YLiekiyxaGurQaqcd" version="22.0.6" type="device">
   <diagram name="Page-1" id="nx7LIq2Fe1vS2iPR4uFg">
     <mxGraphModel dx="1149" dy="1688" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
@@ -87,7 +87,7 @@
         <mxCell id="wA4eCwuCTSMMDCAFvDcx-112" value="" style="image;sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/mscae/Cache_Redis_Product.svg;fontFamily=Helvetica;fontColor=default;" vertex="1" parent="1">
           <mxGeometry x="543.75" y="-91" width="50" height="42" as="geometry" />
         </mxCell>
-        <mxCell id="wA4eCwuCTSMMDCAFvDcx-113" value="provider" style="rounded=1;absoluteArcSize=1;arcSize=14;whiteSpace=wrap;strokeWidth=2;shadow=0;glass=0;" vertex="1" parent="1">
+        <mxCell id="wA4eCwuCTSMMDCAFvDcx-113" value="data provider" style="rounded=1;absoluteArcSize=1;arcSize=14;whiteSpace=wrap;strokeWidth=2;shadow=0;glass=0;" vertex="1" parent="1">
           <mxGeometry x="507.5" y="31" width="122.5" height="40" as="geometry" />
         </mxCell>
         <mxCell id="wA4eCwuCTSMMDCAFvDcx-117" style="edgeStyle=none;shape=connector;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;startArrow=classic;startFill=1;strokeWidth=2;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" target="wA4eCwuCTSMMDCAFvDcx-113">
@@ -120,7 +120,7 @@
         <mxCell id="wA4eCwuCTSMMDCAFvDcx-185" value="" style="image;sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/mscae/Cache_Redis_Product.svg;fontFamily=Helvetica;fontColor=default;" vertex="1" parent="1">
           <mxGeometry x="328.75" y="-91" width="50" height="42" as="geometry" />
         </mxCell>
-        <mxCell id="wA4eCwuCTSMMDCAFvDcx-186" value="provider" style="rounded=1;absoluteArcSize=1;arcSize=14;whiteSpace=wrap;strokeWidth=2;shadow=0;glass=0;" vertex="1" parent="1">
+        <mxCell id="wA4eCwuCTSMMDCAFvDcx-186" value="data provider" style="rounded=1;absoluteArcSize=1;arcSize=14;whiteSpace=wrap;strokeWidth=2;shadow=0;glass=0;" vertex="1" parent="1">
           <mxGeometry x="292.5" y="31" width="122.5" height="40" as="geometry" />
         </mxCell>
         <mxCell id="wA4eCwuCTSMMDCAFvDcx-187" style="edgeStyle=none;shape=connector;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;startArrow=classic;startFill=1;strokeWidth=2;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" target="wA4eCwuCTSMMDCAFvDcx-186">
@@ -225,7 +225,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="wA4eCwuCTSMMDCAFvDcx-207" value="controller" style="rounded=1;absoluteArcSize=1;arcSize=14;whiteSpace=wrap;strokeWidth=2;shadow=0;glass=0;" vertex="1" parent="1">
+        <mxCell id="wA4eCwuCTSMMDCAFvDcx-207" value="data controller" style="rounded=1;absoluteArcSize=1;arcSize=14;whiteSpace=wrap;strokeWidth=2;shadow=0;glass=0;" vertex="1" parent="1">
           <mxGeometry x="503.75" y="-310" width="120" height="40" as="geometry" />
         </mxCell>
       </root>
