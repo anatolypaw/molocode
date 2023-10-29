@@ -16,7 +16,7 @@ type User struct {
 // Инициализирует коллекцию users
 
 //Добавляет пользователя в базу
-func (m *Storage) AddUser(u User) error {
+func (m *Connection) AddUser(u User) error {
 	const op = "storage.mongodb.AddUser"
 
 	_, err := m.db.Collection("users").InsertOne(*m.ctx, u)
@@ -27,7 +27,7 @@ func (m *Storage) AddUser(u User) error {
 }
 
 //Ищет пользователя по логину
-func (m *Storage) GetUser(login string) (User, error) {
+func (m *Connection) GetUser(login string) (User, error) {
 	const op = "storage.mongodb.GetUser"
 
 	filter := bson.D{{Key: "login", Value: login}}
@@ -41,7 +41,7 @@ func (m *Storage) GetUser(login string) (User, error) {
 }
 
 //Ищет пользователя по логину и паролю
-func (m *Storage) GetUserByLoginPass(login string, password string) (User, error) {
+func (m *Connection) GetUserByLoginPass(login string, password string) (User, error) {
 	const op = "storage.mongodb.GetUserByLoginPass"
 
 	filter := bson.D{{Key: "login", Value: login}, {Key: "password", Value: password}}

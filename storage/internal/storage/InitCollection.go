@@ -8,25 +8,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Продукт, gtin для каждого уникален. 14 символов
-type Good struct {
-	Gtin       string // gtin продукта
-	Desc       string // описание продукта
-	StoreCount int    // сколько хранить кодов
-	Get        bool   // флаг, получать коды из 1с
-	Upload     bool   // флаг, выгружать коды в 1с
-	Awaible    bool   // флаг, выдавать ли кода на терминал
-	ShelfLife  int    // срок годности продукта
-}
-
-
 // Инициализирует коллекцию goods
-func (s *Storage)InitCollectionGoods() error {
+func (s *Connection)InitCollectionGoods() error {
 	const op = "storage.goodsInitCollection"
 
 	// Для коллекции goods ставим ключевым и уникальным поле gtin
 	indexModel := mongo.IndexModel{
-		Keys:    bson.D{{"gtin", 1}},
+		Keys:    bson.D{{Key: "gtin", Value: 1}},
 		Options: options.Index().SetUnique(true),
 	}
 

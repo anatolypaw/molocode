@@ -9,11 +9,9 @@ import (
 	"github.com/go-chi/chi/middleware"
 )
 
-func Router(storage *storage.Storage) http.Handler {
-	//Инициализируем роутер для api работы с терминалами
+func Router(storage *storage.Connection) http.Handler {
 	r := chi.NewRouter()
 
-	//middleware
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 

@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type Storage struct {
+type Connection struct {
 	client *mongo.Client
 	db     *mongo.Database
 	ctx    *context.Context
@@ -17,7 +17,7 @@ type Storage struct {
 
 
 // Возвращает подключение к базе данных
-func New(path string, dbname string) (*Storage, error) {
+func New(path string, dbname string) (*Connection, error) {
 	const op = "storage.New"
 
 	var ctx = context.TODO()
@@ -35,27 +35,27 @@ func New(path string, dbname string) (*Storage, error) {
 	}
 
 
-	storage := Storage{
+	con := Connection{
 		client: client,
 		ctx: &ctx,
 		db: client.Database(dbname),
 	}
 
 	// Инициализация коллекций
-	err = storage.InitCollectionGoods()
+	err = con.InitCollectionGoods()
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
 	
-	return &storage, nil
+	return &con, nil
 }
 
 
 // Закрыть подключение к базе данных
-func (s *Storage) Close() error {
+func (con *Connection) Close() error {
 	const op = "storage.mongodb.Close"
-	err := s.client.Disconnect(*s.ctx)
+	err := con.client.Disconnect(*con.ctx)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
