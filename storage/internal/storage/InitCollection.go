@@ -1,6 +1,12 @@
 package storage
 
-import "fmt"
+import (
+	"fmt"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+)
 
 // Продукт, gtin для каждого уникален. 14 символов
 type Good struct {
@@ -13,18 +19,23 @@ type Good struct {
 	ShelfLife  int    // срок годности продукта
 }
 
-// Добавляет продукт в хранилище
-func (m *Mongo) AddGood(gtin string, desc string) error {
-	const op = "storage.mongodb.AddGood"
 
-	g := Good{
-		Gtin: gtin,
-		Desc: desc,
+// Инициализирует коллекцию goods
+func (s *Storage)InitCollectionGoods() error {
+	const op = "storage.goodsInitCollection"
+
+	// Для коллекции goods ставим ключевым и уникальным поле gtin
+	indexModel := mongo.IndexModel{
+		Keys:    bson.D{{"gtin", 1}},
+		Options: options.Index().SetUnique(true),
 	}
 
-	_, err := m.db.Collection("goods").InsertOne(*m.ctx, g)
+	_, err := s.db.Collection("goods").Indexes().CreateOne(*s.ctx, indexModel)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
+
 	return nil
 }
+
+
