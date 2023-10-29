@@ -15,7 +15,6 @@ type Connection struct {
 	ctx    *context.Context
 }
 
-
 // Возвращает подключение к базе данных
 func New(path string, dbname string) (*Connection, error) {
 	const op = "storage.New"
@@ -34,11 +33,10 @@ func New(path string, dbname string) (*Connection, error) {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-
 	con := Connection{
 		client: client,
-		ctx: &ctx,
-		db: client.Database(dbname),
+		ctx:    &ctx,
+		db:     client.Database(dbname),
 	}
 
 	// Инициализация коллекций
@@ -47,10 +45,8 @@ func New(path string, dbname string) (*Connection, error) {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	
 	return &con, nil
 }
-
 
 // Закрыть подключение к базе данных
 func (con *Connection) Close() error {
@@ -61,5 +57,3 @@ func (con *Connection) Close() error {
 	}
 	return nil
 }
-
-

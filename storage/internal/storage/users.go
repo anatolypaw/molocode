@@ -8,14 +8,14 @@ import (
 
 /* Управление пользователями */
 type User struct {
-	Login string 	`bson:"login" json:"login"`
+	Login    string `bson:"login" json:"login"`
 	Password string `bson:"password" json:"password"` //TODO передалать на хранение хэша
-	Role string 	`bson:"role" json:"role"`	  //admin, user
+	Role     string `bson:"role" json:"role"`         //admin, user
 }
 
 // Инициализирует коллекцию users
 
-//Добавляет пользователя в базу
+// Добавляет пользователя в базу
 func (m *Connection) AddUser(u User) error {
 	const op = "storage.mongodb.AddUser"
 
@@ -26,7 +26,7 @@ func (m *Connection) AddUser(u User) error {
 	return nil
 }
 
-//Ищет пользователя по логину
+// Ищет пользователя по логину
 func (m *Connection) GetUser(login string) (User, error) {
 	const op = "storage.mongodb.GetUser"
 
@@ -40,7 +40,7 @@ func (m *Connection) GetUser(login string) (User, error) {
 	return u, nil
 }
 
-//Ищет пользователя по логину и паролю
+// Ищет пользователя по логину и паролю
 func (m *Connection) GetUserByLoginPass(login string, password string) (User, error) {
 	const op = "storage.mongodb.GetUserByLoginPass"
 

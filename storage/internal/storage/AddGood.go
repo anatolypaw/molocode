@@ -8,13 +8,13 @@ import (
 
 // Продукт, gtin для каждого уникален. 14 символов
 type Good struct {
-	Gtin       string `bson:"gtin,omitempty"` 		// gtin продукта
-	Desc       string `bson:"desc,omitempty"`			// описание продукта
-	StoreCount int    `bson:"store_count,omitempty"`	// сколько хранить кодов
-	Get        bool   `bson:"get,omitempty"`			// флаг, получать коды из 1с
-	Upload     bool   `bson:"upload,omitempty"`		// флаг, выгружать коды в 1с
-	Avaible    bool   `bson:"avaible,omitempty"`		// флаг, выдавать ли кода на терминал
-	ShelfLife  int    `bson:"shelf_life,omitempty"`	// срок годности продукта
+	Gtin       string `bson:"gtin,omitempty"`        // gtin продукта
+	Desc       string `bson:"desc,omitempty"`        // описание продукта
+	StoreCount int    `bson:"store_count,omitempty"` // сколько хранить кодов
+	Get        bool   `bson:"get,omitempty"`         // флаг, получать коды из 1с
+	Upload     bool   `bson:"upload,omitempty"`      // флаг, выгружать коды в 1с
+	Avaible    bool   `bson:"avaible,omitempty"`     // флаг, выдавать ли кода на терминал
+	ShelfLife  int    `bson:"shelf_life,omitempty"`  // срок годности продукта
 }
 
 // Добавляет продукт в хранилище

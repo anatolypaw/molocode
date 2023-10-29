@@ -15,10 +15,13 @@ import (
 	}
 */
 func AddGood(s *storage.Connection) http.HandlerFunc {
-	return func (w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "http.v1.AddGood"
 
-		var good struct{Gtin string; Desc string} 
+		var good struct {
+			Gtin string
+			Desc string
+		}
 
 		err := json.NewDecoder(r.Body).Decode(&good)
 		if err != nil {
@@ -38,4 +41,4 @@ func AddGood(s *storage.Connection) http.HandlerFunc {
 		w.WriteHeader(http.StatusCreated)
 		fmt.Fprint(w, "OK")
 	}
-} 
+}

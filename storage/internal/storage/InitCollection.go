@@ -9,7 +9,7 @@ import (
 )
 
 // Инициализирует коллекцию goods
-func (s *Connection)InitCollectionGoods() error {
+func (s *Connection) InitCollectionGoods() error {
 	const op = "storage.goodsInitCollection"
 
 	// Для коллекции goods ставим ключевым и уникальным поле gtin
@@ -25,5 +25,3 @@ func (s *Connection)InitCollectionGoods() error {
 
 	return nil
 }
-
-
