@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-10-29T09:22:36.315Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="TBKAmpXc9Tap9Cm7vbIw" version="22.0.8" type="device">
+<mxfile host="app.diagrams.net" modified="2023-10-30T05:49:39.902Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="jkDsaCW7q2X6PngNleK6" version="22.0.8" type="device">
   <diagram name="Page-1" id="nx7LIq2Fe1vS2iPR4uFg">
     <mxGraphModel dx="2871" dy="1767" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
@@ -232,13 +232,19 @@
           <mxGeometry y="-430" width="240" height="110" as="geometry" />
         </mxCell>
         <mxCell id="wA4eCwuCTSMMDCAFvDcx-226" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;ul&gt;&lt;li&gt;Добавить продукт&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Установить описание продукта&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Установить сколько кодов получать&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Установить получать ли коды&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Установить выгружать ли коды&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Установить срок годности продукта&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;&lt;br&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;Вывести список продуктов&lt;/li&gt;&lt;li&gt;Удалить продукт&lt;/li&gt;&lt;li&gt;Вывести информацию о продукте&lt;/li&gt;&lt;li&gt;&amp;nbsp;&lt;/li&gt;&lt;li&gt;Добавить код для нанесения&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;время получения&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;серия+номер+криптохвост&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/li&gt;&lt;li&gt;Добавить код для проверки нанесения&lt;/li&gt;&lt;li&gt;Отметить код произведенным&lt;/li&gt;&lt;ul&gt;&lt;li&gt;терминал&lt;/li&gt;&lt;li&gt;время добавления&lt;/li&gt;&lt;li&gt;дата производства&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Получить произведенные коды&lt;/li&gt;&lt;li&gt;Отметить код выгруженным в шлюз&lt;/li&gt;&lt;li&gt;Установить код отбракованным&lt;/li&gt;&lt;li&gt;Дать код для нанесения(продукт, автомат, дата производства)&lt;/li&gt;&lt;ul&gt;&lt;li&gt;Сквозной номер для всех кодов для нанесения&lt;/li&gt;&lt;li&gt;Номер для комбинации продукт - автомат - дата нанесения&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;&lt;ul&gt;&lt;/ul&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=default;" parent="1" vertex="1">
-          <mxGeometry x="-550" y="-436" width="430" height="395" as="geometry" />
+          <mxGeometry x="-540" y="-197" width="430" height="395" as="geometry" />
         </mxCell>
         <mxCell id="wA4eCwuCTSMMDCAFvDcx-227" value="терминалы" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=default;" parent="1" vertex="1">
           <mxGeometry x="80" y="-460" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="wA4eCwuCTSMMDCAFvDcx-228" value="продукты" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=default;" parent="1" vertex="1">
-          <mxGeometry x="-390" y="-466" width="60" height="30" as="geometry" />
+          <mxGeometry x="-400" y="-227" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ZH2xpFNzXhva7m5qqSOA-22" value="Добавить продукт" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-440" y="-440" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ZH2xpFNzXhva7m5qqSOA-23" value="POST /v1/goods" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-400" y="-410" width="120" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
