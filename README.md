@@ -1,2 +1,2 @@
 # molocode
-![pic](/docs/arch.svg) 
+![pic](/docs/arch.png) 
