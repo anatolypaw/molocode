@@ -3,8 +3,8 @@ package usecase
 import (
 	"fmt"
 	"log"
-	"storage/internal/domain/entity"
-	"storage/internal/repositories/storage"
+	"storage/internal/adapter/storage"
+	"storage/internal/entity"
 )
 
 // Добавляет продукт

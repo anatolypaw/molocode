@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"storage/internal/repositories/storage"
+	"storage/internal/adapter/storage"
 	"storage/internal/usecase"
 )
 
