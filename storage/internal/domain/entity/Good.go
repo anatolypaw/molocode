@@ -39,8 +39,8 @@ func New(gtin string) (Good, error) {
 }
 
 // Установить описание
-func (g *Good) SetDescription(desc string) {
-	const op = "entity.Good.SetDescription"
+func (g *Good) EditDescription(desc string) {
+	const op = "entity.Good.EditDescription"
 	_ = op
 	g.Description = desc
 }

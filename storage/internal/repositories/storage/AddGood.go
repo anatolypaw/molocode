@@ -2,8 +2,6 @@ package storage
 
 import (
 	"fmt"
-	"log"
-	"regexp"
 )
 
 // Продукт, gtin для каждого уникален. 14 символов
@@ -21,26 +19,9 @@ type Good struct {
 func (con *Connection) AddGood(gtin string, desc string) error {
 	const op = "storage.AddGood"
 
-	//Проверяем наличие описание
-	if len(desc) == 0 {
-		return fmt.Errorf("%s: Отсутствует описание", op)
-	}
-
-	//Проверяем корректность gtin
-	matched, err := regexp.MatchString(`^0\d{13}$`, gtin)
-	if err != nil {
-		err = fmt.Errorf("%s: %w", op, err)
-		log.Print(err)
-		return err
-	}
-
-	if !matched {
-		return fmt.Errorf("%s: Некорректный формат gtin '%s'", op, gtin)
-	}
-
 	g := Good{Gtin: gtin, Desc: desc}
 
-	_, err = con.db.Collection("goods").InsertOne(*con.ctx, g)
+	_, err := con.db.Collection("goods").InsertOne(*con.ctx, g)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}

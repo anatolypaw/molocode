@@ -1,10 +1,8 @@
-package http_router
+package v1
 
 import (
 	"net/http"
-
-	v1 "storage/internal/controller/http/v1"
-	"storage/internal/storage"
+	"storage/internal/repositories/storage"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -16,6 +14,6 @@ func Router(storage *storage.Connection) http.Handler {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Post("/v1/goods", v1.AddGood(storage))
+	r.Post("/v1/goods", AddGood(storage))
 	return r
 }

@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"storage/internal/storage"
+	"storage/internal/repositories/storage"
+	"storage/internal/usecase"
 )
 
 // Добавляет продукт, метод POST
@@ -23,6 +24,7 @@ func AddGood(s *storage.Connection) http.HandlerFunc {
 			Desc string
 		}
 
+		// Декодируем полученный в теле json
 		err := json.NewDecoder(r.Body).Decode(&good)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
@@ -31,7 +33,7 @@ func AddGood(s *storage.Connection) http.HandlerFunc {
 			return
 		}
 
-		err = s.AddGood(good.Gtin, good.Desc)
+		err = usecase.AddGood(s, good.Gtin, good.Desc)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)

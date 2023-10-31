@@ -3,16 +3,12 @@ package main
 import (
 	"log"
 	"net/http"
-	http_router "storage/internal/controller/http"
-	"storage/internal/storage"
-	"storage/internal/usecase"
+	v1 "storage/internal/controller/http/v1"
+	"storage/internal/repositories/storage"
 	"time"
 )
 
 func main() {
-
-	usecase.AddGood("00000000000000", "Молоко 55%")
-	usecase.SetDescription("00000000000000", "lalalasdlalsd")
 	log.Println("Starting app")
 
 	//Подключаемся к хранилищу
@@ -25,7 +21,7 @@ func main() {
 	//Запускаем сервер веб интерфейса
 	s := &http.Server{
 		Addr:         ":80",
-		Handler:      http_router.Router(storage),
+		Handler:      v1.Router(storage),
 		IdleTimeout:  1 * time.Minute,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
