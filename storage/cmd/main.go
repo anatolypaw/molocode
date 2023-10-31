@@ -3,13 +3,16 @@ package main
 import (
 	"log"
 	"net/http"
-	http_router "storage/internal/http"
+	http_router "storage/internal/controller/http"
 	"storage/internal/storage"
+	"storage/internal/usecase"
 	"time"
 )
 
 func main() {
 
+	usecase.AddGood("00000000000000", "Молоко 55%")
+	usecase.SetDescription("00000000000000", "lalalasdlalsd")
 	log.Println("Starting app")
 
 	//Подключаемся к хранилищу

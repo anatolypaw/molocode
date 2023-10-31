@@ -2,7 +2,8 @@ package http_router
 
 import (
 	"net/http"
-	v1 "storage/internal/http/v1"
+
+	v1 "storage/internal/controller/http/v1"
 	"storage/internal/storage"
 
 	"github.com/go-chi/chi"
