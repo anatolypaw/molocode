@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"storage/internal/adapter/storage"
+	"storage/internal/entity"
 	"storage/internal/usecase"
 )
 
@@ -19,10 +20,7 @@ func AddGood(s *storage.Connection) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "http.v1.AddGood"
 
-		var good struct {
-			Gtin string
-			Desc string
-		}
+		good := entity.Good{}
 
 		// Декодируем полученный в теле json
 		err := json.NewDecoder(r.Body).Decode(&good)
@@ -33,7 +31,7 @@ func AddGood(s *storage.Connection) http.HandlerFunc {
 			return
 		}
 
-		err = usecase.AddGood(s, good.Gtin, good.Desc)
+		err = usecase.AddGood(s, good)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)

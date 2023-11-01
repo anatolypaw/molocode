@@ -2,43 +2,38 @@ package usecase
 
 import (
 	"fmt"
-	"log"
 	"storage/internal/adapter/storage"
 	"storage/internal/entity"
 )
 
 // Добавляет продукт
-func AddGood(s *storage.Connection, gtin string, desc string) error {
+func AddGood(storage *storage.Connection, good entity.Good) error {
 	const op = "usecase.AddGood"
-	good, err := entity.New(gtin)
+	err := good.ValidateGtin()
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 
-	// Установить описание
-	good.EditDescription(desc)
-
-	// TODO поместить в БД
-	err = s.AddGood(gtin, desc)
+	// поместить в БД
+	err = storage.AddGood(good)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 
-	log.Printf("ОТЛАДКА продукт %v добавлен в БД", good)
 	return nil
 }
 
-// Установить описание продукта
-func EditDescription(s *storage.Connection, gtin string, desc string) error {
-	const op = "usecase.EditDescription"
-	good, err := entity.New(gtin)
+// Изменить настройки продукта
+func EditGood(s *storage.Connection, good entity.Good) error {
+	const op = "usecase.EditParams"
+	err := good.ValidateGtin()
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 
-	good.EditDescription(desc)
-
-	// TODO поместить в БД
-	log.Printf("ОТЛАДКА установлено описание продукта %v", good)
-	return nil
+	// поместить в БД
+	err = storage.EditGood(good)
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
 }
