@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"storage/internal/adapter/storage"
 	"storage/internal/entity"
-	"storage/internal/usecase"
+	"storage/internal/storage"
 )
 
 // Добавляет продукт, метод POST
@@ -31,7 +30,7 @@ func AddGood(s *storage.Connection) http.HandlerFunc {
 			return
 		}
 
-		err = usecase.AddGood(s, good)
+		err = s.AddGood(good)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)
