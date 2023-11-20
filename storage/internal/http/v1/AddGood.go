@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"storage/internal/entity"
-	"storage/internal/storage"
+	"storage/internal/domain/models"
+	"storage/internal/storage/mongodb"
 )
 
 // Добавляет продукт, проверяя корректность GTIN  и отсутсвие записи с таким gtin
@@ -17,15 +17,16 @@ import (
 	}
 */
 
-func AddGood(s *storage.Connection) http.HandlerFunc {
+func AddGood(s *mongodb.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "http.v1.AddGood"
 
-		good := entity.Good{}
+		// Устанавливаем время создания
+		good := models.Good{}
 
 		// Декодируем полученный в теле json
-		decoder := json.NewDecoder(r.Body)
 		// Разрешить только поля, укаказанные в entity.Good
+		decoder := json.NewDecoder(r.Body)
 		decoder.DisallowUnknownFields()
 		err := decoder.Decode(&good)
 		if err != nil {

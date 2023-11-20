@@ -1,4 +1,4 @@
-package storage
+package mongodb
 
 import (
 	"context"
@@ -13,15 +13,15 @@ const (
 	goodCollection = "goods"
 )
 
-type Connection struct {
+type Storage struct {
 	client *mongo.Client
 	db     *mongo.Database
 	ctx    *context.Context
 }
 
 // Возвращает подключение к базе данных
-func New(path string, dbname string) (*Connection, error) {
-	const op = "storage.New"
+func New(path string, dbname string) (*Storage, error) {
+	const op = "storage.mongodb.New"
 
 	var ctx = context.TODO()
 	opts := options.Client().ApplyURI(path).SetTimeout(500 * time.Millisecond)
@@ -37,7 +37,7 @@ func New(path string, dbname string) (*Connection, error) {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	con := Connection{
+	con := Storage{
 		client: client,
 		ctx:    &ctx,
 		db:     client.Database(dbname),
@@ -53,7 +53,7 @@ func New(path string, dbname string) (*Connection, error) {
 }
 
 // Закрыть подключение к базе данных
-func (con *Connection) Close() error {
+func (con *Storage) Close() error {
 	const op = "storage.mongodb.Close"
 	err := con.client.Disconnect(*con.ctx)
 	if err != nil {

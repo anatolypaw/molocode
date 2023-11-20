@@ -1,4 +1,4 @@
-package storage
+package mongodb
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 )
 
 // Инициализирует коллекцию goods
-func (s *Connection) InitCollectionGoods() error {
+func (s *Storage) InitCollectionGoods() error {
 	const op = "storage.goodsInitCollection"
 
 	// Для коллекции goods ставим ключевым и уникальным поле gtin

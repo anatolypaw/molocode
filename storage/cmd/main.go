@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	v1 "storage/internal/http/v1"
-	"storage/internal/storage"
+	"storage/internal/storage/mongodb"
 	"time"
 )
 
@@ -12,7 +12,7 @@ func main() {
 	log.Println("Starting app")
 
 	//Подключаемся к хранилищу
-	storage, err := storage.New("mongodb://localhost:27017/", "molocode")
+	storage, err := mongodb.New("mongodb://localhost:27017/", "molocode")
 	if err != nil {
 		log.Fatalln(err)
 	}

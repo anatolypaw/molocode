@@ -2,13 +2,13 @@ package v1
 
 import (
 	"net/http"
-	"storage/internal/storage"
+	"storage/internal/storage/mongodb"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
 
-func Router(storage *storage.Connection) http.Handler {
+func Router(storage *mongodb.Storage) http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
