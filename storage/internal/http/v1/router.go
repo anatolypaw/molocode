@@ -12,7 +12,7 @@ func Router(storage *storage.Connection) http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
+	//	r.Use(middleware.Recoverer)
 
 	r.Post("/v1/goods", AddGood(storage))
 	return r

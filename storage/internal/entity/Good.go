@@ -5,18 +5,25 @@ import (
 	"regexp"
 )
 
-// Продукт, gtin для каждого уникален. 14 символов
-type Good struct {
-	Gtin        string `bson:",omitempty"` // gtin продукта
-	Description string `bson:",omitempty"` // описание продукта
-	StoreCount  uint   `bson:",omitempty"` // сколько хранить кодов
-	Get         bool   `bson:",omitempty"` // флаг, получать коды из 1с
-	Upload      bool   `bson:",omitempty"` // флаг, выгружать коды в 1с
-	Avaible     bool   `bson:",omitempty"` // флаг, выдавать ли кода на терминал
-	ShelfLife   uint   `bson:",omitempty"` // срок годности продукта
+type Code struct {
+	Serial string // Серийный номер, формат честного знака
+	Crypto string // Криптохвост, формат честного знака
+
 }
 
-// Проверка корректности gtin
+// Продукт, gtin для каждого уникален. 14 символов
+type Good struct {
+	Gtin        string `bson:""` // gtin продукта
+	Description string `bson:""` // описание продукта
+	StoreCount  uint   `bson:""` // сколько хранить кодов
+	Get         bool   `bson:""` // флаг, получать коды из 1с
+	Upload      bool   `bson:""` // флаг, выгружать коды в 1с
+	Avaible     bool   `bson:""` // флаг, выдавать ли кода на терминал
+	ShelfLife   uint   `bson:""` // срок годности продукта
+	Codes       []Code `json:",omitempty"`
+}
+
+// Проверка корректности gtin как отдельная функция
 func ValidateGtin(gtin string) error {
 	const op = "entity.Good.ValidateGtin"
 
@@ -34,7 +41,7 @@ func ValidateGtin(gtin string) error {
 	return nil
 }
 
-// Проверяет корректность gtin
+// Проверяет корректность внутри структуры gtin
 func (g *Good) ValidateGtin() error {
 	const op = "entity.Good.ValidateGtin"
 

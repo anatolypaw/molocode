@@ -9,6 +9,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const (
+	goodCollection = "goods"
+)
+
 type Connection struct {
 	client *mongo.Client
 	db     *mongo.Database
