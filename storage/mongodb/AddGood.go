@@ -3,7 +3,7 @@ package mongodb
 import (
 	"context"
 	"fmt"
-	"storage/internal/domain/models"
+	"storage/models"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"

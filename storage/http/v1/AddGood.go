@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"storage/internal/domain/models"
-	"storage/internal/storage/mongodb"
+	"storage/models"
+	"storage/mongodb"
 )
 
 // Добавляет продукт, проверяя корректность GTIN  и отсутсвие записи с таким gtin
@@ -21,7 +21,6 @@ func AddGood(s *mongodb.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "http.v1.AddGood"
 
-		// Устанавливаем время создания
 		good := models.Good{}
 
 		// Декодируем полученный в теле json
@@ -45,6 +44,7 @@ func AddGood(s *mongodb.Storage) http.HandlerFunc {
 			return
 		}
 
+		// Хранилище возвращает информацию о продукте, которая была добвлена
 		// Преобразуем ответ хранилища в json и передаем клиенту
 		resJson, err := json.Marshal(res)
 		if err != nil {

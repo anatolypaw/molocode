@@ -2,7 +2,7 @@ package v1
 
 import (
 	"net/http"
-	"storage/internal/storage/mongodb"
+	"storage/mongodb"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"

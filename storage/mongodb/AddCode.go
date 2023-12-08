@@ -2,11 +2,12 @@ package mongodb
 
 import (
 	"fmt"
-	"storage/internal/domain/models"
+	"storage/models"
 	"time"
 )
 
-// Добавляет код к продукту
+// не реализован
+// Добавляет код к указанному по gtin продукту
 func (con *Storage) AddCode(gtin string, code models.Code) (models.Code, error) {
 	const op = "storage.mongodb.AddCode"
 
@@ -21,7 +22,7 @@ func (con *Storage) AddCode(gtin string, code models.Code) (models.Code, error) 
 		return models.Code{}, fmt.Errorf("%s: %w", op, err)
 	}
 
-	code.Loaded.Time = time.Now()
+	code.AddedInfo.Time = time.Now()
 	/*
 		// Добавляем продукт в БД
 		objID, err := con.db.Collection(goodCollection).InsertOne(*con.ctx, code)

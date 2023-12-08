@@ -3,13 +3,13 @@ package main
 import (
 	"log"
 	"net/http"
-	v1 "storage/internal/http/v1"
-	"storage/internal/storage/mongodb"
+	v1 "storage/http/v1"
+	"storage/mongodb"
 	"time"
 )
 
 func main() {
-	log.Println("Starting app")
+	log.Println("Starting storage service")
 
 	//Подключаемся к хранилищу
 	storage, err := mongodb.New("mongodb://localhost:27017/", "molocode")
