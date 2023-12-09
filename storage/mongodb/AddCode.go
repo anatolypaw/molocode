@@ -22,7 +22,7 @@ func (con *Storage) AddCode(gtin string, code model.Code) (model.Code, error) {
 		return model.Code{}, fmt.Errorf("%s: %w", op, err)
 	}
 
-	code.AddedInfo.Time = time.Now()
+	code.SourceInfo.Time = time.Now()
 	/*
 		// Добавляем продукт в БД
 		objID, err := con.db.Collection(goodCollection).InsertOne(*con.ctx, code)

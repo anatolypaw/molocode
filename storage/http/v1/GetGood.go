@@ -31,7 +31,7 @@ func GetGood(s *mongodb.Storage) http.HandlerFunc {
 		}
 
 		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
+		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, string(resultJson))
 	}
 }

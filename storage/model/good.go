@@ -6,19 +6,25 @@ import (
 	"time"
 )
 
-// Информация о том, когда и откуда был загружен код
-type AddedInfo struct {
+// Когда и откуда был загружен код
+type SourceInfo struct {
 	Source string    // Откуда загружен, например с сервера "server main"
 	Time   time.Time // Время получения кода
 }
 
-// Информация о том, когда код был напечатан
-type PrintedInfo struct {
-	Terminal string    // Имя линии фасовки, где он был нанесен или считан камерой
-	Time     time.Time // Время, когда код был нанесен или считан на линии
+// Когда и куда был загружен код
+type ReceiveInfo struct {
+	Receiver string // Имя линии, получившей код
+	Time     time.Time
 }
 
-// Информация, о том когда и где код пошел в выпуск продукции. т.е. был  связан с единицей продукции
+// Информация о выгрузке в 1с
+type UploadInfo struct {
+	Time   time.Time
+	Status string
+}
+
+// Когда и где код пошел в выпуск продукции. т.е. был  связан с единицей продукции
 type ProducedInfo struct {
 	Terminal string    // Имя линии фасовки, где он был нанесен или считан камерой
 	Time     time.Time // Время, когда код был нанесен или считан на линии
@@ -29,10 +35,10 @@ type ProducedInfo struct {
 type Code struct {
 	Serial       string         // Серийный номер, формат честного знака. Уникален для каждого кода с этим GTIN
 	Crypto       string         // Криптохвост, формат честного знака
-	PrintID      uint64         `bson:",omitempty"`                   // id кода, присваивается только для кодов, которые идут на печать
-	AddedInfo    AddedInfo      `bson:",omitempty" json:",omitempty"` // Информация об источнике поступления кода
-	PrintedInfo  PrintedInfo    `bson:",omitempty" json:",omitempty"`
+	SourceInfo   SourceInfo     `bson:",omitempty" json:",omitempty"` // Информация об источнике поступления кода
+	ReceiveInfo  ReceiveInfo    `bson:",omitempty" json:",omitempty"` // Информация о получателе кода
 	ProducedInfo []ProducedInfo `bson:",omitempty" json:",omitempty"` // Информация о его выпуске на линии фасовки
+	UploadInfo   UploadInfo     `bson:",omitempty" json:",omitempty"` // Информация о выгрузке в 1с
 }
 
 // Продукт, gtin для каждого уникален.
@@ -95,7 +101,7 @@ func ValidateDescription(description string) error {
 	return nil
 }
 
-// Проверяют корректность серийного номера, криптохвоста, источника
+// Проверяют корректность серийного номера, криптохвоста
 func (code *Code) Validate() error {
 	const op = "entity.Good.ValidateCode"
 
@@ -105,10 +111,6 @@ func (code *Code) Validate() error {
 
 	if len(code.Crypto) != 4 {
 		return fmt.Errorf("%s: Некорректная длинна криптохвоста", op)
-	}
-
-	if code.AddedInfo.Source == "" {
-		return fmt.Errorf("%s: Не указан источник кода", op)
 	}
 
 	return nil
