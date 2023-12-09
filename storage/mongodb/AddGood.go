@@ -14,16 +14,13 @@ import (
 func (con *Storage) AddGood(good models.Good) (models.Good, error) {
 	const op = "storage.mongodb.AddGood"
 
-	good.Created = time.Now()
-
-	if good.Codes != nil {
-		return models.Good{}, fmt.Errorf("%s: Недопустимо добавление кодов", op)
-	}
-
-	err := good.ValidateGtin()
+	err := good.Validate()
 	if err != nil {
 		return models.Good{}, fmt.Errorf("%s: %w", op, err)
 	}
+
+	good.Created = time.Now()
+	good.Codes = nil
 
 	// Добавляем продукт в БД
 	objID, err := con.db.Collection(goodCollection).InsertOne(*con.ctx, good)

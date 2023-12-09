@@ -42,14 +42,30 @@ type Good struct {
 	StoreCount  uint      `bson:""` // сколько хранить кодов
 	Get         bool      `bson:""` // флаг, получать коды из 1с
 	Upload      bool      `bson:""` // флаг, выгружать коды в 1с
-	PrintType   string    `bson:""` // тип нанесения кода. Самостоятельно наносим или уже нанесен print,  printed
 	Avaible     bool      `bson:""` // флаг, выдавать ли кода на терминал
-	ShelfLife   uint      `bson:""` // срок годности продукта. Это нужно для того, что бы еа линии фасовки вычислять конечную дату и печатать её на упаковке
+	ShelfLife   uint      `bson:""` // срок годности продукта. Это нужно для того, что бы на линии фасовки вычислять конечную дату и печатать её на упаковке
 	Created     time.Time `bson:""` // Дата создания продукта
 	Codes       []Code    `bson:"" json:""`
 }
 
-// Проверка корректности gtin как отдельная функция
+// Проверяет корректность всех полей
+func (g *Good) Validate() error {
+	// Gtin
+	err := ValidateGtin(g.Gtin)
+	if err != nil {
+		return err
+	}
+
+	// Description
+	err = ValidateDescription(g.Description)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Проверка корректности gtin
 func ValidateGtin(gtin string) error {
 	const op = "entity.Good.ValidateGtin"
 
@@ -67,14 +83,15 @@ func ValidateGtin(gtin string) error {
 	return nil
 }
 
-// Проверяет корректность внутри структуры gtin
-func (g *Good) ValidateGtin() error {
+// Проверка корректности описания
+func ValidateDescription(description string) error {
+	const op = "entity.Good.ValidateDescription"
 
-	// Проверяем корректность gtin
-	err := ValidateGtin(g.Gtin)
-	if err != nil {
-		return err
+	// Проверяем корректность описания
+	if len(description) == 0 {
+		return fmt.Errorf("%s: Отсутствует описание", op)
 	}
+
 	return nil
 }
 

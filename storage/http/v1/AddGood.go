@@ -13,7 +13,7 @@ import (
 // Принимает json
 /*	{
 		"gtin": "04600000000000",
-		"desc": "Молоко 3,5%"
+		"description": "Молоко 3,5%"
 	}
 */
 
@@ -36,7 +36,7 @@ func AddGood(s *mongodb.Storage) http.HandlerFunc {
 		}
 
 		// Добавляем продукт в хранилище
-		res, err := s.AddGood(good)
+		result, err := s.AddGood(good)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)
@@ -44,9 +44,9 @@ func AddGood(s *mongodb.Storage) http.HandlerFunc {
 			return
 		}
 
-		// Хранилище возвращает информацию о продукте, которая была добвлена
+		// Хранилище возвращает информацию о продукте, которая была добавлена
 		// Преобразуем ответ хранилища в json и передаем клиенту
-		resJson, err := json.Marshal(res)
+		resultJson, err := json.Marshal(result)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)
@@ -56,6 +56,6 @@ func AddGood(s *mongodb.Storage) http.HandlerFunc {
 
 		w.Header().Add("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		fmt.Fprint(w, string(resJson))
+		fmt.Fprint(w, string(resultJson))
 	}
 }
