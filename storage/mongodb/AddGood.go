@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Добавляет продукт в хранилище, проверяя корректность gtin
+// Добавляет продукт в хранилище
 func (con *Storage) AddGood(good models.Good) (models.Good, error) {
 	const op = "storage.mongodb.AddGood"
 
