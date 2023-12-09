@@ -2,24 +2,24 @@ package mongodb
 
 import (
 	"fmt"
-	"storage/models"
+	"storage/model"
 	"time"
 )
 
 // не реализован
 // Добавляет код к указанному по gtin продукту
-func (con *Storage) AddCode(gtin string, code models.Code) (models.Code, error) {
+func (con *Storage) AddCode(gtin string, code model.Code) (model.Code, error) {
 	const op = "storage.mongodb.AddCode"
 
 	// Валидация входных данных
-	err := models.ValidateGtin(gtin)
+	err := model.ValidateGtin(gtin)
 	if err != nil {
-		return models.Code{}, fmt.Errorf("%s: %w", op, err)
+		return model.Code{}, fmt.Errorf("%s: %w", op, err)
 	}
 
 	err = code.Validate()
 	if err != nil {
-		return models.Code{}, fmt.Errorf("%s: %w", op, err)
+		return model.Code{}, fmt.Errorf("%s: %w", op, err)
 	}
 
 	code.AddedInfo.Time = time.Now()
@@ -40,6 +40,6 @@ func (con *Storage) AddCode(gtin string, code models.Code) (models.Code, error) 
 			return models.Good{}, fmt.Errorf("%s: %w", op, err)
 		}
 	*/
-	var res models.Code
+	var res model.Code
 	return res, nil
 }

@@ -3,8 +3,9 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
-	"storage/models"
+	"storage/model"
 	"storage/mongodb"
 )
 
@@ -21,9 +22,9 @@ func AddGood(s *mongodb.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "http.v1.AddGood"
 
-		good := models.Good{}
+		good := model.Good{}
 
-		// Декодируем полученный в теле json
+		// Декодируем полученный json
 		// Разрешить только поля, укаказанные в entity.Good
 		decoder := json.NewDecoder(r.Body)
 		decoder.DisallowUnknownFields()
@@ -31,6 +32,7 @@ func AddGood(s *mongodb.Storage) http.HandlerFunc {
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)
+			log.Print(err)
 			fmt.Fprint(w, err)
 			return
 		}

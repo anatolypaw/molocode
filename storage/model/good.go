@@ -1,4 +1,4 @@
-package models
+package model
 
 import (
 	"fmt"
@@ -18,18 +18,18 @@ type PrintedInfo struct {
 	Time     time.Time // Время, когда код был нанесен или считан на линии
 }
 
-// Информация, о том когда и где код пошел в выпуск продукции. т.е. был  связан с еденицей продукции
+// Информация, о том когда и где код пошел в выпуск продукции. т.е. был  связан с единицей продукции
 type ProducedInfo struct {
 	Terminal string    // Имя линии фасовки, где он был нанесен или считан камерой
 	Time     time.Time // Время, когда код был нанесен или считан на линии
 	ProdDate string    `bson:",omitempty" json:",omitempty"` // Дата производства продукта 2023-10-09
-	// тип - отбраковка или производствор
+	Discard  bool      // True - операция отбраковки кода
 }
 
 type Code struct {
-	PrintID      uint64         `bson:",omitempty"` // id кода, присваивается только для кодов, которые идут на печать
 	Serial       string         // Серийный номер, формат честного знака. Уникален для каждого кода с этим GTIN
 	Crypto       string         // Криптохвост, формат честного знака
+	PrintID      uint64         `bson:",omitempty"`                   // id кода, присваивается только для кодов, которые идут на печать
 	AddedInfo    AddedInfo      `bson:",omitempty" json:",omitempty"` // Информация об источнике поступления кода
 	PrintedInfo  PrintedInfo    `bson:",omitempty" json:",omitempty"`
 	ProducedInfo []ProducedInfo `bson:",omitempty" json:",omitempty"` // Информация о его выпуске на линии фасовки

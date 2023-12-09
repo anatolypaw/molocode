@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	goodCollection = "goods"
+	collectionGoods = "goods"
 )
 
 type Storage struct {

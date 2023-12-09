@@ -12,8 +12,8 @@ func Router(storage *mongodb.Storage) http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
-	//	r.Use(middleware.Recoverer)
 
 	r.Post("/v1/goods", AddGood(storage))
+	r.Get("/v1/goods", GetGood(storage))
 	return r
 }
