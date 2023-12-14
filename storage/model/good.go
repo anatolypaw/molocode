@@ -12,12 +12,6 @@ type SourceInfo struct {
 	Time   time.Time // Время получения кода
 }
 
-// Когда и куда был загружен код
-type ReceiveInfo struct {
-	Receiver string // Имя линии, получившей код
-	Time     time.Time
-}
-
 // Информация о выгрузке в 1с
 type UploadInfo struct {
 	Time   time.Time
@@ -35,8 +29,9 @@ type ProducedInfo struct {
 type Code struct {
 	Serial       string         // Серийный номер, формат честного знака. Уникален для каждого кода с этим GTIN
 	Crypto       string         // Криптохвост, формат честного знака
+	PrintId      uint64         `bson:",omitempty" json:",omitempty"` // Уникальный номер для кода. Присваивается только для печатаемых самостоятельно
+	LotName      string         //
 	SourceInfo   SourceInfo     `bson:",omitempty" json:",omitempty"` // Информация об источнике поступления кода
-	ReceiveInfo  ReceiveInfo    `bson:",omitempty" json:",omitempty"` // Информация о получателе кода
 	ProducedInfo []ProducedInfo `bson:",omitempty" json:",omitempty"` // Информация о его выпуске на линии фасовки
 	UploadInfo   UploadInfo     `bson:",omitempty" json:",omitempty"` // Информация о выгрузке в 1с
 }
