@@ -1,45 +1,52 @@
 package mongodb
 
 import (
+	"context"
 	"fmt"
 	"storage/model"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
-// не реализован
 // Добавляет код к указанному по gtin продукту
-func (con *Storage) AddCode(gtin string, code model.Code) (model.Code, error) {
+func (con *Storage) AddCode(gtin string,
+	serial string,
+	crypto string,
+	sourceName string) error {
 	const op = "storage.mongodb.AddCode"
 
 	// Валидация входных данных
-	err := model.ValidateGtin(gtin)
-	if err != nil {
-		return model.Code{}, fmt.Errorf("%s: %w", op, err)
+	if err := model.ValidateGtin(gtin); err != nil {
+		return fmt.Errorf("%s: %w", op, err)
 	}
 
-	err = code.Validate()
-	if err != nil {
-		return model.Code{}, fmt.Errorf("%s: %w", op, err)
+	if err := model.ValidateSerial(serial); err != nil {
+		return fmt.Errorf("%s: %w", op, err)
 	}
 
-	code.SourceInfo.Time = time.Now()
-	/*
-		// Добавляем продукт в БД
-		objID, err := con.db.Collection(goodCollection).InsertOne(*con.ctx, code)
-		if err != nil {
-			return models.Good{}, fmt.Errorf("%s: %w", op, err)
-		}
+	if err := model.ValidateCrypto(crypto); err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
 
-		// Считываем с базы, что мы там записали, кроме массива кодов
-		filter := bson.D{{Key: "_id", Value: objID.InsertedID}}
-		opt := options.FindOne().SetProjection(bson.D{{Key: "codes", Value: 0}})
+	var newCode model.Code
+	newCode.Serial = serial
+	newCode.Crypto = crypto
+	newCode.SourceInfo.Name = sourceName
+	newCode.SourceInfo.Time = time.Now()
 
-		var res models.Good
-		err = con.db.Collection(goodCollection).FindOne(context.TODO(), filter, opt).Decode(&res)
-		if err != nil {
-			return models.Good{}, fmt.Errorf("%s: %w", op, err)
-		}
-	*/
-	var res model.Code
-	return res, nil
+	filter := bson.M{"_id": gtin}
+	update := bson.M{"$push": bson.M{"codes": newCode}}
+
+	result, err := con.db.Collection(collectionGoods).UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return err
+	}
+
+	// Не найдено совпадений с указанным gtin
+	if result.MatchedCount != 1 {
+		return fmt.Errorf("%s: Не найден продукт с GTIN %s", op, gtin)
+	}
+
+	return err
 }

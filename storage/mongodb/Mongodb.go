@@ -45,10 +45,10 @@ func New(path string, dbname string) (*Storage, error) {
 	}
 
 	// Инициализация коллекций
-	err = con.InitCollectionGoods()
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
+	// err = con.InitCollectionGoods()
+	// if err != nil {
+	//	return nil, fmt.Errorf("%s: %w", op, err)
+	// }
 
 	return &con, nil
 }

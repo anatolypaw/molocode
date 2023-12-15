@@ -8,58 +8,61 @@ import (
 
 // Когда и откуда был загружен код
 type SourceInfo struct {
-	Source string    // Откуда загружен, например с сервера "server main"
-	Time   time.Time // Время получения кода
-}
-
-// Информация о выгрузке в 1с
-type UploadInfo struct {
-	Time   time.Time
-	Status string
+	Name string    `bson:"n" json:",omitempty"` // Откуда загружен, например с сервера "server main"
+	Time time.Time `bson:"t" json:",omitempty"` // Время получения кода
 }
 
 // Когда и где код пошел в выпуск продукции. т.е. был  связан с единицей продукции
 type ProducedInfo struct {
-	Terminal string    // Имя линии фасовки, где он был нанесен или считан камерой
-	Time     time.Time // Время, когда код был нанесен или считан на линии
-	ProdDate string    `bson:",omitempty" json:",omitempty"` // Дата производства продукта 2023-10-09
-	Discard  bool      // True - операция отбраковки кода
+	Terminal string    `bson:"tr" json:",omitempty"` // Имя линии фасовки, где он был нанесен или считан камерой
+	Time     time.Time `bson:"tm" json:",omitempty"` // Время, когда код был нанесен или считан на линии
+	ProdDate string    `bson:"pd" json:",omitempty"` // Дата производства продукта 2023-10-09
+	Discard  bool      `bson:"d" json:",omitempty"`  // True - операция отбраковки кода
+}
+
+// Информация, связанная с печатью
+type PrintInfo struct {
+	ReadyForPrint bool   `bson:"r" json:",omitempty"`
+	PrintId       uint64 `bson:"i" json:",omitempty"` // Уникальный номер для кода.
+}
+
+// Информация о выгрузке в 1с
+type UploadInfo struct {
+	Time   time.Time `bson:"tm" json:",omitempty"`
+	Status string    `bson:"s" json:",omitempty"`
 }
 
 type Code struct {
-	Serial       string         // Серийный номер, формат честного знака. Уникален для каждого кода с этим GTIN
-	Crypto       string         // Криптохвост, формат честного знака
-	PrintId      uint64         `bson:",omitempty" json:",omitempty"` // Уникальный номер для кода. Присваивается только для печатаемых самостоятельно
-	LotName      string         //
-	SourceInfo   SourceInfo     `bson:",omitempty" json:",omitempty"` // Информация об источнике поступления кода
-	ProducedInfo []ProducedInfo `bson:",omitempty" json:",omitempty"` // Информация о его выпуске на линии фасовки
-	UploadInfo   UploadInfo     `bson:",omitempty" json:",omitempty"` // Информация о выгрузке в 1с
+	Serial       string         `bson:"sn" json:",omitempty"`  // Серийный номер, формат честного знака. Уникален для каждого кода с этим GTIN
+	Crypto       string         `bson:"cn" json:",omitempty"`  // Криптохвост, формат честного знака
+	SourceInfo   SourceInfo     `bson:"si" json:",omitempty"`  // Информация об источнике поступления кода
+	PrintInfo    PrintInfo      `bson:"pti" json:",omitempty"` // Информация, связанная с печатью
+	ProducedInfo []ProducedInfo `bson:"pdi" json:",omitempty"` // Информация о его выпуске на линии фасовки
+	UploadInfo   UploadInfo     `bson:"ui" json:",omitempty"`  // Информация о выгрузке в 1с
 }
 
 // Продукт, gtin для каждого уникален.
 type Good struct {
-	Gtin        string    `bson:""` // gtin продукта
-	Description string    `bson:""` // описание продукта
-	StoreCount  uint      `bson:""` // сколько хранить кодов
-	Get         bool      `bson:""` // флаг, получать коды из 1с
-	Upload      bool      `bson:""` // флаг, выгружать коды в 1с
-	Avaible     bool      `bson:""` // флаг, выдавать ли кода на терминал
-	ShelfLife   uint      `bson:""` // срок годности продукта. Это нужно для того, что бы на линии фасовки вычислять конечную дату и печатать её на упаковке
-	Created     time.Time `bson:""` // Дата создания продукта
-	Codes       []Code    `bson:"" json:""`
+	Gtin        string    `bson:"_id"` // gtin продукта
+	Description string    `bson:""`    // описание продукта
+	StoreCount  uint      `bson:""`    // сколько хранить кодов
+	Get         bool      `bson:""`    // флаг, получать коды из 1с
+	Upload      bool      `bson:""`    // флаг, выгружать коды в 1с
+	Avaible     bool      `bson:""`    // флаг, выдавать ли кода на терминал
+	ShelfLife   uint      `bson:""`    // срок годности продукта. Это нужно для того, что бы на линии фасовки вычислять конечную дату и печатать её на упаковке
+	Created     time.Time `bson:""`    // Дата создания продукта
+	Codes       []Code    `bson:"" json:",omitempty"`
 }
 
 // Проверяет корректность всех полей
 func (g *Good) Validate() error {
 	// Gtin
-	err := ValidateGtin(g.Gtin)
-	if err != nil {
+	if err := ValidateGtin(g.Gtin); err != nil {
 		return err
 	}
-
 	// Description
-	err = ValidateDescription(g.Description)
-	if err != nil {
+
+	if err := ValidateDescription(g.Description); err != nil {
 		return err
 	}
 
@@ -96,17 +99,32 @@ func ValidateDescription(description string) error {
 	return nil
 }
 
-// Проверяют корректность серийного номера, криптохвоста
-func (code *Code) Validate() error {
-	const op = "entity.Good.ValidateCode"
-
-	if len(code.Serial) != 6 {
+func ValidateSerial(serial string) error {
+	const op = "entity.Good.ValidateSerial"
+	if len(serial) != 6 {
 		return fmt.Errorf("%s: Некорректная длинна серийного номера", op)
 	}
 
-	if len(code.Crypto) != 4 {
+	return nil
+}
+
+func ValidateCrypto(crypto string) error {
+	const op = "entity.Good.ValidateCrypto"
+	if len(crypto) != 4 {
 		return fmt.Errorf("%s: Некорректная длинна криптохвоста", op)
 	}
 
+	return nil
+}
+
+// Проверяют корректность серийного номера, криптохвоста
+func (code *Code) ValidateSerialCrypto() error {
+	if err := ValidateSerial(code.Serial); err != nil {
+		return err
+	}
+
+	if err := ValidateCrypto(code.Crypto); err != nil {
+		return err
+	}
 	return nil
 }

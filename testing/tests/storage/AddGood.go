@@ -16,13 +16,15 @@ func AddGood(address string) {
 		status   int
 		json     string
 	}{
-		{"Продукт создается первый раз	", http.StatusCreated, `{"gtin": "00000000000000", "description":"Описание"}`},
-		{"Дубль продукта не создается 	", http.StatusBadRequest, `{"gtin": "00000000000000", "description":"Описание"}`},
-		{"Отсутствует описание        	", http.StatusBadRequest, `{"gtin": "00000000000000", "description":""}`},
-		{"Короткий gtin               	", http.StatusBadRequest, `{"gtin": "00000000000000", "description":"Описание"}`},
-		{"Длинный gtin             	  	", http.StatusBadRequest, `{"gtin": "000000000000000", "description":"Описание"}`},
-		{"Недопустимые символы gtin		", http.StatusBadRequest, `{"gtin": "0000000000000T", "description":"Описание"}`},
-		{"Битый json					", http.StatusBadRequest, `{"gtin": "00000000000000, "description":"Описание"`},
+		{"Отсутствует описание          ", http.StatusBadRequest, `{"gtin": "00000000000000", "description":""}`},
+		{"Короткий gtin                 ", http.StatusBadRequest, `{"gtin": "0000000000000", "description":"Описание"}`},
+		{"Длинный gtin                  ", http.StatusBadRequest, `{"gtin": "000000000000000", "description":"Описание"}`},
+		{"Недопустимые символы gtin     ", http.StatusBadRequest, `{"gtin": "0000000000000T", "description":"Описание"}`},
+		{"Битый json                    ", http.StatusBadRequest, `{"gtin": "00000000000000, "description":"Описание"`},
+		{"Некорректное имя ключа        ", http.StatusBadRequest, `{"abcd": "00000000000000", "escription":"Продукт 1"}`},
+		{"Продукт создается первый раз  ", http.StatusOK, `{"gtin": "00000000000000", "description":"Продукт 1"}`},
+		{"Дубль продукта не создается   ", http.StatusBadRequest, `{"gtin": "00000000000000", "description":"Описание"}`},
+		{"Создается продукт 2 первый    ", http.StatusOK, `{"gtin": "00000000000002", "description":"Продукт 2"}`},
 	}
 
 	for i, test := range tests {
@@ -30,22 +32,22 @@ func AddGood(address string) {
 		var body bytes.Buffer
 		body.WriteString(test.json)
 
-		resp, err := http.Post(address+"/v1/goods", "application/json", &body)
+		resp, err := http.Post(address+"/v1/addGood", "application/json", &body)
 		if err != nil {
 			fmt.Printf("%s: %s", op, err)
 			os.Exit(1)
 		}
 
-		respb, err := io.ReadAll(resp.Body)
+		respbyte, err := io.ReadAll(resp.Body)
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		if resp.StatusCode == test.status {
-			fmt.Printf("%s: #%d - PASS - %s - %s\n", op, i, test.testdesc, string(respb))
+			fmt.Printf("%s: #%d - PASS - %s - %s\n", op, i, test.testdesc, string(respbyte))
 		} else {
-			fmt.Printf("%s: #%d - ERROR - %s \nresp: %v\n", op, i, test.testdesc, string(respb))
-			fmt.Printf("========== %s ABORTED ==========\n", op)
+			fmt.Printf("%s: #%d - ERROR - %s \nresp: %v\n", op, i, test.testdesc, string(respbyte))
+			fmt.Printf("========== %s FAIL ==========\n", op)
 			return
 		}
 

@@ -20,7 +20,7 @@ func (con *Storage) AddGood(good model.Good) (model.Good, error) {
 	}
 
 	good.Created = time.Now()
-	good.Codes = nil
+	good.Codes = []model.Code{}
 
 	// Добавляем продукт в БД
 	objID, err := con.db.Collection(collectionGoods).InsertOne(context.TODO(), good)
