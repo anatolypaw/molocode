@@ -65,6 +65,7 @@ func (s *Storage) Clean() error {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 
+	s.Close()
 	return nil
 }
 

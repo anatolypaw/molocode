@@ -16,6 +16,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	defer storage.Close()
 	log.Println("Storage ready")
 
 	//Запускаем сервер веб интерфейса

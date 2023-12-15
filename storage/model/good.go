@@ -33,12 +33,12 @@ type UploadInfo struct {
 }
 
 type Code struct {
-	Serial       string         `bson:"sn" json:",omitempty"`  // Серийный номер, формат честного знака. Уникален для каждого кода с этим GTIN
-	Crypto       string         `bson:"cn" json:",omitempty"`  // Криптохвост, формат честного знака
-	SourceInfo   SourceInfo     `bson:"si" json:",omitempty"`  // Информация об источнике поступления кода
-	PrintInfo    PrintInfo      `bson:"pti" json:",omitempty"` // Информация, связанная с печатью
-	ProducedInfo []ProducedInfo `bson:"pdi" json:",omitempty"` // Информация о его выпуске на линии фасовки
-	UploadInfo   UploadInfo     `bson:"ui" json:",omitempty"`  // Информация о выгрузке в 1с
+	Serial       string         `bson:"_id" json:",omitempty"` // Серийный номер, формат честного знака. Уникален для каждого кода с этим GTIN
+	Crypto       string         `bson:"" json:",omitempty"`    // Криптохвост, формат честного знака
+	SourceInfo   SourceInfo     `bson:"" json:",omitempty"`    // Информация об источнике поступления кода
+	PrintInfo    PrintInfo      `bson:"" json:",omitempty"`    // Информация, связанная с печатью
+	ProducedInfo []ProducedInfo `bson:"" json:",omitempty"`    // Информация о его выпуске на линии фасовки
+	UploadInfo   UploadInfo     `bson:"" json:",omitempty"`    // Информация о выгрузке в 1с
 }
 
 // Продукт, gtin для каждого уникален.

@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"storage/model"
 	"time"
-
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 // Добавляет код к указанному по gtin продукту
@@ -35,17 +33,12 @@ func (con *Storage) AddCode(gtin string,
 	newCode.SourceInfo.Name = sourceName
 	newCode.SourceInfo.Time = time.Now()
 
-	filter := bson.M{"_id": gtin}
-	update := bson.M{"$push": bson.M{"codes": newCode}}
+	// filter := bson.M{"_id": gtin}
+	// update := bson.M{"$push": bson.M{"codes": newCode}}
 
-	result, err := con.db.Collection(collectionGoods).UpdateOne(context.TODO(), filter, update)
+	_, err := con.db.Collection("codes_"+gtin).InsertOne(context.TODO(), newCode)
 	if err != nil {
 		return err
-	}
-
-	// Не найдено совпадений с указанным gtin
-	if result.MatchedCount != 1 {
-		return fmt.Errorf("%s: Не найден продукт с GTIN %s", op, gtin)
 	}
 
 	return err

@@ -7,7 +7,6 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -31,15 +30,14 @@ func AddMoreCodes(address string) {
 
 	start := time.Now()
 
-	json := fmt.Sprintf(`{
-		"sourceName":"1c service",
-		"gtin": "00000000000000",
-		"serial": "%s",
-		"crypto": "%s"
-	}`, RandStringBytes(6), RandStringBytes(4))
-
 	count := 10_000
 	for i := 0; i < count; i++ {
+		json := fmt.Sprintf(`{
+			"sourceName":"1c service",
+			"gtin": "00000000000000",
+			"serial": "%6d",
+			"crypto": "%s"
+		}`, i, RandStringBytes(4))
 
 		var body bytes.Buffer
 		body.WriteString(json)
@@ -47,8 +45,9 @@ func AddMoreCodes(address string) {
 		resp, err := http.Post(address+"/v1/addCode", "application/json", &body)
 		if err != nil {
 			fmt.Printf("%s: %s", op, err)
-			os.Exit(1)
+			i--
 		}
+		defer resp.Body.Close()
 
 		if resp.StatusCode != http.StatusOK {
 			respbyte, err := io.ReadAll(resp.Body)
@@ -56,7 +55,7 @@ func AddMoreCodes(address string) {
 				log.Fatal(err)
 			}
 			fmt.Printf("%s ERROR: код ответа %d - %s\n", op, resp.StatusCode, string(respbyte))
-			return
+			i--
 		}
 
 	}
