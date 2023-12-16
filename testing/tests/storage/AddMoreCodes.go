@@ -1,13 +1,11 @@
 package storage
 
 import (
-	"bytes"
 	"fmt"
-	"io"
-	"log"
 	"math/rand"
-	"net/http"
 	"time"
+
+	"github.com/valyala/fasthttp"
 )
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -20,42 +18,39 @@ func RandStringBytes(n int) string {
 	return string(b)
 }
 
-func req() {
-
-}
-
 func AddMoreCodes(address string) {
-	const op = "storage.addMoreCodes"
-	fmt.Println(op)
+	const op = "storage.addMoreCodes: "
+	fmt.Print(op)
 
 	start := time.Now()
 
-	count := 10_000
+	count := 1_000_000
+	fmt.Printf("%10d", 0)
+
+	client := &fasthttp.Client{}
+
 	for i := 0; i < count; i++ {
+		//time.Sleep(1 * time.Second)
 		json := fmt.Sprintf(`{
 			"sourceName":"1c service",
 			"gtin": "00000000000000",
-			"serial": "%6d",
+			"serial": "%s",
 			"crypto": "%s"
-		}`, i, RandStringBytes(4))
+		}`, RandStringBytes(6), RandStringBytes(4))
 
-		var body bytes.Buffer
-		body.WriteString(json)
+		req := fasthttp.AcquireRequest()
+		req.SetRequestURI(address + "/v1/addCode")
+		req.Header.SetMethod("POST")
+		req.SetBodyString(json)
 
-		resp, err := http.Post(address+"/v1/addCode", "application/json", &body)
+		resp := fasthttp.AcquireResponse()
+		err := client.Do(req, resp)
 		if err != nil {
-			fmt.Printf("%s: %s", op, err)
-			i--
+			fmt.Println(err)
 		}
-		defer resp.Body.Close()
 
-		if resp.StatusCode != http.StatusOK {
-			respbyte, err := io.ReadAll(resp.Body)
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Printf("%s ERROR: код ответа %d - %s\n", op, resp.StatusCode, string(respbyte))
-			i--
+		if i%100 == 0 {
+			fmt.Printf("\b\b\b\b\b\b\b\b\b\b%10d", i)
 		}
 
 	}

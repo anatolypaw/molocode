@@ -25,7 +25,7 @@ func New(path string, dbname string) (*Storage, error) {
 	const op = "storage.mongodb.New"
 
 	var ctx = context.TODO()
-	opts := options.Client().ApplyURI(path).SetTimeout(100 * time.Millisecond)
+	opts := options.Client().ApplyURI(path).SetTimeout(1000 * time.Millisecond)
 
 	client, err := mongo.Connect(ctx, opts)
 	if err != nil {

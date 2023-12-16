@@ -36,7 +36,7 @@ func (con *Storage) AddCode(gtin string,
 	// filter := bson.M{"_id": gtin}
 	// update := bson.M{"$push": bson.M{"codes": newCode}}
 
-	_, err := con.db.Collection("codes_"+gtin).InsertOne(context.TODO(), newCode)
+	_, err := con.db.Collection(gtin).InsertOne(context.TODO(), newCode)
 	if err != nil {
 		return err
 	}

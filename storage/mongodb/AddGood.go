@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Добавляет продукт в хранилище, возвращает все поля добавленного продукта
@@ -20,7 +19,6 @@ func (con *Storage) AddGood(good model.Good) (model.Good, error) {
 	}
 
 	good.Created = time.Now()
-	good.Codes = []model.Code{}
 
 	// Добавляем продукт в БД
 	objID, err := con.db.Collection(collectionGoods).InsertOne(context.TODO(), good)
@@ -28,12 +26,11 @@ func (con *Storage) AddGood(good model.Good) (model.Good, error) {
 		return model.Good{}, fmt.Errorf("%s: %w", op, err)
 	}
 
-	// Считываем с базы, что мы там записали, кроме массива кодов
+	// Считываем с базы, что мы там записали
 	filter := bson.D{{Key: "_id", Value: objID.InsertedID}}
-	opt := options.FindOne().SetProjection(bson.D{{Key: "codes", Value: 0}})
 
 	var res model.Good
-	err = con.db.Collection(collectionGoods).FindOne(context.TODO(), filter, opt).Decode(&res)
+	err = con.db.Collection(collectionGoods).FindOne(context.TODO(), filter).Decode(&res)
 	if err != nil {
 		return model.Good{}, fmt.Errorf("%s: %w", op, err)
 	}
