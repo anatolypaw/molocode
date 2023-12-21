@@ -19,6 +19,7 @@ func Router(storage *mongodb.Storage) http.Handler {
 
 	// Работа с кодами
 	r.Post("/v1/addCodeForPrint", AddCodeForPrint(storage))
+	r.Get("/v1/getCodeForPrint", GetCodeForPrint(storage))
 
 	r.Post("/v1/setCodeProduced", Test())
 	return r

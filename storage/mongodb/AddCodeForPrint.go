@@ -10,13 +10,9 @@ import (
 // Добавляет код к указанному по gtin продукту для последующей печати
 // Добавляет код, только если в свойствах этого продукта разрешено получение кодов для нанесения
 func (con *Storage) AddCodeForPrint(gtin, serial, crypto, sourceName string) error {
-	const op = "storage.mongodb.AddCode"
+	const op = "storage.mongodb.AddCodeForPrint"
 
-	// Валидация входных данных
-	if err := model.ValidateGtin(gtin); err != nil {
-		return fmt.Errorf("%s: %w", op, err)
-	}
-
+	// Валидируем данные о коде
 	if err := model.ValidateSerial(serial); err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
