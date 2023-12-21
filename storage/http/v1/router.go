@@ -13,10 +13,13 @@ func Router(storage *mongodb.Storage) http.Handler {
 
 	r.Use(middleware.Logger)
 
+	// Работа с продуктами
 	r.Post("/v1/addGood", AddGood(storage))
-	r.Get("/v1/getAllGoods", GetGood(storage))
+	r.Get("/v1/getAllGoods", GetGoods(storage))
 
-	r.Post("/v1/addCode", AddCode(storage))
+	// Работа с кодами
+	r.Post("/v1/addCodeForPrint", AddCodeForPrint(storage))
+
 	r.Post("/v1/setCodeProduced", Test())
 	return r
 }

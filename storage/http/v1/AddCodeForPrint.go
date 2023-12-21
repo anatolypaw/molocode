@@ -10,19 +10,11 @@ import (
 
 // Добавляет код в базу полученый из ГИС МТ для нанесения
 // метод POST
-// Принимает json
-/*	{
-		"sourceName":"1c service",
-		"gtin": "04600000000000",
-		"serial": "abcdef",
-		"crypto": "1234"
-	}
-*/
-
-func AddCode(s *mongodb.Storage) http.HandlerFunc {
+func AddCodeForPrint(s *mongodb.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "http.v1.AddCode"
 
+		// Принимает json структуру
 		type reqModel struct {
 			SourceName string
 			Gtin       string
@@ -30,13 +22,13 @@ func AddCode(s *mongodb.Storage) http.HandlerFunc {
 			Crypto     string
 		}
 
-		var rm reqModel
+		var m reqModel
 
 		// Декодируем полученный json
 		// Разрешить только поля, укаказанные в структуре
 		decoder := json.NewDecoder(r.Body)
 		decoder.DisallowUnknownFields()
-		err := decoder.Decode(&rm)
+		err := decoder.Decode(&m)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)
@@ -45,7 +37,7 @@ func AddCode(s *mongodb.Storage) http.HandlerFunc {
 			return
 		}
 		// Добавляем код
-		err = s.AddCode(rm.Gtin, rm.Serial, rm.Crypto, rm.SourceName)
+		err = s.AddCodeForPrint(m.Gtin, m.Serial, m.Crypto, m.SourceName)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)

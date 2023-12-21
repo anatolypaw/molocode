@@ -24,7 +24,7 @@ func AddMoreCodes(address string) {
 
 	start := time.Now()
 
-	count := 1_000_000
+	count := 10_000
 	fmt.Printf("%10d", 0)
 
 	client := &fasthttp.Client{}

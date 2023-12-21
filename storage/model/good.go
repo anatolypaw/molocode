@@ -43,14 +43,14 @@ type Code struct {
 
 // Продукт, gtin для каждого уникален.
 type Good struct {
-	Gtin        string    `bson:"_id"` // gtin продукта
-	Description string    `bson:""`    // описание продукта
-	StoreCount  uint      `bson:""`    // сколько хранить кодов
-	Get         bool      `bson:""`    // флаг, получать коды из 1с
-	Upload      bool      `bson:""`    // флаг, выгружать коды в 1с
-	Avaible     bool      `bson:""`    // флаг, выдавать ли кода на терминал
-	ShelfLife   uint      `bson:""`    // срок годности продукта. Это нужно для того, что бы на линии фасовки вычислять конечную дату и печатать её на упаковке
-	Created     time.Time `bson:""`    // Дата создания продукта
+	Gtin           string    `bson:"_id"` // gtin продукта
+	Description    string    `bson:""`    // описание продукта
+	StoreCount     uint      `bson:""`    // сколько хранить кодов
+	AcceptForPrint bool      `bson:""`    // флаг, что разрешено получение кодов для нанесения
+	Upload         bool      `bson:""`    // флаг, выгружать коды в 1с
+	Avaible        bool      `bson:""`    // флаг, выдавать ли кода на терминал
+	ShelfLife      uint      `bson:""`    // срок годности продукта. Это нужно для того, что бы на линии фасовки вычислять конечную дату и печатать её на упаковке
+	Created        time.Time `bson:""`    // Дата создания продукта
 }
 
 // Проверяет корректность всех полей

@@ -8,12 +8,12 @@ import (
 )
 
 // Возвращает все продукты из базы
-func GetGood(s *mongodb.Storage) http.HandlerFunc {
+func GetGoods(s *mongodb.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		const op = "http.v1.GetGood"
+		const op = "http.v1.GetAllGoods"
 
 		// Получаем продукты из хранилища
-		result, err := s.GetGood()
+		result, err := s.GetGoods("")
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)
