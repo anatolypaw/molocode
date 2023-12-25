@@ -13,11 +13,7 @@ func (con *Storage) AddCodeForPrint(gtin, serial, crypto, sourceName string) err
 	const op = "storage.mongodb.AddCodeForPrint"
 
 	// Валидируем данные о коде
-	if err := model.ValidateSerial(serial); err != nil {
-		return fmt.Errorf("%s: %w", op, err)
-	}
-
-	if err := model.ValidateCrypto(crypto); err != nil {
+	if err := model.ValidateSerialCrypto(serial, crypto); err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 
@@ -37,6 +33,7 @@ func (con *Storage) AddCodeForPrint(gtin, serial, crypto, sourceName string) err
 	newCode.Crypto = crypto
 	newCode.SourceInfo.Name = sourceName
 	newCode.SourceInfo.Time = time.Now()
+	newCode.ProducedInfo = []model.ProducedInfo{}
 
 	_, err = con.db.Collection(gtin).InsertOne(context.TODO(), newCode)
 	if err != nil {

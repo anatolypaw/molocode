@@ -69,13 +69,17 @@ func ValidateCrypto(crypto string) error {
 }
 
 // Проверяют корректность серийного номера, криптохвоста
-func (code *Code) ValidateSerialCrypto() error {
-	if err := ValidateSerial(code.Serial); err != nil {
+func ValidateSerialCrypto(serial, crypto string) error {
+	if err := ValidateSerial(serial); err != nil {
 		return err
 	}
 
-	if err := ValidateCrypto(code.Crypto); err != nil {
+	if err := ValidateCrypto(crypto); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (code *Code) ValidateSerialCrypto() error {
+	return ValidateSerialCrypto(code.Serial, code.Crypto)
 }

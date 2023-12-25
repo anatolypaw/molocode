@@ -22,7 +22,13 @@ func AddGood(address string) {
 		{"Недопустимые символы gtin     ", http.StatusBadRequest, `{"gtin": "0000000000000T", "description":"Описание"}`},
 		{"Битый json                    ", http.StatusBadRequest, `{"gtin": "00000000000000, "description":"Описание"`},
 		{"Некорректное имя ключа        ", http.StatusBadRequest, `{"abcd": "00000000000000", "escription":"Продукт 1"}`},
-		{"Продукт создается первый раз  ", http.StatusOK, `{"gtin": "00000000000000", "description":"Продукт 1", "acceptforprint": true, "sendforprint": true}`},
+		{"Продукт создается первый раз  ", http.StatusOK, `{
+															"gtin": "00000000000000", 
+															"description":"Продукт 1", 
+															"acceptforprint": true, 
+															"sendforprint": true, 
+															"allowproduce": true
+															}`},
 		{"Дубль продукта не создается   ", http.StatusBadRequest, `{"gtin": "00000000000000", "description":"Описание"}`},
 		{"Создается продукт 2 первый    ", http.StatusOK, `{"gtin": "00000000000002", "description":"Продукт 2", "acceptforprint": true}`},
 	}

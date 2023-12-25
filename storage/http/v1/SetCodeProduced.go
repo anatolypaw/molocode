@@ -39,16 +39,7 @@ func SetCodeProduced(s *storage.Storage) http.HandlerFunc {
 		}
 
 		// Передаем в хранилище
-		result, err := s.SetCodeProduced(m.Gtin, m.Serial, m.Crypto, m.Terminal, m.Discard)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			err = fmt.Errorf("%s: %w", op, err)
-			fmt.Fprint(w, err)
-			return
-		}
-
-		// Преобразуем ответ хранилища в json и передаем клиенту
-		resultJson, err := json.Marshal(result)
+		err = s.SetCodeProduced(m.Gtin, m.Serial, m.Crypto, m.Terminal, m.Proddate, m.Discard)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)
@@ -58,6 +49,6 @@ func SetCodeProduced(s *storage.Storage) http.HandlerFunc {
 
 		w.Header().Add("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, string(resultJson))
+		fmt.Fprint(w, "ok")
 	}
 }
