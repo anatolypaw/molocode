@@ -8,7 +8,7 @@ import (
 type Code struct {
 	Serial       string         `bson:"_id" json:",omitempty"` // Серийный номер, формат честного знака. Уникален для каждого кода с этим GTIN
 	Crypto       string         `bson:"" json:",omitempty"`    // Криптохвост, формат честного знака
-	SourceInfo   SourceInfo     `bson:"" json:",omitempty"`    // Информация об источнике поступления кода
+	SourceInfo   SourceInfo     `bson:"" json:",omitempty"`    // Информация об источнике поступления коданформация о линии, которая получила код
 	PrintInfo    PrintInfo      `bson:"" json:",omitempty"`    // Информация, связанная с печатью
 	ProducedInfo []ProducedInfo `bson:"" json:",omitempty"`    // Информация о его выпуске на линии фасовки
 	UploadInfo   UploadInfo     `bson:"" json:",omitempty"`    // Информация о выгрузке в 1с
@@ -19,7 +19,7 @@ type CodeForPrint struct {
 	Gtin    string
 	Serial  string
 	Crypto  string
-	PrintId uint64
+	PrintId uint32
 }
 
 // Когда и откуда был загружен код
@@ -38,7 +38,10 @@ type ProducedInfo struct {
 
 // Информация, связанная с печатью
 type PrintInfo struct {
-	PrintId uint64 `bson:"" json:",omitempty"` // Уникальный номер для кода.
+	Uploaded     bool      `bson:"" json:",omitempty"` // Флаг, что код был передан в терминал
+	UploadTime   time.Time `bson:"" json:",omitempty"` // Время выдачи кода из базы
+	TerminalName string    `bson:"" json:",omitempty"` // Имя линии, куда передан код
+	PrintId      uint32    `bson:"" json:",omitempty"` // Уникальный номер для кода, присваивается при выдаче кода из БД
 }
 
 // Информация о выгрузке в 1с

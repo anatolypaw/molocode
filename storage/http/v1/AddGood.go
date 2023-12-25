@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 	"storage/model"
-	"storage/mongodb"
+	"storage/storage"
 )
 
 // Добавляет продукт, проверяя корректность GTIN  и отсутсвие записи с таким gtin
@@ -18,7 +18,7 @@ import (
 	}
 */
 
-func AddGood(s *mongodb.Storage) http.HandlerFunc {
+func AddGood(s *storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "http.v1.AddGood"
 

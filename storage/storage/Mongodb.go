@@ -1,4 +1,4 @@
-package mongodb
+package storage
 
 import (
 	"context"
@@ -11,7 +11,8 @@ import (
 )
 
 const (
-	collectionGoods = "goods"
+	collectionGoods    = "goods"
+	collectionCounters = "counters"
 )
 
 type Storage struct {

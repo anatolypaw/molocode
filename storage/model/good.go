@@ -12,6 +12,7 @@ type Good struct {
 	Description    string    `bson:""`    // описание продукта
 	StoreCount     uint      `bson:""`    // сколько хранить кодов
 	AcceptForPrint bool      `bson:""`    // флаг, что разрешено получение кодов для нанесения
+	AllowProduce   bool      `bson:""`    // флаг, что разрешено производство
 	SendForPrint   bool      `bson:""`    // флаг, что продукт доступен для печати
 	Upload         bool      `bson:""`    // флаг, выгружать коды в 1с
 	Avaible        bool      `bson:""`    // флаг, выдавать ли кода на терминал

@@ -2,13 +2,13 @@ package v1
 
 import (
 	"net/http"
-	"storage/mongodb"
+	"storage/storage"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
 
-func Router(storage *mongodb.Storage) http.Handler {
+func Router(storage *storage.Storage) http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
@@ -21,6 +21,7 @@ func Router(storage *mongodb.Storage) http.Handler {
 	r.Post("/v1/addCodeForPrint", AddCodeForPrint(storage))
 	r.Get("/v1/getCodeForPrint", GetCodeForPrint(storage))
 
-	r.Post("/v1/setCodeProduced", Test())
+	r.Post("/v1/setCodeProduced", SetCodeProduced(storage))
+
 	return r
 }

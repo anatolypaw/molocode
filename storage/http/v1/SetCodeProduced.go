@@ -8,15 +8,19 @@ import (
 	"storage/storage"
 )
 
-// Возвращает код для печати
-func GetCodeForPrint(s *storage.Storage) http.HandlerFunc {
+// Устанавливает код произведенным
+func SetCodeProduced(s *storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		const op = "http.v1.GetCodeForPrint"
+		const op = "http.v1.SetCodeProduced"
 
 		// Принимает json структуру
 		type model struct {
 			Gtin     string
+			Serial   string
+			Crypto   string
 			Terminal string
+			Proddate string
+			Discard  bool
 		}
 
 		var m model
@@ -33,8 +37,9 @@ func GetCodeForPrint(s *storage.Storage) http.HandlerFunc {
 			fmt.Fprint(w, err)
 			return
 		}
-		// Получаем продукты из хранилища
-		result, err := s.GetCodeForPrint(m.Gtin, m.Terminal)
+
+		// Передаем в хранилище
+		result, err := s.SetCodeProduced(m.Gtin, m.Serial, m.Crypto, m.Terminal, m.Discard)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)

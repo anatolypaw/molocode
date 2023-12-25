@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"storage/mongodb"
+	"storage/storage"
 )
 
 // Возвращает все продукты из базы
-func GetGoods(s *mongodb.Storage) http.HandlerFunc {
+func GetGoods(s *storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "http.v1.GetAllGoods"
 

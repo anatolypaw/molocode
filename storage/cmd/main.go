@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	v1 "storage/http/v1"
-	"storage/mongodb"
+	"storage/storage"
 	"time"
 )
 
@@ -12,7 +12,7 @@ func main() {
 	log.Println("Starting storage service")
 
 	//Подключаемся к хранилищу
-	storage, err := mongodb.New("mongodb://localhost:27017/", "molocode")
+	storage, err := storage.New("mongodb://localhost:27017/", "molocode")
 	if err != nil {
 		log.Fatalln(err)
 	}

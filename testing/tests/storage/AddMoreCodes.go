@@ -24,7 +24,7 @@ func AddMoreCodes(address string) {
 
 	start := time.Now()
 
-	count := 10_000
+	count := 5
 	fmt.Printf("%10d", 0)
 
 	client := &fasthttp.Client{}
@@ -39,7 +39,7 @@ func AddMoreCodes(address string) {
 		}`, RandStringBytes(6), RandStringBytes(4))
 
 		req := fasthttp.AcquireRequest()
-		req.SetRequestURI(address + "/v1/addCode")
+		req.SetRequestURI(address + "/v1/addCodeForPrint")
 		req.Header.SetMethod("POST")
 		req.SetBodyString(json)
 

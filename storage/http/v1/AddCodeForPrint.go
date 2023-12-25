@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"storage/mongodb"
+	"storage/storage"
 )
 
 // Добавляет код в базу полученый из ГИС МТ для нанесения
 // метод POST
-func AddCodeForPrint(s *mongodb.Storage) http.HandlerFunc {
+func AddCodeForPrint(s *storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "http.v1.AddCode"
 

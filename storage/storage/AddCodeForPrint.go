@@ -1,4 +1,4 @@
-package mongodb
+package storage
 
 import (
 	"context"
@@ -22,15 +22,10 @@ func (con *Storage) AddCodeForPrint(gtin, serial, crypto, sourceName string) err
 	}
 
 	// Проверяем, существует ли такой продукт в БД
-	goods, err := con.GetGoods(gtin)
+	good, err := con.GetGood(gtin)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
-
-	if len(goods) != 1 {
-		return fmt.Errorf("%s: %s", op, "Продукт не найден")
-	}
-	good := goods[0]
 
 	// Проверяем, разрешено ли получение кодов для этого продукта
 	if !good.AcceptForPrint {
