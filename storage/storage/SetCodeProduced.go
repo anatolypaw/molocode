@@ -43,13 +43,12 @@ func (con *Storage) SetCodeProduced(gtin, serial, crypto, terminal, proddate str
 		return fmt.Errorf("%s: код GTIN: %s SN: %s не найден", op, gtin, serial)
 	}
 
-	// Проверяем, не произведен ли код уже
+	// Если код уже есть в бд, проверяем, отбракован ли или произведен он
 	if len(code.ProducedInfo) > 0 {
 		if code.ProducedInfo[len(code.ProducedInfo)-1].Discard == discard {
-			switch discard {
-			case false:
+			if discard {
 				return fmt.Errorf("%s: код уже был произведен", op)
-			case true:
+			} else {
 				return fmt.Errorf("%s: код уже отбракован", op)
 			}
 		}

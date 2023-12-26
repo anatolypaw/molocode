@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"storage/model"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -32,7 +33,7 @@ func (con *Storage) GetCodeForPrint(gtin, terminal string) (model.CodeForPrint, 
 	// Получаем код, пригодный для печати, ставим флаг в бд, что код получен, что бы заблокировать
 	// возможность получения этого кода в другом потоке
 	filter := bson.M{"printinfo.uploaded": false}
-	update := bson.M{"$set": bson.M{"printinfo.uploaded": true, "printinfo.terminalname": terminal}}
+	update := bson.M{"$set": bson.M{"printinfo.uploaded": true, "printinfo.terminalname": terminal, "printinfo.uploadtime": time.Now()}}
 	reqResult := con.db.Collection(gtin).FindOneAndUpdate(context.TODO(), filter, update)
 
 	var code model.Code
