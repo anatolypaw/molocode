@@ -10,7 +10,7 @@ import (
 // Добавляет код к указанному по gtin продукту для последующей печати
 // Добавляет код, только если в свойствах этого продукта разрешено получение кодов для нанесения
 func (con *Storage) AddCodeForPrint(gtin, serial, crypto, sourceName string) error {
-	const op = "storage.mongodb.AddCodeForPrint"
+	const op = "storage.AddCodeForPrint"
 
 	// Валидируем данные о коде
 	if err := model.ValidateSerialCrypto(serial, crypto); err != nil {

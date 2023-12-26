@@ -37,7 +37,7 @@ func (g *Good) Validate() error {
 
 // Проверка корректности gtin
 func ValidateGtin(gtin string) error {
-	const op = "entity.Good.ValidateGtin"
+	const op = "model.Good.ValidateGtin"
 
 	// Проверяем корректность gtin
 	matched, err := regexp.MatchString(`^0\d{13}$`, gtin)
@@ -55,7 +55,7 @@ func ValidateGtin(gtin string) error {
 
 // Проверка корректности описания продукта
 func ValidateDescription(description string) error {
-	const op = "entity.Good.ValidateDescription"
+	const op = "model.Good.ValidateDescription"
 
 	// Проверяем корректность описания
 	if len(description) == 0 {

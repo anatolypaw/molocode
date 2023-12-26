@@ -51,7 +51,7 @@ type UploadInfo struct {
 }
 
 func ValidateSerial(serial string) error {
-	const op = "entity.Good.ValidateSerial"
+	const op = "model.Code.ValidateSerial"
 	if len(serial) != 6 {
 		return fmt.Errorf("%s: Некорректная длинна серийного номера", op)
 	}
@@ -60,7 +60,7 @@ func ValidateSerial(serial string) error {
 }
 
 func ValidateCrypto(crypto string) error {
-	const op = "entity.Good.ValidateCrypto"
+	const op = "model.Code.ValidateCrypto"
 	if len(crypto) != 4 {
 		return fmt.Errorf("%s: Некорректная длинна криптохвоста", op)
 	}

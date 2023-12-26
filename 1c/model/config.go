@@ -4,6 +4,7 @@ package model
 type Config struct {
 	MainServer    Server
 	ReserveServer Server
+	Storage       Server
 }
 
 // Server структура для конфигурации сервера.

@@ -12,7 +12,7 @@ import (
 
 // Возвращает код к указанному gtin продукту для последующей печати
 func (con *Storage) GetCodeForPrint(gtin, terminal string) (model.CodeForPrint, error) {
-	const op = "storage.mongodb.GetCodeCodeForPrint"
+	const op = "storage.GetCodeCodeForPrint"
 
 	// Проверка имени терминала
 	if len(terminal) == 0 {

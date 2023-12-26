@@ -12,7 +12,7 @@ import (
 // Устанавливает информацию о производстве кода
 // Добавляет код, если его нет.
 func (con *Storage) SetCodeProduced(gtin, serial, crypto, terminal, proddate string, discard bool) error {
-	const op = "storage.mongodb.SetCodeProduced"
+	const op = "storage.SetCodeProduced"
 
 	// Валидируем данные о коде
 	if err := model.ValidateSerialCrypto(serial, crypto); err != nil {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"1c/internal/config"
+	"fmt"
 	"log"
 )
 
@@ -14,8 +15,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("Ошибка загрузки конфигурации: %v\n", err)
 	}
-	log.Println("Конфигурация:", configFile, "Основной сервер:", config.MainServer.Host, "Резервный:", config.ReserveServer.Host)
+
+	fmt.Printf("%#v", config)
 
 	// Запрашиваем продукты, для которых нужно запросить коды в 1с и количество кодов
-
 }

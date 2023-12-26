@@ -4,3 +4,6 @@ mainserver:
 reserveserver:
   host: "192.168.10.203"
   port: 80
+storage:
+  host: "localhost"
+  port: 80

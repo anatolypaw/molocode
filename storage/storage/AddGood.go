@@ -11,7 +11,7 @@ import (
 
 // Добавляет продукт в хранилище, возвращает все поля добавленного продукта
 func (con *Storage) AddGood(good model.Good) (model.Good, error) {
-	const op = "storage.mongodb.AddGood"
+	const op = "storage.AddGood"
 
 	err := good.Validate()
 	if err != nil {

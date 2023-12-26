@@ -13,7 +13,7 @@ func GetGoods(s *storage.Storage) http.HandlerFunc {
 		const op = "http.v1.GetAllGoods"
 
 		// Получаем продукты из хранилища
-		result, err := s.GetGoods("")
+		result, err := s.GetGoods()
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)

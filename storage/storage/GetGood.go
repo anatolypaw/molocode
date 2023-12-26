@@ -10,7 +10,7 @@ import (
 
 // Возвращает информацию о продукте. Если gtin пустой, возвращает все продукты
 func (con *Storage) GetGood(gtin string) (model.Good, error) {
-	const op = "storage.mongodb.GetGood"
+	const op = "storage.GetGood"
 
 	// Валидация gtin
 	if err := model.ValidateGtin(gtin); err != nil {
