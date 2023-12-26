@@ -1,0 +1,6 @@
+mainserver:
+  host: "192.168.10.23"
+  port: 80
+reserveserver:
+  host: "192.168.10.203"
+  port: 80
