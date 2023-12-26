@@ -19,21 +19,10 @@ func (con *Storage) GetCodeForPrint(gtin, terminal string) (model.CodeForPrint, 
 		return model.CodeForPrint{}, fmt.Errorf("%s: %s", op, "Не указано имя терминала")
 	}
 
-	// Проверяем, существует ли такой продукт в БД
-	good, err := con.GetGood(gtin)
-	if err != nil {
-		return model.CodeForPrint{}, fmt.Errorf("%s: %w", op, err)
-	}
-
-	// Проверяем, разрешена ли для этого продукта выдача кодов для печати
-	if !good.SendForPrint {
-		return model.CodeForPrint{}, fmt.Errorf("%s: %s", op, "Для этого продукта запрещена выдача кодов для нанесения")
-	}
-
-	// Получаем код, пригодный для печати, ставим флаг в бд, что код получен, что бы заблокировать
+	// Получаем код, пригодный для печати, меняем его доступность, что бы заблокировать
 	// возможность получения этого кода в другом потоке
-	filter := bson.M{"printinfo.uploaded": false}
-	update := bson.M{"$set": bson.M{"printinfo.uploaded": true, "printinfo.terminalname": terminal, "printinfo.uploadtime": time.Now()}}
+	filter := bson.M{"PrintInfo.Avaible": true}
+	update := bson.M{"$set": bson.M{"PrintInfo.Avaible": false, "PrintInfo.TerminalName": terminal, "PrintInfo.UploadTime": time.Now()}}
 	reqResult := con.db.Collection(gtin).FindOneAndUpdate(context.TODO(), filter, update)
 
 	var code model.Code
@@ -44,8 +33,8 @@ func (con *Storage) GetCodeForPrint(gtin, terminal string) (model.CodeForPrint, 
 	}
 
 	// Получаем PrintID для этого кода, инкрементируем счетчик кодов
-	filter = bson.M{"name": "NextPrintID"}
-	update = bson.M{"$inc": bson.M{"value": 1}}
+	filter = bson.M{"_id": "NextPrintID"}
+	update = bson.M{"$inc": bson.M{"Value": 1}}
 	opt := options.FindOneAndUpdate().SetUpsert(true)
 	reqResult = con.db.Collection(collectionCounters).FindOneAndUpdate(context.TODO(), filter, update, opt)
 
@@ -54,13 +43,15 @@ func (con *Storage) GetCodeForPrint(gtin, terminal string) (model.CodeForPrint, 
 
 	// Присваиваем коду PrintID
 	filter = bson.M{"_id": code.Serial}
-	update = bson.M{"$set": bson.M{"printinfo.printid": printID.Value}}
+	update = bson.M{"$set": bson.M{"PrintInfo.PrintID": printID.Value}}
 	updResult, err := con.db.Collection(gtin).UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		return model.CodeForPrint{}, fmt.Errorf("%s: %w", op, err)
 	}
 
-	if updResult.ModifiedCount != 1 {
+	// Когда PrintID == 0, то обновления происходить не будет, и будет ложная ошибка, по этому
+	// учитываем этот момент
+	if printID.Value > 0 && updResult.ModifiedCount != 1 {
 		return model.CodeForPrint{}, fmt.Errorf("%s: Ошибка установки PrintID для кода GTIN: %s serial: %s", op, gtin, code.Serial)
 	}
 

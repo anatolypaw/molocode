@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
-	v1 "storage/http/v1"
+	v1 "storage/httpServe/v1"
 	"storage/storage"
 	"time"
 )
@@ -24,8 +24,8 @@ func main() {
 		Addr:         ":80",
 		Handler:      v1.Router(storage),
 		IdleTimeout:  1 * time.Minute,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
+		ReadTimeout:  1 * time.Second,
+		WriteTimeout: 1 * time.Second,
 	}
 
 	log.Printf("Сервер веб интерфейса %s", s.Addr)

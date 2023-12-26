@@ -13,15 +13,6 @@ func GetReqCodeCount(s *storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "http.v1.GetReqCodeCount"
 
-		// Отдает json структуру
-		type model struct {
-			Gtin     string
-			Terminal string
-		}
-
-		var m model
-		_ = m
-
 		// Получаем продукты и требуемое количество кодов из хранилища
 		result, err := s.GetReqCodeCount()
 		if err != nil {

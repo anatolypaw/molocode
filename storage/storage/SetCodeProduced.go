@@ -47,9 +47,9 @@ func (con *Storage) SetCodeProduced(gtin, serial, crypto, terminal, proddate str
 	if len(code.ProducedInfo) > 0 {
 		if code.ProducedInfo[len(code.ProducedInfo)-1].Discard == discard {
 			if discard {
-				return fmt.Errorf("%s: код уже был произведен", op)
-			} else {
 				return fmt.Errorf("%s: код уже отбракован", op)
+			} else {
+				return fmt.Errorf("%s: код уже был произведен", op)
 			}
 		}
 	}
@@ -65,7 +65,7 @@ func (con *Storage) SetCodeProduced(gtin, serial, crypto, terminal, proddate str
 
 	// Добавляем к коду информацию о производстве
 	filter = bson.M{"_id": serial}
-	update := bson.M{"$addToSet": bson.M{"producedinfo": bson.M{"$each": prodInfo}}}
+	update := bson.M{"$addToSet": bson.M{"ProducedInfo": bson.M{"$each": prodInfo}}}
 	updResult, err := con.db.Collection(gtin).UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)

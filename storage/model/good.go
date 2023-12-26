@@ -8,16 +8,14 @@ import (
 
 // Продукт, gtin для каждого уникален.
 type Good struct {
-	Gtin           string    `bson:"_id"` // gtin продукта
-	Description    string    `bson:""`    // описание продукта
-	StoreCount     uint      `bson:""`    // сколько хранить кодов
-	AcceptForPrint bool      `bson:""`    // флаг, что разрешено получение кодов для нанесения
-	AllowProduce   bool      `bson:""`    // флаг, что разрешено производство
-	SendForPrint   bool      `bson:""`    // флаг, что продукт доступен для печати
-	Upload         bool      `bson:""`    // флаг, выгружать коды в 1с
-	Avaible        bool      `bson:""`    // флаг, выдавать ли кода на терминал
-	ShelfLife      uint      `bson:""`    // срок годности продукта. Это нужно для того, что бы на линии фасовки вычислять конечную дату и печатать её на упаковке
-	Created        time.Time `bson:""`    // Дата создания продукта
+	Gtin            string    `bson:"_id"`             // gtin продукта
+	Description     string    `bson:"Description"`     // описание продукта
+	StoreCount      uint      `bson:"StoreCount"`      // сколько хранить кодов
+	GetCodeForPrint bool      `bson:"GetCodeForPrint"` // флаг, что разрешено получение кодов для нанесения
+	AllowProduce    bool      `bson:"AllowProduce"`    // флаг, что разрешено производство
+	Upload          bool      `bson:"Upload"`          // флаг, выгружать коды в 1с
+	ShelfLife       uint      `bson:"ShelfLife"`       // срок годности продукта. Это нужно для того, что бы на линии фасовки вычислять конечную дату и печатать её на упаковке
+	Created         time.Time `bson:"Created"`         // Дата создания продукта
 }
 
 // Проверяет корректность всех полей

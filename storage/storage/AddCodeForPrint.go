@@ -24,15 +24,18 @@ func (con *Storage) AddCodeForPrint(gtin, serial, crypto, sourceName string) err
 	}
 
 	// Проверяем, разрешено ли получение кодов для этого продукта
-	if !good.AcceptForPrint {
+	if !good.GetCodeForPrint {
 		return fmt.Errorf("%s: %s", op, "Для этого продукта запрещено получение кодов для нанесения")
 	}
+
+	// TODO проверять, не превышено ли количество требуемых кодов для этого продукта
 
 	var newCode model.Code
 	newCode.Serial = serial
 	newCode.Crypto = crypto
 	newCode.SourceInfo.Name = sourceName
 	newCode.SourceInfo.Time = time.Now()
+	newCode.PrintInfo.Avaible = true
 	newCode.ProducedInfo = []model.ProducedInfo{}
 
 	_, err = con.db.Collection(gtin).InsertOne(context.TODO(), newCode)

@@ -19,7 +19,7 @@ func (con *Storage) GetGoods() ([]model.Good, error) {
 		return []model.Good{}, fmt.Errorf("%s: %w", op, err)
 	}
 
-	var result []model.Good
+	result := []model.Good{}
 
 	err = cursor.All(context.TODO(), &result)
 	if err != nil {
