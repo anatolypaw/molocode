@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"storage/storage"
+	"storage/internal/storage"
 )
 
 // Добавляет код в базу полученый из ГИС МТ для нанесения

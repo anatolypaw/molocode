@@ -2,7 +2,7 @@ package v1
 
 import (
 	"net/http"
-	"storage/storage"
+	"storage/internal/storage"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"

@@ -22,13 +22,12 @@ func (con *Storage) GetReqCodeCount() ([]model.CodeReq, error) {
 	result := []model.CodeReq{}
 
 	for _, good := range goods {
-
 		// Не требуется пополнение кодами, пропускаем
 		if !good.GetCodeForPrint {
 			continue
 		}
 
-		printAvaible, err := con.GetCountCodePrintAvaible(good.Gtin)
+		printAvaible, err := con.GetPrintAvaibleCountCode(good.Gtin)
 		if err != nil {
 			return []model.CodeReq{}, fmt.Errorf("%s: %w", op, err)
 		}

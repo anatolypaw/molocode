@@ -8,8 +8,8 @@ import (
 )
 
 // Возвращает количество доступных для печати кодов
-func (con *Storage) GetCountCodePrintAvaible(gtin string) (int64, error) {
-	const op = "storage.GetCountCodePrintAvaible"
+func (con *Storage) GetPrintAvaibleCountCode(gtin string) (int64, error) {
+	const op = "storage.GetPrintAvaibleCountCode"
 
 	filter := bson.M{"PrintInfo.Avaible": true}
 	avaible, err := con.db.Collection(gtin).CountDocuments(context.TODO(), filter)

@@ -5,6 +5,7 @@ type Config struct {
 	MainServer    Server
 	ReserveServer Server
 	Storage       Server
+	GetPeriod     int // период запроса кодов в секундах
 }
 
 // Server структура для конфигурации сервера.

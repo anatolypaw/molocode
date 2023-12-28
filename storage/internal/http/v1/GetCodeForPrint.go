@@ -5,30 +5,27 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"storage/model"
-	"storage/storage"
+	"storage/internal/storage"
 )
 
-// Добавляет продукт, проверяя корректность GTIN  и отсутсвие записи с таким gtin
-// метод POST
-// Принимает json
-/*	{
-		"gtin": "04600000000000",
-		"description": "Молоко 3,5%"
-	}
-*/
-
-func AddGood(s *storage.Storage) http.HandlerFunc {
+// Возвращает код для печати
+func GetCodeForPrint(s *storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		const op = "http.v1.AddGood"
+		const op = "http.v1.GetCodeForPrint"
 
-		good := model.Good{}
+		// Принимает json структуру
+		type model struct {
+			Gtin     string
+			Terminal string
+		}
+
+		var m model
 
 		// Декодируем полученный json
-		// Разрешить только поля, укаказанные в entity.Good
+		// Разрешить только поля, укаказанные в структуре
 		decoder := json.NewDecoder(r.Body)
 		decoder.DisallowUnknownFields()
-		err := decoder.Decode(&good)
+		err := decoder.Decode(&m)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)
@@ -36,9 +33,8 @@ func AddGood(s *storage.Storage) http.HandlerFunc {
 			fmt.Fprint(w, err)
 			return
 		}
-
-		// Добавляем продукт в хранилище
-		result, err := s.AddGood(good)
+		// Получаем продукты из хранилища
+		result, err := s.GetCodeForPrint(m.Gtin, m.Terminal)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)
@@ -46,7 +42,6 @@ func AddGood(s *storage.Storage) http.HandlerFunc {
 			return
 		}
 
-		// Хранилище возвращает информацию о продукте, которая была добавлена
 		// Преобразуем ответ хранилища в json и передаем клиенту
 		resultJson, err := json.Marshal(result)
 		if err != nil {

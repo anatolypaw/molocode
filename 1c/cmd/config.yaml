@@ -7,3 +7,4 @@ reserveserver:
 storage:
   host: "localhost"
   port: 80
+getperiod: 30

@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
-	v1 "storage/httpServe/v1"
-	"storage/storage"
+	v1 "storage/internal/http/v1"
+	"storage/internal/storage"
 	"time"
 )
 

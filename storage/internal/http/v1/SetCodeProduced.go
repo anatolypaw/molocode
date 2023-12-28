@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"storage/storage"
+	"storage/internal/storage"
 )
 
 // Устанавливает код произведенным
