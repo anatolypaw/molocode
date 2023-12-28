@@ -1,4 +1,4 @@
-package model
+package entity
 
 // Представляет продукт и количество кодов, которое нужно загрузить из 1с
 type CodeReq struct {

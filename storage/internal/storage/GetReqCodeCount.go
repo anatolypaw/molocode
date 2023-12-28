@@ -2,24 +2,24 @@ package storage
 
 import (
 	"fmt"
-	"storage/model"
+	"storage/entity"
 )
 
 // Возвращает код к указанному gtin продукту для последующей печати
-func (con *Storage) GetReqCodeCount() ([]model.CodeReq, error) {
+func (con *Storage) GetReqCodeCount() ([]entity.CodeReq, error) {
 	const op = "storage.GetReqCodeCount"
 
 	// Получаем все продукты
 	goods, err := con.GetGoods()
 	if err != nil {
-		return []model.CodeReq{}, fmt.Errorf("%s: %w", op, err)
+		return []entity.CodeReq{}, fmt.Errorf("%s: %w", op, err)
 	}
 
 	// Для продуктов, у которых разрешено получение кодов, подсчитываем, сколько
 	// кодов доступно для печати.
 	// если доступных меньше, чем должно храниться, добавляем этот продукт
 	// и требуемое количество кодов в реузльтат
-	result := []model.CodeReq{}
+	result := []entity.CodeReq{}
 
 	for _, good := range goods {
 		// Не требуется пополнение кодами, пропускаем
@@ -29,10 +29,10 @@ func (con *Storage) GetReqCodeCount() ([]model.CodeReq, error) {
 
 		printAvaible, err := con.GetPrintAvaibleCountCode(good.Gtin)
 		if err != nil {
-			return []model.CodeReq{}, fmt.Errorf("%s: %w", op, err)
+			return []entity.CodeReq{}, fmt.Errorf("%s: %w", op, err)
 		}
 
-		req := model.CodeReq{
+		req := entity.CodeReq{
 			Gtin:          good.Gtin,
 			RequiredCount: int64(good.StoreCount) - printAvaible,
 		}

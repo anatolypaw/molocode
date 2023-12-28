@@ -1,4 +1,4 @@
-package model
+package entity
 
 type Counters struct {
 	Name  string `bson:"_id"`

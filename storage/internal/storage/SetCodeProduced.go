@@ -3,7 +3,7 @@ package storage
 import (
 	"context"
 	"fmt"
-	"storage/model"
+	"storage/entity"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -15,7 +15,7 @@ func (con *Storage) SetCodeProduced(gtin, serial, crypto, terminal, proddate str
 	const op = "storage.SetCodeProduced"
 
 	// Валидируем данные о коде
-	if err := model.ValidateSerialCrypto(serial, crypto); err != nil {
+	if err := entity.ValidateSerialCrypto(serial, crypto); err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 
@@ -36,7 +36,7 @@ func (con *Storage) SetCodeProduced(gtin, serial, crypto, terminal, proddate str
 	// Получаем информацию о коде из бд.
 	filter := bson.M{"_id": serial}
 	reqResult := con.db.Collection(gtin).FindOne(context.TODO(), filter)
-	var code model.Code
+	var code entity.Code
 	reqResult.Decode(&code)
 
 	if code.Serial == "" {
@@ -54,7 +54,7 @@ func (con *Storage) SetCodeProduced(gtin, serial, crypto, terminal, proddate str
 		}
 	}
 
-	prodInfo := []model.ProducedInfo{
+	prodInfo := []entity.ProducedInfo{
 		{
 			Discard:  discard,
 			ProdDate: proddate,

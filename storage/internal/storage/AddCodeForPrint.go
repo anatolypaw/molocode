@@ -3,7 +3,7 @@ package storage
 import (
 	"context"
 	"fmt"
-	"storage/model"
+	"storage/entity"
 	"time"
 )
 
@@ -13,7 +13,7 @@ func (con *Storage) AddCodeForPrint(gtin, serial, crypto, sourceName string) err
 	const op = "storage.AddCodeForPrint"
 
 	// Валидируем данные о коде
-	if err := model.ValidateSerialCrypto(serial, crypto); err != nil {
+	if err := entity.ValidateSerialCrypto(serial, crypto); err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 
@@ -30,13 +30,13 @@ func (con *Storage) AddCodeForPrint(gtin, serial, crypto, sourceName string) err
 
 	// TODO проверять, не превышено ли количество требуемых кодов для этого продукта
 
-	var newCode model.Code
+	var newCode entity.Code
 	newCode.Serial = serial
 	newCode.Crypto = crypto
 	newCode.SourceInfo.Name = sourceName
 	newCode.SourceInfo.Time = time.Now()
 	newCode.PrintInfo.Avaible = true
-	newCode.ProducedInfo = []model.ProducedInfo{}
+	newCode.ProducedInfo = []entity.ProducedInfo{}
 
 	_, err = con.db.Collection(gtin).InsertOne(context.TODO(), newCode)
 	if err != nil {
