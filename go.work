@@ -1,8 +1,6 @@
 go 1.21.5
 
-use ./testing
-
 use (
-	./1c
-	./storage
+	.
+	./testing
 )
