@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
-	"molocode/internal/1c/config"
-	"molocode/internal/1c/httpClient"
+	"molocode/cmd/1c/internal/config"
+	"molocode/cmd/1c/internal/httpClient"
 )
 
 func main() {

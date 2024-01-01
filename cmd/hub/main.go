@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
-	v1 "molocode/internal/hub/http/v1"
-	"molocode/internal/hub/storage"
+	v1 "molocode/cmd/hub/internal/http/v1"
+	"molocode/cmd/hub/internal/storage"
 	"net/http"
 	"time"
 )

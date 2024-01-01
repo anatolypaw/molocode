@@ -3,18 +3,17 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
-	"molocode/internal/hub/storage"
+	"molocode/cmd/hub/internal/storage"
 	"net/http"
 )
 
-// Возвращает продукт и сколько кодов требуется для этого продукта до нормы
-// для получения из 1с
-func GetReqCodeCount(s *storage.Storage) http.HandlerFunc {
+// Возвращает все продукты из базы
+func GetGoods(s *storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		const op = "http.v1.GetReqCodeCount"
+		const op = "http.v1.GetAllGoods"
 
-		// Получаем продукты и требуемое количество кодов из хранилища
-		result, err := s.GetReqCodeCount()
+		// Получаем продукты из хранилища
+		result, err := s.GetGoods()
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)

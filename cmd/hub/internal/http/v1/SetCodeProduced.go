@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"molocode/internal/hub/storage"
+	"molocode/cmd/hub/internal/storage"
 	"net/http"
 )
 

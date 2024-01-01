@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"molocode/internal/hub/storage"
+	"molocode/cmd/hub/internal/storage"
 	"net/http"
 
 	"github.com/go-chi/chi"

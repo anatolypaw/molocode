@@ -4,25 +4,22 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"molocode/internal/hub/storage"
+	"molocode/cmd/hub/internal/storage"
 	"net/http"
 )
 
-// Добавляет код в базу полученый из ГИС МТ для нанесения
-// метод POST
-func AddCodeForPrint(s *storage.Storage) http.HandlerFunc {
+// Возвращает код для печати
+func GetCodeForPrint(s *storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		const op = "http.v1.AddCode"
+		const op = "http.v1.GetCodeForPrint"
 
 		// Принимает json структуру
-		type reqModel struct {
-			SourceName string
-			Gtin       string
-			Serial     string
-			Crypto     string
+		type model struct {
+			Gtin     string
+			Terminal string
 		}
 
-		var m reqModel
+		var m model
 
 		// Декодируем полученный json
 		// Разрешить только поля, укаказанные в структуре
@@ -36,8 +33,17 @@ func AddCodeForPrint(s *storage.Storage) http.HandlerFunc {
 			fmt.Fprint(w, err)
 			return
 		}
-		// Добавляем код
-		err = s.AddCodeForPrint(m.Gtin, m.Serial, m.Crypto, m.SourceName)
+		// Получаем продукты из хранилища
+		result, err := s.GetCodeForPrint(m.Gtin, m.Terminal)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			err = fmt.Errorf("%s: %w", op, err)
+			fmt.Fprint(w, err)
+			return
+		}
+
+		// Преобразуем ответ хранилища в json и передаем клиенту
+		resultJson, err := json.Marshal(result)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			err = fmt.Errorf("%s: %w", op, err)
@@ -47,6 +53,6 @@ func AddCodeForPrint(s *storage.Storage) http.HandlerFunc {
 
 		w.Header().Add("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, "ok")
+		fmt.Fprint(w, string(resultJson))
 	}
 }
