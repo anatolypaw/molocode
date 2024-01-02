@@ -24,7 +24,7 @@ func AddMoreCodes(address string) {
 
 	start := time.Now()
 
-	count := 5
+	count := 10000
 	fmt.Printf("%10d", 0)
 
 	client := &fasthttp.Client{}
@@ -58,7 +58,7 @@ func AddMoreCodes(address string) {
 
 	diff := end.UnixMilli() - start.UnixMilli()
 
-	fmt.Printf("%s: PASS - добавлено %d кодов, MS: %d, OPS: %.2f\n", op, count, diff, float64(count)/(float64(diff)/1000))
+	fmt.Printf("\n%s: PASS - добавлено %d кодов, MS: %d, OPS: %.2f\n", op, count, diff, float64(count)/(float64(diff)/1000))
 	fmt.Printf("========== %s PASSED ==========\n", op)
 
 }
