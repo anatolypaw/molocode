@@ -3,8 +3,7 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
-	"log"
-	"molocode/cmd/hub/internal/storage"
+	"hub/internal/storage"
 	"net/http"
 )
 
@@ -12,7 +11,7 @@ import (
 // метод POST
 func AddCodeForPrint(s *storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		const op = "http.v1.AddCode"
+		w.Header().Add("Content-Type", "application/json")
 
 		// Принимает json структуру
 		type reqModel struct {
@@ -31,22 +30,18 @@ func AddCodeForPrint(s *storage.Storage) http.HandlerFunc {
 		err := decoder.Decode(&m)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			err = fmt.Errorf("%s: %w", op, err)
-			log.Print(err)
-			fmt.Fprint(w, err)
+			fmt.Fprint(w, Response(false, err.Error(), nil))
 			return
 		}
+
 		// Добавляем код
 		err = s.AddCodeForPrint(m.Gtin, m.Serial, m.Crypto, m.SourceName)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			err = fmt.Errorf("%s: %w", op, err)
-			fmt.Fprint(w, err)
+			fmt.Fprint(w, Response(false, err.Error(), nil))
 			return
 		}
 
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, "ok")
+		fmt.Fprint(w, Response(true, "Код успешно добавлен для печати", m))
 	}
 }

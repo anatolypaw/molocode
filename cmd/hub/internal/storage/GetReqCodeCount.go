@@ -32,9 +32,12 @@ func (con *Storage) GetReqCodeCount() ([]entity.CodeReq, error) {
 			return []entity.CodeReq{}, fmt.Errorf("%s: %w", op, err)
 		}
 
-		req := entity.CodeReq{
-			Gtin:          good.Gtin,
-			RequiredCount: int64(good.StoreCount) - printAvaible,
+		var req entity.CodeReq
+		req.Gtin = good.Gtin
+		req.RequiredCount = int64(good.StoreCount) - printAvaible
+
+		if req.RequiredCount < 0 {
+			req.RequiredCount = 0
 		}
 
 		if !good.GetCodeForPrint {

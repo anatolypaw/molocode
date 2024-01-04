@@ -1,9 +1,9 @@
 package main
 
 import (
+	router "hub/internal/http-server"
+	"hub/internal/storage"
 	"log"
-	v1 "molocode/cmd/hub/internal/http/v1"
-	"molocode/cmd/hub/internal/storage"
 	"net/http"
 	"time"
 )
@@ -22,7 +22,7 @@ func main() {
 	//Запускаем сервер веб интерфейса
 	s := &http.Server{
 		Addr:         ":80",
-		Handler:      v1.Router(storage),
+		Handler:      router.Router(storage),
 		IdleTimeout:  1 * time.Minute,
 		ReadTimeout:  1 * time.Second,
 		WriteTimeout: 1 * time.Second,

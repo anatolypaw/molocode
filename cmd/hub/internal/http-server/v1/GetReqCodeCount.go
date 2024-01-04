@@ -1,9 +1,8 @@
 package v1
 
 import (
-	"encoding/json"
 	"fmt"
-	"molocode/cmd/hub/internal/storage"
+	"hub/internal/storage"
 	"net/http"
 )
 
@@ -11,28 +10,16 @@ import (
 // для получения из 1с
 func GetReqCodeCount(s *storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		const op = "http.v1.GetReqCodeCount"
+		w.Header().Add("Content-Type", "application/json")
 
 		// Получаем продукты и требуемое количество кодов из хранилища
 		result, err := s.GetReqCodeCount()
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			err = fmt.Errorf("%s: %w", op, err)
-			fmt.Fprint(w, err)
+			fmt.Fprint(w, Response(false, err.Error(), nil))
 			return
 		}
 
-		// Преобразуем ответ хранилища в json и передаем клиенту
-		resultJson, err := json.Marshal(result)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			err = fmt.Errorf("%s: %w", op, err)
-			fmt.Fprint(w, err)
-			return
-		}
-
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, string(resultJson))
+		fmt.Fprint(w, Response(true, "", result))
 	}
 }
