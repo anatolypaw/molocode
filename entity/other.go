@@ -3,6 +3,7 @@ package entity
 // Представляет продукт и количество кодов, которое нужно загрузить из 1с
 type CodeReq struct {
 	Gtin          string
+	Desc          string // Имя продукта
 	RequiredCount int64
 }
 

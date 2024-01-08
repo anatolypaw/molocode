@@ -1,8 +1,8 @@
 package config
 
 import (
+	"1c/entity"
 	"fmt"
-	"molocode/cmd/1c/internal/entity"
 	"os"
 
 	"gopkg.in/yaml.v2"

@@ -9,7 +9,7 @@ import (
 func (con *Storage) GetReqCodeCount() ([]entity.CodeReq, error) {
 	const op = "storage.GetReqCodeCount"
 
-	// Получаем все продукты
+	// Получаем все продукты, которые есть в базе
 	goods, err := con.GetGoods()
 	if err != nil {
 		return []entity.CodeReq{}, fmt.Errorf("%s: %w", op, err)
@@ -22,7 +22,7 @@ func (con *Storage) GetReqCodeCount() ([]entity.CodeReq, error) {
 	result := []entity.CodeReq{}
 
 	for _, good := range goods {
-		// Не требуется пополнение кодами, пропускаем
+		// В настройках продукта не стоит флаг, что для него нужно запрашивать коды, пропускаем
 		if !good.GetCodeForPrint {
 			continue
 		}
@@ -34,6 +34,7 @@ func (con *Storage) GetReqCodeCount() ([]entity.CodeReq, error) {
 
 		var req entity.CodeReq
 		req.Gtin = good.Gtin
+		req.Desc = good.Description
 		req.RequiredCount = int64(good.StoreCount) - printAvaible
 
 		if req.RequiredCount < 0 {

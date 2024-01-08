@@ -1,10 +1,10 @@
-mainserver:
-  host: "192.168.10.23"
+main_exchangemarks:
+  ip: "192.168.10.23"
   port: 80
-reserveserver:
-  host: "192.168.10.203"
+reserve_exchangemarks:
+  ip: "192.168.10.203"
   port: 80
-storage:
-  host: "localhost"
+hub:
+  ip: "localhost"
   port: 80
 getperiod: 30

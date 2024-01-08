@@ -3,5 +3,6 @@ go 1.21.5
 use (
 	.
 	./cmd/hub
+    ./cmd/1c
 	./testing
 )
