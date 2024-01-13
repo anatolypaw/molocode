@@ -34,7 +34,7 @@ func (con *Storage) GetReqCodeCount() ([]entity.CodeReq, error) {
 
 		var req entity.CodeReq
 		req.Gtin = good.Gtin
-		req.Desc = good.Description
+		req.Desc = good.Desc
 		req.RequiredCount = int64(good.StoreCount) - printAvaible
 
 		if req.RequiredCount < 0 {

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"hub/internal/storage"
+	"molocode/entity"
 	"net/http"
 )
 
@@ -14,12 +15,12 @@ func SetCodeProduced(s *storage.Storage) http.HandlerFunc {
 
 		// Принимает json структуру
 		type model struct {
-			Gtin     string
-			Serial   string
-			Crypto   string
-			Terminal string
-			Proddate string
-			Discard  bool
+			Gtin     string `json:"gtin"`
+			Serial   string `json:"serial"`
+			Crypto   string `json:"crypto"`
+			Terminal string `json:"terminal"`
+			Proddate string `json:"prod_date"`
+			Discard  bool   `json:"discard"`
 		}
 
 		var m model
@@ -31,7 +32,7 @@ func SetCodeProduced(s *storage.Storage) http.HandlerFunc {
 		err := decoder.Decode(&m)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, Response(false, err.Error(), nil))
+			fmt.Fprint(w, entity.ToResponse(false, err.Error(), nil))
 			return
 		}
 
@@ -39,10 +40,10 @@ func SetCodeProduced(s *storage.Storage) http.HandlerFunc {
 		err = s.SetCodeProduced(m.Gtin, m.Serial, m.Crypto, m.Terminal, m.Proddate, m.Discard)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, Response(false, err.Error(), nil))
+			fmt.Fprint(w, entity.ToResponse(false, err.Error(), nil))
 			return
 		}
 
-		fmt.Fprint(w, Response(true, "", nil))
+		fmt.Fprint(w, entity.ToResponse(true, "", nil))
 	}
 }

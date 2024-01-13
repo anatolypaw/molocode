@@ -19,10 +19,10 @@ func (con *Storage) GetCodeForPrint(gtin, terminal string) (entity.CodeForPrint,
 		return entity.CodeForPrint{}, fmt.Errorf("%s: %s", op, "Не указано имя терминала")
 	}
 
-	// Получаем код, пригодный для печати, меняем его доступность, что бы заблокировать
+	// Получаем код, пригодный для печати, ставим в бд флаг, что он больше не доступен для печати, что бы заблокировать
 	// возможность получения этого кода в другом потоке
-	filter := bson.M{"PrintInfo.Avaible": true}
-	update := bson.M{"$set": bson.M{"PrintInfo.Avaible": false, "PrintInfo.TerminalName": terminal, "PrintInfo.UploadTime": time.Now()}}
+	filter := bson.M{"print_info.avaible": true}
+	update := bson.M{"$set": bson.M{"print_info.avaible": false, "print_info.terminal_name": terminal, "print_info.upload_time": time.Now()}}
 	reqResult := con.db.Collection(gtin).FindOneAndUpdate(context.TODO(), filter, update)
 
 	var code entity.Code
@@ -33,8 +33,8 @@ func (con *Storage) GetCodeForPrint(gtin, terminal string) (entity.CodeForPrint,
 	}
 
 	// Получаем PrintID для этого кода, инкрементируем счетчик кодов
-	filter = bson.M{"_id": "NextPrintID"}
-	update = bson.M{"$inc": bson.M{"Value": 1}}
+	filter = bson.M{"_id": "next_print_id"}
+	update = bson.M{"$inc": bson.M{"value": 1}}
 	opt := options.FindOneAndUpdate().SetUpsert(true)
 	reqResult = con.db.Collection(collectionCounters).FindOneAndUpdate(context.TODO(), filter, update, opt)
 
@@ -43,7 +43,7 @@ func (con *Storage) GetCodeForPrint(gtin, terminal string) (entity.CodeForPrint,
 
 	// Присваиваем коду PrintID
 	filter = bson.M{"_id": code.Serial}
-	update = bson.M{"$set": bson.M{"PrintInfo.PrintID": printID.Value}}
+	update = bson.M{"$set": bson.M{"print_info.print_id": printID.Value}}
 	updResult, err := con.db.Collection(gtin).UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		return entity.CodeForPrint{}, fmt.Errorf("%s: %w", op, err)
@@ -52,7 +52,7 @@ func (con *Storage) GetCodeForPrint(gtin, terminal string) (entity.CodeForPrint,
 	// Когда PrintID == 0, то обновления происходить не будет, и будет ложная ошибка, по этому
 	// учитываем этот момент
 	if printID.Value > 0 && updResult.ModifiedCount != 1 {
-		return entity.CodeForPrint{}, fmt.Errorf("%s: Ошибка установки PrintID для кода GTIN: %s serial: %s", op, gtin, code.Serial)
+		return entity.CodeForPrint{}, fmt.Errorf("%s: Ошибка установки printID для кода GTIN: %s serial: %s", op, gtin, code.Serial)
 	}
 
 	// Приводим к нужной структуре
@@ -60,7 +60,7 @@ func (con *Storage) GetCodeForPrint(gtin, terminal string) (entity.CodeForPrint,
 	result.Gtin = gtin
 	result.Serial = code.Serial
 	result.Crypto = code.Crypto
-	result.PrintId = printID.Value
+	result.PrintID = printID.Value
 
 	return result, err
 }

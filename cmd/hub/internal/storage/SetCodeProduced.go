@@ -65,7 +65,7 @@ func (con *Storage) SetCodeProduced(gtin, serial, crypto, terminal, proddate str
 
 	// Добавляем к коду информацию о производстве
 	filter = bson.M{"_id": serial}
-	update := bson.M{"$addToSet": bson.M{"ProducedInfo": bson.M{"$each": prodInfo}}}
+	update := bson.M{"$addToSet": bson.M{"produced_info": bson.M{"$each": prodInfo}}}
 	updResult, err := con.db.Collection(gtin).UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)

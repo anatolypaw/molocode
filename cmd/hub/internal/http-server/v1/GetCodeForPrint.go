@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"hub/internal/storage"
+	"molocode/entity"
 	"net/http"
 )
 
@@ -15,8 +16,8 @@ func GetCodeForPrint(s *storage.Storage) http.HandlerFunc {
 
 		// Принимает json структуру
 		type model struct {
-			Gtin     string
-			Terminal string
+			Gtin     string `json:"gtin"`
+			Terminal string `json:"terminal"`
 		}
 
 		var m model
@@ -28,17 +29,17 @@ func GetCodeForPrint(s *storage.Storage) http.HandlerFunc {
 		err := decoder.Decode(&m)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, Response(false, err.Error(), nil))
+			fmt.Fprint(w, entity.ToResponse(false, err.Error(), nil))
 			return
 		}
 		// Получаем продукты из хранилища
 		result, err := s.GetCodeForPrint(m.Gtin, m.Terminal)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, Response(false, err.Error(), nil))
+			fmt.Fprint(w, entity.ToResponse(false, err.Error(), nil))
 			return
 		}
 
-		fmt.Fprint(w, Response(true, "", result))
+		fmt.Fprint(w, entity.ToResponse(true, "", result))
 	}
 }

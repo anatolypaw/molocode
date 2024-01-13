@@ -30,7 +30,7 @@ func AddGood(s *storage.Storage) http.HandlerFunc {
 		err := decoder.Decode(&good)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, Response(false, err.Error(), nil))
+			fmt.Fprint(w, entity.ToResponse(false, err.Error(), nil))
 			return
 		}
 
@@ -38,10 +38,10 @@ func AddGood(s *storage.Storage) http.HandlerFunc {
 		result, err := s.AddGood(good)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, Response(false, err.Error(), nil))
+			fmt.Fprint(w, entity.ToResponse(false, err.Error(), nil))
 			return
 		}
 
-		fmt.Fprint(w, Response(true, "Продукт добавлен", result))
+		fmt.Fprint(w, entity.ToResponse(true, "Продукт добавлен", result))
 	}
 }

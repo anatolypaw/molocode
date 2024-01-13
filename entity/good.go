@@ -8,14 +8,14 @@ import (
 
 // Продукт, gtin для каждого уникален.
 type Good struct {
-	Gtin            string    `bson:"_id"`             // gtin продукта
-	Description     string    `bson:"Description"`     // описание продукта
-	StoreCount      uint      `bson:"StoreCount"`      // сколько хранить кодов
-	GetCodeForPrint bool      `bson:"GetCodeForPrint"` // флаг, что разрешено получение кодов для нанесения
-	AllowProduce    bool      `bson:"AllowProduce"`    // флаг, что разрешено производство
-	Upload          bool      `bson:"Upload"`          // флаг, выгружать коды в 1с
-	ShelfLife       uint      `bson:"ShelfLife"`       // срок годности продукта. Это нужно для того, что бы на линии фасовки вычислять конечную дату и печатать её на упаковке
-	Created         time.Time `bson:"Created"`         // Дата создания продукта
+	Gtin            string    `bson:"_id" json:"gtin"`                              // gtin продукта
+	Desc            string    `bson:"desc" json:"desc"`                             // описание продукта
+	StoreCount      uint      `bson:"store_count" json:"store_count"`               // сколько хранить кодов
+	GetCodeForPrint bool      `bson:"get_code_for_print" json:"get_code_for_print"` // флаг, что разрешено получение кодов для нанесения
+	AllowProduce    bool      `bson:"allow_produce" json:"allow_produce"`           // флаг, что разрешено производство
+	Upload          bool      `bson:"upload" json:"upload"`                         // флаг, выгружать коды в 1с
+	ShelfLife       uint      `bson:"shelf_life" json:"shelf_life"`                 // срок годности продукта. Это нужно для того, что бы на линии фасовки вычислять конечную дату и печатать её на упаковке
+	Created         time.Time `bson:"created" json:"created"`                       // Дата создания продукта
 }
 
 // Проверяет корректность всех полей
@@ -26,7 +26,7 @@ func (g *Good) Validate() error {
 	}
 	// Description
 
-	if err := ValidateDescription(g.Description); err != nil {
+	if err := ValidateDescription(g.Desc); err != nil {
 		return err
 	}
 

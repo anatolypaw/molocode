@@ -3,6 +3,7 @@ package v1
 import (
 	"fmt"
 	"hub/internal/storage"
+	"molocode/entity"
 	"net/http"
 )
 
@@ -15,10 +16,10 @@ func GetAllGoods(s *storage.Storage) http.HandlerFunc {
 		result, err := s.GetGoods()
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, Response(false, err.Error(), nil))
+			fmt.Fprint(w, entity.ToResponse(false, err.Error(), nil))
 			return
 		}
 
-		fmt.Fprint(w, Response(true, "", result))
+		fmt.Fprint(w, entity.ToResponse(true, "", result))
 	}
 }

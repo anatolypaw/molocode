@@ -11,7 +11,7 @@ import (
 func (con *Storage) GetPrintAvaibleCountCode(gtin string) (int64, error) {
 	const op = "storage.GetPrintAvaibleCountCode"
 
-	filter := bson.M{"PrintInfo.Avaible": true}
+	filter := bson.M{"print_info.avaible": true}
 	avaible, err := con.db.Collection(gtin).CountDocuments(context.TODO(), filter)
 	if err != nil {
 		return 0, fmt.Errorf("%s: %w", op, err)
