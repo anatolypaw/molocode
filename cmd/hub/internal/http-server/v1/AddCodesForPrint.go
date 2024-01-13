@@ -10,7 +10,7 @@ import (
 
 // Добавляет код в базу полученый из ГИС МТ для нанесения
 // метод POST
-func AddCodeForPrint(s *storage.Storage) http.HandlerFunc {
+func AddCodesForPrint(s *storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 

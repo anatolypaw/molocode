@@ -23,7 +23,7 @@ func Router(storage *storage.Storage) http.Handler {
 	r.Post("/v1/setCodeProduced", v1.SetCodeProduced(storage))
 
 	// Получение и выгрузка в 1с
-	r.Post("/v1/addCodeForPrint", v1.AddCodeForPrint(storage))
+	r.Post("/v1/addCodeForPrint", v1.AddCodesForPrint(storage))
 	r.Get("/v1/getReqCodeCount", v1.GetReqCodeCount(storage)) // Возвращает gtin и сколько кодов не хватает
 
 	r.Get("/test", v1.Test())

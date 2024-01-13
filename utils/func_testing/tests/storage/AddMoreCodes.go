@@ -32,7 +32,7 @@ func AddMoreCodes(address string) {
 	for i := 0; i < count; i++ {
 		//time.Sleep(1 * time.Second)
 		json := fmt.Sprintf(`{
-			"sourceName":"1c service",
+			"source_name":"1c service",
 			"gtin": "00000000000000",
 			"serial": "%s",
 			"crypto": "%s"

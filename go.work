@@ -4,5 +4,5 @@ use (
 	.
 	./cmd/hub
     ./cmd/gatexch
-	./testing
+	./utils/func_testing
 )
