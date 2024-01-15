@@ -1,8 +1,0 @@
-go 1.21.5
-
-use (
-	.
-	./cmd/hub
-    ./cmd/gatexch
-	./utils/func_testing
-)

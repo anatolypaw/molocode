@@ -1,15 +1,19 @@
-package entities
+package entity
 
 import "time"
 
+type FullCode struct {
+	Code
+	SourceInfo   SourceInfo
+	PrintInfo    PrintInfo
+	ProducedInfo []ProducedInfo
+	UploadInfo   UploadInfo
+}
+
 type Code struct {
-	Gtin         *Gtin
-	Serial       *Serial
-	Crypto       *Crypto
-	SourceInfo   *SourceInfo
-	PrintInfo    *PrintInfo
-	ProducedInfo *[]ProducedInfo
-	UploadInfo   *UploadInfo
+	Gtin   Gtin
+	Serial Serial
+	Crypto Crypto
 }
 
 // Когда и откуда был загружен код

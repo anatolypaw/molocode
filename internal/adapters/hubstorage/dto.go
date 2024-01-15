@@ -1,9 +1,9 @@
-package entities
+package hubstorage
 
 import "time"
 
-type Good struct {
-	Gtin            *Gtin
+type Good_dto struct {
+	Gtin            string `bson:"_id"`
 	StoreCount      uint
 	GetCodeForPrint bool
 	AllowProduce    bool
