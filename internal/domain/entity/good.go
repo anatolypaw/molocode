@@ -4,6 +4,7 @@ import "time"
 
 type Good struct {
 	Gtin            Gtin
+	Desc            string
 	StoreCount      uint
 	GetCodeForPrint bool
 	AllowProduce    bool

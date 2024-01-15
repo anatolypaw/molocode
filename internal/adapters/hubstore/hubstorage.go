@@ -1,9 +1,8 @@
-package hubstorage
+package hubstore
 
 import (
 	"context"
 	"fmt"
-	"molocode/internal/domain/entity"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -21,7 +20,7 @@ type hubStorage struct {
 }
 
 // Возвращает подключение к базе данных
-func NewHubStorage(path string, dbname string) (*hubStorage, error) {
+func New(path string, dbname string) (*hubStorage, error) {
 	const op = "hubstorage.NewHubStorage"
 	opts := options.Client().ApplyURI(path).SetTimeout(1000 * time.Millisecond)
 
@@ -42,24 +41,4 @@ func NewHubStorage(path string, dbname string) (*hubStorage, error) {
 	}
 
 	return &con, nil
-}
-
-// Добавляет продукт в хранилище, возвращает все поля добавленного продукта
-func (hs *hubStorage) AddGood(g entity.Good) error {
-	const op = "hubstorage.AddGood"
-	// MAPPING
-	mappedGood := Good_dto{
-		Gtin:            string(g.Gtin),
-		StoreCount:      g.StoreCount,
-		GetCodeForPrint: g.GetCodeForPrint,
-		AllowProduce:    g.AllowProduce,
-		Upload:          g.Upload,
-		CreatedAt:       g.CreatedAt,
-	}
-	_, err := hs.db.Collection(collectionGoods).InsertOne(context.TODO(), mappedGood)
-	if err != nil {
-		return fmt.Errorf("%s: %w", op, err)
-	}
-
-	return nil
 }

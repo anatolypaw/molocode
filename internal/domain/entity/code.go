@@ -38,7 +38,7 @@ type PrintInfo struct {
 	PrintID    uint32    // Уникальный номер для кода, присваивается при выдаче кода из БД
 }
 
-// Информация о выгрузке в 1с
+// Информация о выгрузке во внешнюю систему
 type UploadInfo struct {
 	Time   time.Time
 	Status string

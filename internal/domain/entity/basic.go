@@ -15,21 +15,21 @@ func (g Gtin) Validate() error {
 		return err
 	}
 	if !matched {
-		return errors.New("некорректный формат")
+		return errors.New("некорректный формат gtin")
 	}
 	return nil
 }
 
 func (s Serial) Validate() error {
 	if len(s) != 6 {
-		return errors.New("некорректная длинна")
+		return errors.New("некорректная длинна serial")
 	}
 	return nil
 }
 
 func (s Crypto) Validate() error {
 	if len(s) != 4 {
-		return errors.New("некорректная длинна")
+		return errors.New("некорректная длинна crypto")
 	}
 	return nil
 }
