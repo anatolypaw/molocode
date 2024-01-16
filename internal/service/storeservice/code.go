@@ -1,20 +1,20 @@
-package hubservice
+package storeservice
 
 import (
 	"fmt"
-	"molocode/internal/domain/entity"
+	"molocode/internal/entity"
 	"time"
 )
 
 // Добавляет код
-func (hs *hubService) AddCodeForPrint(code entity.Code, sourceName string) error {
+func (hs *storeService) AddCodeForPrint(code entity.Code, sourceName string) error {
 	err := code.Validate()
 	if err != nil {
 		return err
 	}
 
 	// Проверяем, существует ли такой продукт
-	good, err := hs.storage.GetGood(code.Gtin)
+	good, err := hs.store.GetGood(code.Gtin)
 	if err != nil {
 		return err
 	}
@@ -35,7 +35,7 @@ func (hs *hubService) AddCodeForPrint(code entity.Code, sourceName string) error
 		},
 	}
 
-	err = hs.storage.AddCode(mappedCode)
+	err = hs.store.AddCode(mappedCode)
 	if err != nil {
 		return err
 	}
@@ -43,6 +43,6 @@ func (hs *hubService) AddCodeForPrint(code entity.Code, sourceName string) error
 	return nil
 }
 
-func (hs *hubService) GetCodeForPrint(gtin entity.Gtin, sourceName string) error {
+func (hs *storeService) GetCodeForPrint(gtin entity.Gtin, sourceName string) error {
 	return nil
 }

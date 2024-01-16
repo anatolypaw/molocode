@@ -3,19 +3,19 @@ package main
 import (
 	"fmt"
 	"log"
-	"molocode/internal/adapters/hubstore_mongo"
-	"molocode/internal/domain/service/hubservice"
+	"molocode/internal/service/storeservice"
+	"molocode/internal/service/storeservice/mongo"
 )
 
 func main() {
-	storage, err := hubstore_mongo.New("mongodb://localhost:27017/", "molocode")
+	mongostore, err := mongo.New("mongodb://localhost:27017/", "molocode")
 	if err != nil {
 		log.Panic(err)
 	}
 
-	hub := hubservice.NewHubService(storage)
+	storeservice := storeservice.NewStoreService(mongostore)
 
-	goods, _ := hub.GetAllGoods()
+	goods, _ := storeservice.GetAllGoods()
 	fmt.Printf("%v", goods)
 
 }

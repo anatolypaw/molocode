@@ -1,7 +1,7 @@
-package hubstore_mongo
+package mongo
 
 import (
-	"molocode/internal/domain/entity"
+	"molocode/internal/entity"
 	"time"
 )
 

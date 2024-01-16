@@ -1,30 +1,30 @@
-package hubservice
+package storeservice
 
 import (
-	"molocode/internal/domain/entity"
+	"molocode/internal/entity"
 	"time"
 )
 
 // Добавляет (создает) продукт. Ошбика, если такой уже есть
-func (hs *hubService) AddGood(good entity.Good) error {
+func (hs *storeService) AddGood(good entity.Good) error {
 	err := good.Gtin.Validate()
 	if err != nil {
 		return err
 	}
 	good.CreatedAt = time.Now()
-	return hs.storage.AddGood(good)
+	return hs.store.AddGood(good)
 }
 
 // Возвращает продукт по GTIN
-func (hs *hubService) GetGood(gtin entity.Gtin) (entity.Good, error) {
+func (hs *storeService) GetGood(gtin entity.Gtin) (entity.Good, error) {
 	err := gtin.Validate()
 	if err != nil {
 		return entity.Good{}, err
 	}
-	return hs.storage.GetGood(gtin)
+	return hs.store.GetGood(gtin)
 }
 
 // Возвращает все продукты
-func (hs *hubService) GetAllGoods() ([]entity.Good, error) {
-	return hs.storage.GetAllGoods()
+func (hs *storeService) GetAllGoods() ([]entity.Good, error) {
+	return hs.store.GetAllGoods()
 }

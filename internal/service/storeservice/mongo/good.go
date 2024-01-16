@@ -1,15 +1,15 @@
-package hubstore_mongo
+package mongo
 
 import (
 	"context"
 	"fmt"
-	"molocode/internal/domain/entity"
+	"molocode/internal/entity"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
 
 // Добавляет продукт в хранилище, возвращает все поля добавленного продукта
-func (hs *hubStore) AddGood(g entity.Good) error {
+func (hs *Store) AddGood(g entity.Good) error {
 	const op = "hubstore.AddGood"
 	// MAPPING
 	mappedGood := Good_dto{
@@ -29,7 +29,7 @@ func (hs *hubStore) AddGood(g entity.Good) error {
 	return nil
 }
 
-func (hs *hubStore) GetGood(gtin entity.Gtin) (entity.Good, error) {
+func (hs *Store) GetGood(gtin entity.Gtin) (entity.Good, error) {
 	const op = "hubstore.GetGood"
 
 	filter := bson.M{"_id": gtin}
@@ -46,7 +46,7 @@ func (hs *hubStore) GetGood(gtin entity.Gtin) (entity.Good, error) {
 	return result, nil
 }
 
-func (hs *hubStore) GetAllGoods() ([]entity.Good, error) {
+func (hs *Store) GetAllGoods() ([]entity.Good, error) {
 	const op = "hubstore.GetAllGoods"
 
 	filter := bson.M{}

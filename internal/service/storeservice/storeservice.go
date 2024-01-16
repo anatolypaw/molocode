@@ -1,10 +1,10 @@
-package hubservice
+package storeservice
 
 import (
-	"molocode/internal/domain/entity"
+	"molocode/internal/entity"
 )
 
-type HubStore interface {
+type Store interface {
 	AddGood(good entity.Good) error
 	GetGood(entity.Gtin) (entity.Good, error)
 	GetAllGoods() ([]entity.Good, error)
@@ -13,10 +13,10 @@ type HubStore interface {
 }
 
 // Проверяет входные данные, работает с хранилищем
-type hubService struct {
-	storage HubStore
+type storeService struct {
+	store Store
 }
 
-func NewHubService(storage HubStore) *hubService {
-	return &hubService{storage: storage}
+func NewStoreService(storage Store) *storeService {
+	return &storeService{store: storage}
 }
