@@ -3,7 +3,7 @@ package entity
 import "time"
 
 type Good struct {
-	Gtin            Gtin
+	Gtin            string
 	Desc            string
 	StoreCount      uint
 	GetCodeForPrint bool

@@ -6,8 +6,8 @@ import (
 )
 
 // Добавляет (создает) продукт. Ошбика, если такой уже есть
-func (hs *storeService) AddGood(good entity.Good) error {
-	err := good.Gtin.Validate()
+func (hs *Service) AddGood(good entity.Good) error {
+	err := entity.ValidateGtin(good.Gtin)
 	if err != nil {
 		return err
 	}
@@ -16,8 +16,8 @@ func (hs *storeService) AddGood(good entity.Good) error {
 }
 
 // Возвращает продукт по GTIN
-func (hs *storeService) GetGood(gtin entity.Gtin) (entity.Good, error) {
-	err := gtin.Validate()
+func (hs *Service) GetGood(gtin string) (entity.Good, error) {
+	err := entity.ValidateGtin(gtin)
 	if err != nil {
 		return entity.Good{}, err
 	}
@@ -25,6 +25,6 @@ func (hs *storeService) GetGood(gtin entity.Gtin) (entity.Good, error) {
 }
 
 // Возвращает все продукты
-func (hs *storeService) GetAllGoods() ([]entity.Good, error) {
+func (hs *Service) GetAllGoods() ([]entity.Good, error) {
 	return hs.store.GetAllGoods()
 }

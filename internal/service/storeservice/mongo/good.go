@@ -1,7 +1,6 @@
 package mongo
 
 import (
-	"context"
 	"fmt"
 	"molocode/internal/entity"
 
@@ -9,19 +8,19 @@ import (
 )
 
 // Добавляет продукт в хранилище, возвращает все поля добавленного продукта
-func (hs *Store) AddGood(g entity.Good) error {
+func (s *Store) AddGood(g entity.Good) error {
 	const op = "hubstore.AddGood"
 	// MAPPING
 	mappedGood := Good_dto{
-		Gtin:            string(g.Gtin),
+		Gtin:            g.Gtin,
 		Desc:            g.Desc,
 		StoreCount:      g.StoreCount,
 		GetCodeForPrint: g.GetCodeForPrint,
 		AllowProduce:    g.AllowProduce,
 		Upload:          g.Upload,
-		CreateAt:        g.CreatedAt,
+		CreatedAt:       g.CreatedAt,
 	}
-	_, err := hs.db.Collection(collectionGoods).InsertOne(context.TODO(), mappedGood)
+	_, err := s.db.Collection(collectionGoods).InsertOne(s.ctx, mappedGood)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
@@ -29,35 +28,63 @@ func (hs *Store) AddGood(g entity.Good) error {
 	return nil
 }
 
-func (hs *Store) GetGood(gtin entity.Gtin) (entity.Good, error) {
-	const op = "hubstore.GetGood"
+func (s *Store) GetGood(gtin string) (entity.Good, error) {
+	const op = "mongo.GetGood"
 
 	filter := bson.M{"_id": gtin}
-	reqResult := hs.db.Collection(collectionGoods).FindOne(context.TODO(), filter)
+	reqResult := s.db.Collection(collectionGoods).FindOne(s.ctx, filter)
 
-	var result entity.Good
-	err := reqResult.Decode(&result)
+	var good entity.Good
+	err := reqResult.Decode(&good)
 	if err != nil {
 		return entity.Good{}, fmt.Errorf("%s: %w", op, err)
 	}
-	if result.Gtin == "" {
+	if good.Gtin == "" {
 		return entity.Good{}, fmt.Errorf("%s: Продукт не найден", op)
 	}
-	return result, nil
+
+	// MAPPING
+	mappedGood := entity.Good{
+		Gtin:            string(good.Gtin),
+		Desc:            good.Desc,
+		StoreCount:      good.StoreCount,
+		GetCodeForPrint: good.GetCodeForPrint,
+		AllowProduce:    good.AllowProduce,
+		Upload:          good.Upload,
+		CreatedAt:       good.CreatedAt,
+	}
+
+	return mappedGood, nil
 }
 
-func (hs *Store) GetAllGoods() ([]entity.Good, error) {
-	const op = "hubstore.GetAllGoods"
+func (s *Store) GetAllGoods() ([]entity.Good, error) {
+	const op = "mongo.GetAllGoods"
 
 	filter := bson.M{}
-	cursor, err := hs.db.Collection(collectionGoods).Find(context.TODO(), filter)
+	cursor, err := s.db.Collection(collectionGoods).Find(s.ctx, filter)
 	if err != nil {
 		return []entity.Good{}, fmt.Errorf("%s: %w", op, err)
 	}
-	result := []entity.Good{}
-	err = cursor.All(context.TODO(), &result)
+
+	goods := []Good_dto{}
+	err = cursor.All(s.ctx, &goods)
 	if err != nil {
 		return []entity.Good{}, fmt.Errorf("%s: %w", op, err)
 	}
-	return result, nil
+
+	// MAPPING
+	mappedGoods := []entity.Good{}
+	for _, good := range goods {
+		mappedGoods = append(mappedGoods, entity.Good{
+			Gtin:            string(good.Gtin),
+			Desc:            good.Desc,
+			StoreCount:      good.StoreCount,
+			GetCodeForPrint: good.GetCodeForPrint,
+			AllowProduce:    good.AllowProduce,
+			Upload:          good.Upload,
+			CreatedAt:       good.CreatedAt,
+		})
+	}
+
+	return mappedGoods, nil
 }

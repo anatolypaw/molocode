@@ -17,6 +17,7 @@ const (
 type Store struct {
 	client *mongo.Client
 	db     *mongo.Database
+	ctx    context.Context
 }
 
 // Возвращает подключение к базе данных

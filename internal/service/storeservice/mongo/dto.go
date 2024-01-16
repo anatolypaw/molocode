@@ -12,7 +12,7 @@ type Good_dto struct {
 	GetCodeForPrint bool
 	AllowProduce    bool
 	Upload          bool
-	CreateAt        time.Time
+	CreatedAt       time.Time
 }
 
 type Code_dto struct {

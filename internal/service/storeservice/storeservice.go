@@ -4,19 +4,19 @@ import (
 	"molocode/internal/entity"
 )
 
-type Store interface {
+type IStore interface {
 	AddGood(good entity.Good) error
-	GetGood(entity.Gtin) (entity.Good, error)
+	GetGood(gtin string) (entity.Good, error)
 	GetAllGoods() ([]entity.Good, error)
 
 	AddCode(entity.FullCode) error
 }
 
 // Проверяет входные данные, работает с хранилищем
-type storeService struct {
-	store Store
+type Service struct {
+	store IStore
 }
 
-func NewStoreService(storage Store) *storeService {
-	return &storeService{store: storage}
+func NewStoreService(storage IStore) *Service {
+	return &Service{store: storage}
 }

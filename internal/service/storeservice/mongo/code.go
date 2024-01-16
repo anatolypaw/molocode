@@ -1,12 +1,11 @@
 package mongo
 
 import (
-	"context"
 	"fmt"
 	"molocode/internal/entity"
 )
 
-func (hs *Store) AddCode(code entity.FullCode) error {
+func (s *Store) AddCode(code entity.FullCode) error {
 	const op = "hubstorage.AddCode"
 
 	// MAPPING
@@ -19,7 +18,7 @@ func (hs *Store) AddCode(code entity.FullCode) error {
 		UploadInfo:   code.UploadInfo,
 	}
 
-	_, err := hs.db.Collection(string(code.Gtin)).InsertOne(context.TODO(), mappedCode)
+	_, err := s.db.Collection(string(code.Gtin)).InsertOne(s.ctx, mappedCode)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}

@@ -7,7 +7,7 @@ import (
 )
 
 // Добавляет код
-func (hs *storeService) AddCodeForPrint(code entity.Code, sourceName string) error {
+func (hs *Service) AddCodeForPrint(code entity.Code, sourceName string) error {
 	err := code.Validate()
 	if err != nil {
 		return err
@@ -43,6 +43,6 @@ func (hs *storeService) AddCodeForPrint(code entity.Code, sourceName string) err
 	return nil
 }
 
-func (hs *storeService) GetCodeForPrint(gtin entity.Gtin, sourceName string) error {
+func (hs *Service) GetCodeForPrint(gtin string, sourceName string) error {
 	return nil
 }

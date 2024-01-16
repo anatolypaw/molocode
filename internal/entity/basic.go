@@ -5,12 +5,8 @@ import (
 	"regexp"
 )
 
-type Gtin string
-type Serial string
-type Crypto string
-
-func (g Gtin) Validate() error {
-	matched, err := regexp.MatchString(`^0\d{13}$`, string(g))
+func ValidateGtin(gtin string) error {
+	matched, err := regexp.MatchString(`^0\d{13}$`, gtin)
 	if err != nil {
 		return err
 	}
@@ -20,15 +16,15 @@ func (g Gtin) Validate() error {
 	return nil
 }
 
-func (s Serial) Validate() error {
-	if len(s) != 6 {
+func ValidateSerial(serial string) error {
+	if len(serial) != 6 {
 		return errors.New("некорректная длинна serial")
 	}
 	return nil
 }
 
-func (s Crypto) Validate() error {
-	if len(s) != 4 {
+func ValidateCrypto(crypto string) error {
+	if len(crypto) != 4 {
 		return errors.New("некорректная длинна crypto")
 	}
 	return nil

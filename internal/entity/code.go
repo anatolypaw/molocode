@@ -11,23 +11,23 @@ type FullCode struct {
 }
 
 type Code struct {
-	Gtin   Gtin
-	Serial Serial
-	Crypto Crypto
+	Gtin   string
+	Serial string
+	Crypto string
 }
 
 func (code *Code) Validate() error {
-	err := code.Gtin.Validate()
+	err := ValidateGtin(code.Gtin)
 	if err != nil {
 		return err
 	}
 
-	err = code.Serial.Validate()
+	err = ValidateSerial(code.Serial)
 	if err != nil {
 		return err
 	}
 
-	err = code.Crypto.Validate()
+	err = ValidateCrypto(code.Crypto)
 	if err != nil {
 		return err
 	}

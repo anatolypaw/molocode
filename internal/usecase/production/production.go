@@ -1,9 +1,5 @@
 package production_usecase
 
-import (
-	"molocode/internal/entity"
-)
-
 type storeService interface {
 }
 
@@ -12,7 +8,7 @@ type usecase struct {
 }
 
 // Возвращает код для нанесения на упаковку
-func (u usecase) GetCodeForPrint(gtin entity.Gtin) error {
+func (u usecase) GetCodeForPrint(gtin string) error {
 	return nil
 }
 
