@@ -1,4 +1,4 @@
-package hubstore
+package hubstore_mongo
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"molocode/internal/domain/entity"
 )
 
-func (hs *hubStorage) AddCode(code entity.FullCode) error {
+func (hs *hubStore) AddCode(code entity.FullCode) error {
 	const op = "hubstorage.AddCode"
 
 	// MAPPING

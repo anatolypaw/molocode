@@ -1,4 +1,4 @@
-package hubstore
+package hubstore_mongo
 
 import (
 	"molocode/internal/domain/entity"

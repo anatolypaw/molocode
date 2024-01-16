@@ -1,4 +1,4 @@
-package hubstore
+package hubstore_mongo
 
 import (
 	"context"
@@ -14,14 +14,14 @@ const (
 	collectionCounters = "counters"
 )
 
-type hubStorage struct {
+type hubStore struct {
 	client *mongo.Client
 	db     *mongo.Database
 }
 
 // Возвращает подключение к базе данных
-func New(path string, dbname string) (*hubStorage, error) {
-	const op = "hubstorage.NewHubStorage"
+func New(path string, dbname string) (*hubStore, error) {
+	const op = "hubstorage.NewHubStore"
 	opts := options.Client().ApplyURI(path).SetTimeout(1000 * time.Millisecond)
 
 	client, err := mongo.Connect(context.TODO(), opts)
@@ -35,7 +35,7 @@ func New(path string, dbname string) (*hubStorage, error) {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	con := hubStorage{
+	con := hubStore{
 		client: client,
 		db:     client.Database(dbname),
 	}

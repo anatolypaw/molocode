@@ -16,6 +16,25 @@ type Code struct {
 	Crypto Crypto
 }
 
+func (code *Code) Validate() error {
+	err := code.Gtin.Validate()
+	if err != nil {
+		return err
+	}
+
+	err = code.Serial.Validate()
+	if err != nil {
+		return err
+	}
+
+	err = code.Crypto.Validate()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // Когда и откуда был загружен код
 type SourceInfo struct {
 	Name string    // Откуда загружен, например с сервера "server main"

@@ -1,4 +1,4 @@
-package hubstore
+package hubstore_mongo
 
 import (
 	"context"
@@ -9,8 +9,8 @@ import (
 )
 
 // Добавляет продукт в хранилище, возвращает все поля добавленного продукта
-func (hs *hubStorage) AddGood(g entity.Good) error {
-	const op = "hubstorage.AddGood"
+func (hs *hubStore) AddGood(g entity.Good) error {
+	const op = "hubstore.AddGood"
 	// MAPPING
 	mappedGood := Good_dto{
 		Gtin:            string(g.Gtin),
@@ -29,8 +29,8 @@ func (hs *hubStorage) AddGood(g entity.Good) error {
 	return nil
 }
 
-func (hs *hubStorage) GetGood(gtin entity.Gtin) (entity.Good, error) {
-	const op = "hubservice.GetGood"
+func (hs *hubStore) GetGood(gtin entity.Gtin) (entity.Good, error) {
+	const op = "hubstore.GetGood"
 
 	filter := bson.M{"_id": gtin}
 	reqResult := hs.db.Collection(collectionGoods).FindOne(context.TODO(), filter)
@@ -46,8 +46,8 @@ func (hs *hubStorage) GetGood(gtin entity.Gtin) (entity.Good, error) {
 	return result, nil
 }
 
-func (hs *hubStorage) GetAllGoods() ([]entity.Good, error) {
-	const op = "hubservice.GetAllGoods"
+func (hs *hubStore) GetAllGoods() ([]entity.Good, error) {
+	const op = "hubstore.GetAllGoods"
 
 	filter := bson.M{}
 	cursor, err := hs.db.Collection(collectionGoods).Find(context.TODO(), filter)

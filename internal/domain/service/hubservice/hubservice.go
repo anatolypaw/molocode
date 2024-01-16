@@ -17,6 +17,6 @@ type hubService struct {
 	storage HubStore
 }
 
-func New(storage HubStore) *hubService {
+func NewHubService(storage HubStore) *hubService {
 	return &hubService{storage: storage}
 }
