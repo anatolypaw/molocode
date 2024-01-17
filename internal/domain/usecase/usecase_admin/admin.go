@@ -3,7 +3,7 @@ package usecase_admin
 import (
 	"log"
 	"molocode/internal/domain/entity"
-	service "molocode/internal/domain/service/store"
+	"time"
 )
 
 /*
@@ -12,24 +12,34 @@ import (
 - Получение списка добавленных продуктов
 - Изменение продукта
 */
-
-type AdminUseCase struct {
-	store *service.Store
+type iStorage interface {
+	AddGood(entity.Good) error
+	GetAllGoods() ([]entity.Good, error)
 }
 
-func NewAdminUseCase(storeService *service.Store) AdminUseCase {
+type AdminUseCase struct {
+	store iStorage
+}
+
+func NewAdminUseCase(storeService iStorage) AdminUseCase {
 	return AdminUseCase{store: storeService}
 }
 
 // Добавляет новый продукт
-func (usecase *AdminUseCase) AddGood(good entity.Good) error {
+func (ths *AdminUseCase) AddGood(good entity.Good) error {
 	log.Println("Добавление продукта")
-	err := usecase.store.AddGood(good)
+
+	err := entity.ValidateGtin(good.Gtin)
+	if err != nil {
+		return err
+	}
+	good.CreatedAt = time.Now()
+
 	return err
 }
 
-// Возвращает все имеющиеся продукты
-func (usecase *AdminUseCase) GetAllGoods() ([]entity.Good, error) {
-	log.Println("Запрос всех продуктов")
-	return usecase.store.GetAllGoods()
+func (ths *AdminUseCase) GetAllGoods() ([]entity.Good, error) {
+	// TODO валидировать ответ хранилища.
+	// на корректность gtin
+	return ths.store.GetAllGoods()
 }

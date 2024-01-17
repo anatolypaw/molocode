@@ -2,10 +2,8 @@ package main
 
 import (
 	"log"
-	service "molocode/internal/domain/service/store"
-	"molocode/internal/domain/service/store/mongo"
 	"molocode/internal/domain/usecase/usecase_admin"
-	"molocode/internal/domain/usecase/usecase_exchange"
+	"molocode/internal/storage/mongo"
 
 	v1 "molocode/internal/view/http/v1"
 	"net/http"
@@ -26,10 +24,8 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-	storeService := service.NewStoreService(mongoStore)
-	admUseCase := usecase_admin.NewAdminUseCase(storeService)
-	exchangeUseCase := usecase_exchange.New(storeService)
-	_ = exchangeUseCase
+
+	admUseCase := usecase_admin.NewAdminUseCase(mongoStore)
 
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)

@@ -14,14 +14,14 @@ const (
 	collectionCounters = "counters"
 )
 
-type Store struct {
+type MongoStore struct {
 	client *mongo.Client
 	db     *mongo.Database
 	ctx    context.Context
 }
 
 // Возвращает подключение к базе данных
-func New(path string, dbname string) (*Store, error) {
+func New(path string, dbname string) (*MongoStore, error) {
 	const op = "hubstorage.NewHubStore"
 	opts := options.Client().ApplyURI(path).SetTimeout(1000 * time.Millisecond)
 
@@ -36,9 +36,10 @@ func New(path string, dbname string) (*Store, error) {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	con := Store{
+	con := MongoStore{
 		client: client,
 		db:     client.Database(dbname),
+		ctx:    context.TODO(),
 	}
 
 	return &con, nil

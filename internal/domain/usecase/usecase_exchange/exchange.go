@@ -1,14 +1,13 @@
 package usecase_exchange
 
-import (
-	service "molocode/internal/domain/service/store"
-)
-
-type UseCase struct {
-	store *service.Store
+type iStorage interface {
 }
 
-func New(storeService *service.Store) UseCase {
+type UseCase struct {
+	store iStorage
+}
+
+func New(storeService iStorage) UseCase {
 	return UseCase{store: storeService}
 }
 
@@ -22,9 +21,9 @@ type CodeReq struct {
 
 // Возвращает список продуктов, требующих наполнения кодами для печати
 // и количество требуемых кодов
-func (usecase *UseCase) GetGoodsReqCodes() ([]CodeReq, error) {
+func (ths *UseCase) GetGoodsReqCodes() ([]CodeReq, error) {
 	// - Получить продукты, для которых включено наполнение кодами
-	goods, err := usecase.store.GetGoodsForPrint()
+	goods, err := ths.store.GetGoodsForPrint()
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +31,7 @@ func (usecase *UseCase) GetGoodsReqCodes() ([]CodeReq, error) {
 	var codesReq []CodeReq
 	for _, good := range goods {
 		// - Для каждого продукта получить доступное количество кодов
-		avaible, err := usecase.store.CountPrintAvaibleCode(good.Gtin)
+		avaible, err := ths.store.CountPrintAvaibleCode(good.Gtin)
 		if err != nil {
 			return nil, err
 		}

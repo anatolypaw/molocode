@@ -14,7 +14,7 @@ type IAdminUseCase interface {
 
 // Добавляет продукт, проверяя корректность GTIN  и отсутсвие записи с таким gtin
 // метод POST
-func AddGood(u IAdminUseCase) http.HandlerFunc {
+func AddGood(ths IAdminUseCase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
@@ -42,7 +42,7 @@ func AddGood(u IAdminUseCase) http.HandlerFunc {
 		}
 
 		// Добавляем продукт в хранилище
-		err = u.AddGood(mappedGood)
+		err = ths.AddGood(mappedGood)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprint(w, toResponse(false, err.Error(), nil))
@@ -55,12 +55,12 @@ func AddGood(u IAdminUseCase) http.HandlerFunc {
 
 // Возвращает все продукты из базы
 // метод POST
-func GetAllGoods(u IAdminUseCase) http.HandlerFunc {
+func GetAllGoods(ths IAdminUseCase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
 		// Получаем продукты
-		goods, err := u.GetAllGoods()
+		goods, err := ths.GetAllGoods()
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprint(w, toResponse(false, err.Error(), nil))

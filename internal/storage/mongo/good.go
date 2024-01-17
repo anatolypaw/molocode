@@ -8,7 +8,7 @@ import (
 )
 
 // Добавляет продукт в хранилище, возвращает все поля добавленного продукта
-func (ths *Store) AddGood(g entity.Good) error {
+func (ths *MongoStore) AddGood(g entity.Good) error {
 	const op = "mongo.AddGood"
 	// MAPPING
 	mappedGood := Good_dto{
@@ -28,36 +28,36 @@ func (ths *Store) AddGood(g entity.Good) error {
 	return nil
 }
 
-func (ths *Store) GetGood(gtin string) (entity.Good, error) {
+func (ths *MongoStore) GetGood(gtin string) (entity.Good, error) {
 	const op = "mongo.GetGood"
 
 	filter := bson.M{"_id": gtin}
 	reqResult := ths.db.Collection(collectionGoods).FindOne(ths.ctx, filter)
 
-	var good Good_dto
-	err := reqResult.Decode(&good)
+	var good_dto Good_dto
+	err := reqResult.Decode(&good_dto)
 	if err != nil {
 		return entity.Good{}, fmt.Errorf("%s: %w", op, err)
 	}
-	if good.Gtin == "" {
+	if good_dto.Gtin == "" {
 		return entity.Good{}, fmt.Errorf("%s: Продукт не найден", op)
 	}
 
 	// MAPPING
 	mappedGood := entity.Good{
-		Gtin:            good.Gtin,
-		Desc:            good.Desc,
-		StoreCount:      good.StoreCount,
-		GetCodeForPrint: good.GetCodeForPrint,
-		AllowProduce:    good.AllowProduce,
-		Upload:          good.Upload,
-		CreatedAt:       good.CreatedAt,
+		Gtin:            good_dto.Gtin,
+		Desc:            good_dto.Desc,
+		StoreCount:      good_dto.StoreCount,
+		GetCodeForPrint: good_dto.GetCodeForPrint,
+		AllowProduce:    good_dto.AllowProduce,
+		Upload:          good_dto.Upload,
+		CreatedAt:       good_dto.CreatedAt,
 	}
 
 	return mappedGood, nil
 }
 
-func (ths *Store) GetAllGoods() ([]entity.Good, error) {
+func (ths *MongoStore) GetAllGoods() ([]entity.Good, error) {
 	const op = "mongo.GetAllGoods"
 
 	filter := bson.M{}
@@ -66,23 +66,23 @@ func (ths *Store) GetAllGoods() ([]entity.Good, error) {
 		return []entity.Good{}, fmt.Errorf("%s: %w", op, err)
 	}
 
-	goods := []Good_dto{}
-	err = cursor.All(ths.ctx, &goods)
+	goods_dto := []Good_dto{}
+	err = cursor.All(ths.ctx, &goods_dto)
 	if err != nil {
 		return []entity.Good{}, fmt.Errorf("%s: %w", op, err)
 	}
 
 	// MAPPING
 	mappedGoods := []entity.Good{}
-	for _, good := range goods {
+	for _, good_dto := range goods_dto {
 		mappedGoods = append(mappedGoods, entity.Good{
-			Gtin:            string(good.Gtin),
-			Desc:            good.Desc,
-			StoreCount:      good.StoreCount,
-			GetCodeForPrint: good.GetCodeForPrint,
-			AllowProduce:    good.AllowProduce,
-			Upload:          good.Upload,
-			CreatedAt:       good.CreatedAt,
+			Gtin:            good_dto.Gtin,
+			Desc:            good_dto.Desc,
+			StoreCount:      good_dto.StoreCount,
+			GetCodeForPrint: good_dto.GetCodeForPrint,
+			AllowProduce:    good_dto.AllowProduce,
+			Upload:          good_dto.Upload,
+			CreatedAt:       good_dto.CreatedAt,
 		})
 	}
 
