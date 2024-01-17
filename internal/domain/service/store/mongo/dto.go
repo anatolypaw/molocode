@@ -1,7 +1,7 @@
 package mongo
 
 import (
-	"molocode/internal/entity"
+	"molocode/internal/domain/entity"
 	"time"
 )
 

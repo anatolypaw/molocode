@@ -3,18 +3,18 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
-	"molocode/internal/entity"
+	"molocode/internal/domain/entity"
 	"net/http"
 )
 
-type IAdminUsecase interface {
+type IAdminUseCase interface {
 	AddGood(entity.Good) error
 	GetAllGoods() ([]entity.Good, error)
 }
 
 // Добавляет продукт, проверяя корректность GTIN  и отсутсвие записи с таким gtin
 // метод POST
-func AddGood(u IAdminUsecase) http.HandlerFunc {
+func AddGood(u IAdminUseCase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
@@ -55,7 +55,7 @@ func AddGood(u IAdminUsecase) http.HandlerFunc {
 
 // Возвращает все продукты из базы
 // метод POST
-func GetAllGoods(u IAdminUsecase) http.HandlerFunc {
+func GetAllGoods(u IAdminUseCase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 

@@ -2,10 +2,12 @@ package main
 
 import (
 	"log"
-	v1 "molocode/internal/controller/http/v1"
-	"molocode/internal/service/storeservice"
-	"molocode/internal/service/storeservice/mongo"
-	"molocode/internal/usecase/admin_usecase"
+	service "molocode/internal/domain/service/store"
+	"molocode/internal/domain/service/store/mongo"
+	"molocode/internal/domain/usecase/usecase_admin"
+	"molocode/internal/domain/usecase/usecase_exchange"
+
+	v1 "molocode/internal/view/http/v1"
 	"net/http"
 	"time"
 
@@ -20,19 +22,20 @@ func main() {
 		log.Println(http.ListenAndServe("localhost:6060", nil))
 	}()
 
-	mongostore, err := mongo.New("mongodb://localhost:27017/", "molocode")
+	mongoStore, err := mongo.New("mongodb://localhost:27017/", "molocode")
 	if err != nil {
 		log.Panic(err)
 	}
-	storeService := storeservice.NewStoreService(mongostore)
-	admUsecase := admin_usecase.New(storeService)
+	storeService := service.NewStoreService(mongoStore)
+	admUseCase := usecase_admin.NewAdminUseCase(storeService)
+	exchangeUseCase := usecase_exchange.New(storeService)
+	_ = exchangeUseCase
 
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
-	router.Post("/v1/addGood", v1.AddGood(admUsecase))
-	router.Get("/v1/getAllGoods", v1.GetAllGoods(admUsecase))
+	router.Post("/v1/addGood", v1.AddGood(&admUseCase))
+	router.Get("/v1/getAllGoods", v1.GetAllGoods(&admUseCase))
 
-	//Запускаем сервер веб интерфейса
 	s := &http.Server{
 		Addr:         ":80",
 		Handler:      router,

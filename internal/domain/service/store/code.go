@@ -1,20 +1,20 @@
-package storeservice
+package service
 
 import (
 	"fmt"
-	"molocode/internal/entity"
+	"molocode/internal/domain/entity"
 	"time"
 )
 
 // Добавляет код
-func (hs *Service) AddCodeForPrint(code entity.Code, sourceName string) error {
+func (service *Store) AddCodeForPrint(code entity.Code, sourceName string) error {
 	err := code.Validate()
 	if err != nil {
 		return err
 	}
 
 	// Проверяем, существует ли такой продукт
-	good, err := hs.store.GetGood(code.Gtin)
+	good, err := service.repo.GetGood(code.Gtin)
 	if err != nil {
 		return err
 	}
@@ -35,7 +35,7 @@ func (hs *Service) AddCodeForPrint(code entity.Code, sourceName string) error {
 		},
 	}
 
-	err = hs.store.AddCode(mappedCode)
+	err = service.repo.AddCode(mappedCode)
 	if err != nil {
 		return err
 	}
@@ -43,6 +43,15 @@ func (hs *Service) AddCodeForPrint(code entity.Code, sourceName string) error {
 	return nil
 }
 
-func (hs *Service) GetCodeForPrint(gtin string, sourceName string) error {
+// Возвращает количество доступных для печати кодов
+func (service *Store) CountPrintAvaibleCode(gtin string) (uint, error) {
+	err := entity.ValidateGtin(gtin)
+	if err != nil {
+		return 0, err
+	}
+	return service.repo.CountPrintAvaibleCode(gtin)
+}
+
+func (service *Store) GetCodeForPrint(gtin string, sourceName string) error {
 	return nil
 }

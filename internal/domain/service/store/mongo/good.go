@@ -2,14 +2,14 @@ package mongo
 
 import (
 	"fmt"
-	"molocode/internal/entity"
+	"molocode/internal/domain/entity"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
 
 // Добавляет продукт в хранилище, возвращает все поля добавленного продукта
-func (s *Store) AddGood(g entity.Good) error {
-	const op = "hubstore.AddGood"
+func (ths *Store) AddGood(g entity.Good) error {
+	const op = "mongo.AddGood"
 	// MAPPING
 	mappedGood := Good_dto{
 		Gtin:            g.Gtin,
@@ -20,7 +20,7 @@ func (s *Store) AddGood(g entity.Good) error {
 		Upload:          g.Upload,
 		CreatedAt:       g.CreatedAt,
 	}
-	_, err := s.db.Collection(collectionGoods).InsertOne(s.ctx, mappedGood)
+	_, err := ths.db.Collection(collectionGoods).InsertOne(ths.ctx, mappedGood)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
@@ -28,13 +28,13 @@ func (s *Store) AddGood(g entity.Good) error {
 	return nil
 }
 
-func (s *Store) GetGood(gtin string) (entity.Good, error) {
+func (ths *Store) GetGood(gtin string) (entity.Good, error) {
 	const op = "mongo.GetGood"
 
 	filter := bson.M{"_id": gtin}
-	reqResult := s.db.Collection(collectionGoods).FindOne(s.ctx, filter)
+	reqResult := ths.db.Collection(collectionGoods).FindOne(ths.ctx, filter)
 
-	var good entity.Good
+	var good Good_dto
 	err := reqResult.Decode(&good)
 	if err != nil {
 		return entity.Good{}, fmt.Errorf("%s: %w", op, err)
@@ -45,7 +45,7 @@ func (s *Store) GetGood(gtin string) (entity.Good, error) {
 
 	// MAPPING
 	mappedGood := entity.Good{
-		Gtin:            string(good.Gtin),
+		Gtin:            good.Gtin,
 		Desc:            good.Desc,
 		StoreCount:      good.StoreCount,
 		GetCodeForPrint: good.GetCodeForPrint,
@@ -57,17 +57,17 @@ func (s *Store) GetGood(gtin string) (entity.Good, error) {
 	return mappedGood, nil
 }
 
-func (s *Store) GetAllGoods() ([]entity.Good, error) {
+func (ths *Store) GetAllGoods() ([]entity.Good, error) {
 	const op = "mongo.GetAllGoods"
 
 	filter := bson.M{}
-	cursor, err := s.db.Collection(collectionGoods).Find(s.ctx, filter)
+	cursor, err := ths.db.Collection(collectionGoods).Find(ths.ctx, filter)
 	if err != nil {
 		return []entity.Good{}, fmt.Errorf("%s: %w", op, err)
 	}
 
 	goods := []Good_dto{}
-	err = cursor.All(s.ctx, &goods)
+	err = cursor.All(ths.ctx, &goods)
 	if err != nil {
 		return []entity.Good{}, fmt.Errorf("%s: %w", op, err)
 	}
