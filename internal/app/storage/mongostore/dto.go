@@ -1,7 +1,7 @@
-package mongo
+package mongostore
 
 import (
-	"molocode/internal/domain/entity"
+	"molocode/internal/app/entity"
 	"time"
 )
 

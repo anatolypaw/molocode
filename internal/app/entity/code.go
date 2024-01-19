@@ -1,6 +1,9 @@
 package entity
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 type FullCode struct {
 	Code
@@ -61,4 +64,18 @@ type PrintInfo struct {
 type UploadInfo struct {
 	Time   time.Time
 	Status string
+}
+
+func ValidateSerial(serial string) error {
+	if len(serial) != 6 {
+		return errors.New("некорректная длинна serial")
+	}
+	return nil
+}
+
+func ValidateCrypto(crypto string) error {
+	if len(crypto) != 4 {
+		return errors.New("некорректная длинна crypto")
+	}
+	return nil
 }

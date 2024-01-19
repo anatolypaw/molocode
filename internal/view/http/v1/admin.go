@@ -1,22 +1,24 @@
 package v1
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"molocode/internal/domain/entity"
+	"molocode/internal/app/entity"
 	"net/http"
 )
 
 type IAdminUseCase interface {
-	AddGood(entity.Good) error
-	GetAllGoods() ([]entity.Good, error)
+	AddGood(context.Context, entity.Good) error
+	GetAllGoods(context.Context) ([]entity.Good, error)
 }
 
-// Добавляет продукт, проверяя корректность GTIN  и отсутсвие записи с таким gtin
+// Добавляет продукт
 // метод POST
-func AddGood(ths IAdminUseCase) http.HandlerFunc {
+func AddGood(ctx context.Context, usecase IAdminUseCase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
+		ctx = entity.WithNewReqID(ctx)
 
 		good := good_dto{}
 
@@ -42,7 +44,7 @@ func AddGood(ths IAdminUseCase) http.HandlerFunc {
 		}
 
 		// Добавляем продукт в хранилище
-		err = ths.AddGood(mappedGood)
+		err = usecase.AddGood(ctx, mappedGood)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprint(w, toResponse(false, err.Error(), nil))
@@ -55,12 +57,13 @@ func AddGood(ths IAdminUseCase) http.HandlerFunc {
 
 // Возвращает все продукты из базы
 // метод POST
-func GetAllGoods(ths IAdminUseCase) http.HandlerFunc {
+func GetAllGoods(ctx context.Context, usecase IAdminUseCase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
+		ctx = entity.WithNewReqID(ctx)
 
 		// Получаем продукты
-		goods, err := ths.GetAllGoods()
+		goods, err := usecase.GetAllGoods(ctx)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprint(w, toResponse(false, err.Error(), nil))

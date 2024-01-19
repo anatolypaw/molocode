@@ -1,8 +1,9 @@
-package mongo
+package mongostore
 
 import (
 	"context"
 	"fmt"
+	"molocode/internal/app/entity"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,15 +15,22 @@ const (
 	collectionCounters = "counters"
 )
 
+// TODO
+type Cache struct {
+	Goods struct {
+		Value      []entity.Good
+		LastUpdate time.Time
+	}
+}
+
 type MongoStore struct {
 	client *mongo.Client
 	db     *mongo.Database
-	ctx    context.Context
 }
 
 // Возвращает подключение к базе данных
 func New(path string, dbname string) (*MongoStore, error) {
-	const op = "hubstorage.NewHubStore"
+	const op = "mongo.New"
 	opts := options.Client().ApplyURI(path).SetTimeout(1000 * time.Millisecond)
 
 	client, err := mongo.Connect(context.TODO(), opts)
@@ -39,7 +47,6 @@ func New(path string, dbname string) (*MongoStore, error) {
 	con := MongoStore{
 		client: client,
 		db:     client.Database(dbname),
-		ctx:    context.TODO(),
 	}
 
 	return &con, nil

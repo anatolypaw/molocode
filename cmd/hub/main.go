@@ -1,36 +1,32 @@
 package main
 
 import (
+	"context"
 	"log"
-	"molocode/internal/domain/usecase/usecase_admin"
-	"molocode/internal/storage/mongo"
-
+	"molocode/internal/app/storage/mongostore"
+	"molocode/internal/app/usecase/usecase_admin"
 	v1 "molocode/internal/view/http/v1"
 	"net/http"
 	"time"
-
-	_ "net/http/pprof"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
 
 func main() {
-	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
-	}()
-
-	mongoStore, err := mongo.New("mongodb://localhost:27017/", "molocode")
+	mstore, err := mongostore.New("mongodb://localhost:27017/", "molocode")
 	if err != nil {
-		log.Panic(err)
+		log.Panic("%v", err)
 	}
 
-	admUseCase := usecase_admin.NewAdminUseCase(mongoStore)
+	admUseCase := usecase_admin.New(mstore)
 
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
-	router.Post("/v1/addGood", v1.AddGood(&admUseCase))
-	router.Get("/v1/getAllGoods", v1.GetAllGoods(&admUseCase))
+
+	ctx := context.Background()
+	router.Post("/v1/addGood", v1.AddGood(ctx, &admUseCase))
+	router.Get("/v1/getAllGoods", v1.GetAllGoods(ctx, &admUseCase))
 
 	s := &http.Server{
 		Addr:         ":80",
@@ -41,5 +37,5 @@ func main() {
 	}
 
 	log.Printf("Сервер веб интерфейса %s", s.Addr)
-	log.Fatal(s.ListenAndServe())
+	log.Fatal("%v", s.ListenAndServe())
 }

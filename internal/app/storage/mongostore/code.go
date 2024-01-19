@@ -1,9 +1,9 @@
-package mongo
+package mongostore
 
 import (
 	"context"
 	"fmt"
-	"molocode/internal/domain/entity"
+	"molocode/internal/app/entity"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -21,15 +21,16 @@ func (ths *MongoStore) AddCode(code entity.FullCode) error {
 		UploadInfo:   code.UploadInfo,
 	}
 
-	_, err := ths.db.Collection(string(code.Gtin)).InsertOne(ths.ctx, mappedCode)
+	_, err := ths.db.Collection(string(code.Gtin)).InsertOne(context.TODO(), mappedCode)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 	return err
 }
 
-// TODO в случае изменения entity.Code, может перестать выполняться запрос
-func (ths *MongoStore) CountPrintAvaibleCode(gtin string) (uint, error) {
+// TODO в случае изменения поля printinfo entity.Code, может перестать выполняться запрос
+// Можно решить полнным маппингом структуры кода
+func (ths *MongoStore) GetCountPrintAvaibleCode(gtin string) (uint, error) {
 	filter := bson.M{"printinfo.avaible": true}
 	avaible, err := ths.db.Collection(gtin).CountDocuments(context.TODO(), filter)
 	if err != nil {

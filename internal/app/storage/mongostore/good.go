@@ -1,8 +1,9 @@
-package mongo
+package mongostore
 
 import (
+	"context"
 	"fmt"
-	"molocode/internal/domain/entity"
+	"molocode/internal/app/entity"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -20,10 +21,12 @@ func (ths *MongoStore) AddGood(g entity.Good) error {
 		Upload:          g.Upload,
 		CreatedAt:       g.CreatedAt,
 	}
-	_, err := ths.db.Collection(collectionGoods).InsertOne(ths.ctx, mappedGood)
+	insertResult, err := ths.db.Collection(collectionGoods).InsertOne(context.TODO(), mappedGood)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
+
+	fmt.Printf("%s: %#v", op, insertResult)
 
 	return nil
 }
@@ -32,7 +35,7 @@ func (ths *MongoStore) GetGood(gtin string) (entity.Good, error) {
 	const op = "mongo.GetGood"
 
 	filter := bson.M{"_id": gtin}
-	reqResult := ths.db.Collection(collectionGoods).FindOne(ths.ctx, filter)
+	reqResult := ths.db.Collection(collectionGoods).FindOne(context.TODO(), filter)
 
 	var good_dto Good_dto
 	err := reqResult.Decode(&good_dto)
@@ -61,13 +64,13 @@ func (ths *MongoStore) GetAllGoods() ([]entity.Good, error) {
 	const op = "mongo.GetAllGoods"
 
 	filter := bson.M{}
-	cursor, err := ths.db.Collection(collectionGoods).Find(ths.ctx, filter)
+	cursor, err := ths.db.Collection(collectionGoods).Find(context.TODO(), filter)
 	if err != nil {
 		return []entity.Good{}, fmt.Errorf("%s: %w", op, err)
 	}
 
 	goods_dto := []Good_dto{}
-	err = cursor.All(ths.ctx, &goods_dto)
+	err = cursor.All(context.TODO(), &goods_dto)
 	if err != nil {
 		return []entity.Good{}, fmt.Errorf("%s: %w", op, err)
 	}
