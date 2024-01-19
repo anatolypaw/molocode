@@ -4,21 +4,26 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"molocode/internal/app/ctxlogger"
 	"molocode/internal/app/entity"
 	"net/http"
 )
 
-type IAdminUseCase interface {
+type IAdminUsecase interface {
 	AddGood(context.Context, entity.Good) error
 	GetAllGoods(context.Context) ([]entity.Good, error)
 }
 
 // Добавляет продукт
 // метод POST
-func AddGood(ctx context.Context, usecase IAdminUseCase) http.HandlerFunc {
+func AddGood(usecase IAdminUsecase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
-		ctx = entity.WithNewReqID(ctx)
+
+		// Logger
+		const op = "v1.AddGood"
+		l := ctxlogger.LoggerFromContext(r.Context())
+		l = l.With("function", op)
 
 		good := good_dto{}
 
@@ -29,6 +34,7 @@ func AddGood(ctx context.Context, usecase IAdminUseCase) http.HandlerFunc {
 		err := decoder.Decode(&good)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
+			l.Warn("Json decoder", "error", err)
 			fmt.Fprint(w, toResponse(false, err.Error(), nil))
 			return
 		}
@@ -44,8 +50,9 @@ func AddGood(ctx context.Context, usecase IAdminUseCase) http.HandlerFunc {
 		}
 
 		// Добавляем продукт в хранилище
-		err = usecase.AddGood(ctx, mappedGood)
+		err = usecase.AddGood(r.Context(), mappedGood)
 		if err != nil {
+			l.Warn("Ошибка добавления продукта", "error", err)
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprint(w, toResponse(false, err.Error(), nil))
 			return
@@ -57,14 +64,19 @@ func AddGood(ctx context.Context, usecase IAdminUseCase) http.HandlerFunc {
 
 // Возвращает все продукты из базы
 // метод POST
-func GetAllGoods(ctx context.Context, usecase IAdminUseCase) http.HandlerFunc {
+func GetAllGoods(usecase IAdminUsecase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
-		ctx = entity.WithNewReqID(ctx)
+
+		// Logger
+		const op = "v1.GetAllGoods"
+		l := ctxlogger.LoggerFromContext(r.Context())
+		l = l.With("function", op)
 
 		// Получаем продукты
-		goods, err := usecase.GetAllGoods(ctx)
+		goods, err := usecase.GetAllGoods(r.Context())
 		if err != nil {
+			l.Error("Ошибка получения продуктов из базы", "error", err)
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprint(w, toResponse(false, err.Error(), nil))
 			return

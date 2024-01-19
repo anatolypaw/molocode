@@ -17,7 +17,7 @@ type Good struct {
 
 func (ths *Good) ValidateDesc() error {
 	if len(ths.Desc) < 3 || len(ths.Desc) > 40 {
-		return errors.New("Описание меньше 3 или длиннее 40 символов")
+		return errors.New("описание меньше 3 или длиннее 40 символов")
 	}
 	return nil
 }

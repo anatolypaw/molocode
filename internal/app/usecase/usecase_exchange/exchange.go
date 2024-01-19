@@ -1,19 +1,20 @@
 package usecase_exchange
 
 import (
+	"context"
 	"molocode/internal/app/entity"
-	"molocode/internal/app/storage"
+	"molocode/internal/app/repository"
 )
 
-type Usecase struct {
-	goodRepo storage.IGood
-	codeRepo storage.ICode
+type ExchangeUsecase struct {
+	goodRepository repository.IGoodRepository
+	codeRepository repository.ICodeRepository
 }
 
-func New(goodRepo storage.IGood, codeRepo storage.ICode) Usecase {
-	return Usecase{
-		goodRepo: goodRepo,
-		codeRepo: codeRepo,
+func New(goodRepository repository.IGoodRepository, codeRepository repository.ICodeRepository) ExchangeUsecase {
+	return ExchangeUsecase{
+		goodRepository: goodRepository,
+		codeRepository: codeRepository,
 	}
 }
 
@@ -26,9 +27,9 @@ type CodeReq struct {
 
 // Возвращает список продуктов, требующих наполнения кодами для печати
 // и количество требуемых кодов
-func (ths *Usecase) GetGoodsReqCodes() ([]CodeReq, error) {
+func (eu *ExchangeUsecase) GetGoodsReqCodes(ctx context.Context) ([]CodeReq, error) {
 	// - Получить продукты
-	allGoods, err := ths.goodRepo.GetAllGoods()
+	allGoods, err := eu.goodRepository.GetAllGoods(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +45,7 @@ func (ths *Usecase) GetGoodsReqCodes() ([]CodeReq, error) {
 	// - Для каждого продукта получить доступное количество кодов
 	var codesReq []CodeReq
 	for _, good := range goodsAvaibleForPrint {
-		avaibleCount, err := ths.codeRepo.GetCountPrintAvaible(good.Gtin)
+		avaibleCount, err := eu.codeRepository.GetCountPrintAvaible(ctx, good.Gtin)
 		if err != nil {
 			return nil, err
 		}

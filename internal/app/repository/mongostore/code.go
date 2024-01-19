@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (ths *MongoStore) AddCode(code entity.FullCode) error {
+func (ths *MongoStore) AddCode(ctx context.Context, code entity.FullCode) error {
 	const op = "hubstorage.AddCode"
 
 	// MAPPING
@@ -30,7 +30,7 @@ func (ths *MongoStore) AddCode(code entity.FullCode) error {
 
 // TODO в случае изменения поля printinfo entity.Code, может перестать выполняться запрос
 // Можно решить полнным маппингом структуры кода
-func (ths *MongoStore) GetCountPrintAvaibleCode(gtin string) (uint, error) {
+func (ths *MongoStore) GetCountPrintAvaibleCode(ctx context.Context, gtin string) (uint, error) {
 	filter := bson.M{"printinfo.avaible": true}
 	avaible, err := ths.db.Collection(gtin).CountDocuments(context.TODO(), filter)
 	if err != nil {

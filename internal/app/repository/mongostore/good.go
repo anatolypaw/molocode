@@ -9,29 +9,27 @@ import (
 )
 
 // Добавляет продукт в хранилище, возвращает все поля добавленного продукта
-func (ths *MongoStore) AddGood(g entity.Good) error {
+func (ths *MongoStore) AddGood(ctx context.Context, good entity.Good) error {
 	const op = "mongo.AddGood"
 	// MAPPING
 	mappedGood := Good_dto{
-		Gtin:            g.Gtin,
-		Desc:            g.Desc,
-		StoreCount:      g.StoreCount,
-		GetCodeForPrint: g.GetCodeForPrint,
-		AllowProduce:    g.AllowProduce,
-		Upload:          g.Upload,
-		CreatedAt:       g.CreatedAt,
+		Gtin:            good.Gtin,
+		Desc:            good.Desc,
+		StoreCount:      good.StoreCount,
+		GetCodeForPrint: good.GetCodeForPrint,
+		AllowProduce:    good.AllowProduce,
+		Upload:          good.Upload,
+		CreatedAt:       good.CreatedAt,
 	}
-	insertResult, err := ths.db.Collection(collectionGoods).InsertOne(context.TODO(), mappedGood)
+	_, err := ths.db.Collection(collectionGoods).InsertOne(context.TODO(), mappedGood)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 
-	fmt.Printf("%s: %#v", op, insertResult)
-
 	return nil
 }
 
-func (ths *MongoStore) GetGood(gtin string) (entity.Good, error) {
+func (ths *MongoStore) GetGood(ctx context.Context, gtin string) (entity.Good, error) {
 	const op = "mongo.GetGood"
 
 	filter := bson.M{"_id": gtin}
@@ -60,7 +58,7 @@ func (ths *MongoStore) GetGood(gtin string) (entity.Good, error) {
 	return mappedGood, nil
 }
 
-func (ths *MongoStore) GetAllGoods() ([]entity.Good, error) {
+func (ths *MongoStore) GetAllGoods(ctx context.Context) ([]entity.Good, error) {
 	const op = "mongo.GetAllGoods"
 
 	filter := bson.M{}

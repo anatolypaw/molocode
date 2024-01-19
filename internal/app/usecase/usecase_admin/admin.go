@@ -2,9 +2,8 @@ package usecase_admin
 
 import (
 	"context"
-	"log"
 	"molocode/internal/app/entity"
-	"molocode/internal/app/storage"
+	"molocode/internal/app/repository"
 	"time"
 )
 
@@ -15,19 +14,19 @@ import (
 - Изменение продукта
 */
 type AdminUsecase struct {
-	goodRepo storage.IGood
+	goodRepository repository.IGoodRepository
 }
 
-func New(goodRepo storage.IGood) AdminUsecase {
-	return AdminUsecase{goodRepo: goodRepo}
+func New(goodRepository repository.IGoodRepository) AdminUsecase {
+	return AdminUsecase{
+		goodRepository: goodRepository,
+	}
 }
 
 // Добавляет новый продукт
 // Валидация gtin, desc
 // Ошибка, если такой продукт с таким gtin уже существует
-func (ths *AdminUsecase) AddGood(ctx context.Context, good entity.Good) error {
-	log.Println("Добавление продукта")
-
+func (au *AdminUsecase) AddGood(ctx context.Context, good entity.Good) error {
 	err := good.ValidateGtin()
 	if err != nil {
 		return err
@@ -39,11 +38,11 @@ func (ths *AdminUsecase) AddGood(ctx context.Context, good entity.Good) error {
 	}
 
 	good.CreatedAt = time.Now()
-	return err
+	return au.goodRepository.AddGood(ctx, good)
 }
 
 func (ths *AdminUsecase) GetAllGoods(ctx context.Context) ([]entity.Good, error) {
 	// TODO валидировать ответ хранилища
 	// на корректность gtin
-	return ths.goodRepo.GetAllGoods()
+	return ths.goodRepository.GetAllGoods(ctx)
 }
