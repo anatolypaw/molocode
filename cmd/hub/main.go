@@ -16,28 +16,36 @@ import (
 )
 
 func main() {
-	// Настройка логгера
+	/* Настройка логгера */
 	logger := slog.New(tint.NewHandler(os.Stdout, nil))
 	logger.Debug("Включены DEBUG сообщения")
 	logger.Info("Включены INFO сообщения")
 	logger.Warn("Включены WARN сообщения")
 	logger.Error("Включены ERROR сообщения")
 
+	/* Подключение к базе данных */
 	mstore, err := mongostore.New("mongodb://localhost:27017/", "molocode")
 	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)
 	}
 
-	admUseCase := usecase_admin.New(mstore)
+	/* Инициализация usecase */
+	admUsecase := usecase_admin.New(mstore)
+	//exchUsecase := usecase_exchange.New(mstore, mstore)
+
+	/* Инициализация http сервера */
 	router := chi.NewRouter()
 
-	// Логгер встраивается в контекст.
-	// Встраивает в контекст reques_id
+	// Логгер slog встраивается в context
+	// Здесь же на каждый request создается уникальный req_id и встраивается в context
+	// он выводится для всего дерева вызовов
 	router.Use(mymiddleware.Logger(logger))
 
-	router.Post("/v1/addGood", v1.AddGood(&admUseCase))
-	router.Get("/v1/getAllGoods", v1.GetAllGoods(&admUseCase))
+	router.Post("/v1/addGood", v1.AddGood(&admUsecase))
+	router.Get("/v1/getAllGoods", v1.GetAllGoods(&admUsecase))
+
+	//router.Get("v1/getGoodsReqCodes", v1.GetGoodsReqCodes(&exchUsecase))
 
 	s := &http.Server{
 		Addr:         "localhost:3000",

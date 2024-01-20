@@ -34,6 +34,7 @@ func GetForPrint(address string) {
 			fmt.Println(err)
 		}
 		if resp.StatusCode() != 200 {
+			return
 			fmt.Println(string(resp.Body()))
 		}
 

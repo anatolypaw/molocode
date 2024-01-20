@@ -53,6 +53,7 @@ func AddGood(address string) {
 		} else {
 			fmt.Printf("%s: #%d - ERROR - %s \nresp: %v\n", op, i, test.testdesc, string(respbyte))
 			fmt.Printf("========== %s FAIL ==========\n", op)
+			log.Fatal()
 			return
 		}
 

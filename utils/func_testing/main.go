@@ -4,7 +4,7 @@ import (
 	"func_testing/tests/storage"
 )
 
-var addr = "http://127.0.0.1"
+var addr = "http://127.0.0.1:3000"
 
 func main() {
 	storage.CleanMongo("mongodb://localhost:27017/", "molocode")

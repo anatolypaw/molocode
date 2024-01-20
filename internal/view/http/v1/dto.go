@@ -30,7 +30,7 @@ type good_dto struct {
 	Desc            string    `json:"desc"`
 	StoreCount      uint      `json:"store_count"`
 	GetCodeForPrint bool      `json:"get_code_for_print"`
-	AllowProduce    bool      `json:"alllow_produce"`
+	AllowProduce    bool      `json:"allow_produce"`
 	Upload          bool      `json:"upload"`
 	CreatedAt       time.Time `json:",omitempty"`
 }

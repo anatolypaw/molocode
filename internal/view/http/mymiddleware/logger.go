@@ -33,17 +33,24 @@ func Logger(logger *slog.Logger) func(next http.Handler) http.Handler {
 
 			t1 := time.Now()
 			defer func() {
-				if time.Since(t1) > 100*time.Millisecond {
-					l.Warn("Slow request",
+				if time.Since(t1) > 10*time.Millisecond {
+					l.Warn("Slow request complete",
 						slog.Int("status", ww.Status()),
 						slog.String("duration", time.Since(t1).String()),
 					)
-
 				}
-				l.Info("request completed",
-					slog.Int("status", ww.Status()),
-					slog.String("duration", time.Since(t1).String()),
-				)
+
+				if ww.Status() != http.StatusOK {
+					l.Warn("Result not 200 OK",
+						slog.Int("status", ww.Status()),
+						slog.String("duration", time.Since(t1).String()),
+					)
+				} else {
+					l.Info("request completed",
+						slog.Int("status", ww.Status()),
+						slog.String("duration", time.Since(t1).String()),
+					)
+				}
 			}()
 
 			next.ServeHTTP(ww, r.WithContext(ctx))
