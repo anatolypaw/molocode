@@ -1,6 +1,8 @@
 package mymiddleware
 
 import (
+	"bytes"
+	"io"
 	"log/slog"
 	"molocode/internal/app/ctxlogger"
 	"net/http"
@@ -23,8 +25,21 @@ func Logger(logger *slog.Logger) func(next http.Handler) http.Handler {
 				slog.String("req_id", ctxlogger.GetReqID(ctx)),
 			)
 
-			l.Info("new request", slog.String("remote_addr", r.RemoteAddr),
-				slog.String("method", r.Method), slog.String("remote_addr", r.RemoteAddr), slog.String("path", r.URL.Path))
+			//Считываем body, что бы вывести его в лог
+			rawBody, err := io.ReadAll(r.Body)
+			if err != nil {
+				l.Error("Ошбика чтения body", "error", err, "func", "mymiddleware.Logger")
+			}
+			// Restore the io.ReadCloser to it's original state
+			r.Body = io.NopCloser(bytes.NewBuffer(rawBody))
+
+			l.Info("new request",
+				slog.String("remote_addr", r.RemoteAddr),
+				slog.String("method", r.Method),
+				slog.String("remote_addr", r.RemoteAddr),
+				slog.String("path", r.URL.Path),
+				slog.String("req_body", string(rawBody)),
+			)
 
 			// Встраиваем логгер в контекст
 			ctx = ctxlogger.ContextWithLogger(ctx, l)
@@ -51,6 +66,7 @@ func Logger(logger *slog.Logger) func(next http.Handler) http.Handler {
 						slog.String("duration", time.Since(t1).String()),
 					)
 				}
+
 			}()
 
 			next.ServeHTTP(ww, r.WithContext(ctx))

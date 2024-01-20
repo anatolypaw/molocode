@@ -1,11 +1,9 @@
 package v1
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"molocode/internal/app/ctxlogger"
 	"molocode/internal/app/entity"
 	"net/http"
@@ -23,15 +21,13 @@ func AddGood(usecase IAdminUsecase) http.HandlerFunc {
 		w.Header().Add("Content-Type", "application/json")
 
 		// Считываем body для использования в логгере
-		body_bytes, _ := io.ReadAll(r.Body)
-		body := string(body_bytes)
 		l := ctxlogger.LoggerFromContext(r.Context())
-		l.Info("Добавление продукта", "function", "v1.AddGood", "req_body", body)
+		l.Info("Добавление продукта", "func", "v1.AddGood")
 
 		// Декодируем полученный json
 		// Разрешить только поля, укаказанные в entity.Good
 		good_dto := good_dto{}
-		decoder := json.NewDecoder(bytes.NewReader(body_bytes))
+		decoder := json.NewDecoder(r.Body)
 		decoder.DisallowUnknownFields()
 		err := decoder.Decode(&good_dto)
 		if err != nil {
@@ -55,13 +51,15 @@ func AddGood(usecase IAdminUsecase) http.HandlerFunc {
 		// Добавляем продукт в хранилище
 		err = usecase.AddGood(r.Context(), mappedGood)
 		if err != nil {
-			l.Warn("Продукт не добавлен", "error", err, "body", body_bytes)
+			l.Warn("Продукт не добавлен", "error", err)
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprint(w, toResponse(false, err.Error(), nil))
 			return
 		}
 
-		fmt.Fprint(w, toResponse(true, "Продукт добавлен", nil))
+		resp_body := toResponse(true, "Успешно", nil)
+		l.Info("Продукт добавлен", "resp_body", resp_body)
+		fmt.Fprint(w, resp_body)
 	}
 }
 

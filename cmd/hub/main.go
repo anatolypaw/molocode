@@ -1,15 +1,15 @@
 package main
 
 import (
+	"log/slog"
 	"molocode/internal/app/repository/mongostore"
 	"molocode/internal/app/usecase/usecase_admin"
+	"molocode/internal/app/usecase/usecase_exchange"
 	"molocode/internal/view/http/mymiddleware"
 	v1 "molocode/internal/view/http/v1"
 	"net/http"
 	"os"
 	"time"
-
-	"log/slog"
 
 	"github.com/go-chi/chi"
 	"github.com/lmittmann/tint"
@@ -18,6 +18,7 @@ import (
 func main() {
 	/* Настройка логгера */
 	logger := slog.New(tint.NewHandler(os.Stdout, nil))
+	//logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	logger.Debug("Включены DEBUG сообщения")
 	logger.Info("Включены INFO сообщения")
 	logger.Warn("Включены WARN сообщения")
@@ -32,7 +33,7 @@ func main() {
 
 	/* Инициализация usecase */
 	admUsecase := usecase_admin.New(mstore)
-	//exchUsecase := usecase_exchange.New(mstore, mstore)
+	exchUsecase := usecase_exchange.New(mstore, mstore)
 
 	/* Инициализация http сервера */
 	router := chi.NewRouter()
@@ -45,7 +46,7 @@ func main() {
 	router.Post("/v1/addGood", v1.AddGood(&admUsecase))
 	router.Get("/v1/getAllGoods", v1.GetAllGoods(&admUsecase))
 
-	//router.Get("v1/getGoodsReqCodes", v1.GetGoodsReqCodes(&exchUsecase))
+	router.Get("/v1/getGoodsReqCodes", v1.GetGoodsReqCodes(&exchUsecase))
 
 	s := &http.Server{
 		Addr:         "localhost:3000",
