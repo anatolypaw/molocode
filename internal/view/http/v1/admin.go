@@ -20,9 +20,9 @@ func AddGood(usecase IAdminUsecase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
-		// Считываем body для использования в логгере
+		// Подготовка логгера
 		l := ctxlogger.LoggerFromContext(r.Context())
-		l.Info("Добавление продукта", "func", "v1.AddGood")
+		l = l.With("func", "v1.AddGood")
 
 		// Декодируем полученный json
 		// Разрешить только поля, укаказанные в entity.Good
@@ -69,9 +69,9 @@ func GetAllGoods(usecase IAdminUsecase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
-		// Logger
+		// Подготовка логгера
 		l := ctxlogger.LoggerFromContext(r.Context())
-		l.Info("Запрос всех продуктов")
+		l = l.With("func", "v1.GetAllGoods")
 
 		// Получаем продукты
 		goods, err := usecase.GetAllGoods(r.Context())
@@ -97,7 +97,7 @@ func GetAllGoods(usecase IAdminUsecase) http.HandlerFunc {
 		}
 
 		resp_body := toResponse(true, "Успешно", mappedGoods)
-		l.Info("Запрос всех продуктов", "resp_body", resp_body)
+		l.Info("Успешно", "resp_body", resp_body)
 		fmt.Fprint(w, resp_body)
 	}
 }

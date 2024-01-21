@@ -24,9 +24,9 @@ func GetGoodsReqCodes(usecase IExchangeUsecase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
-		// Logger
+		// Подготовка логгера
 		l := ctxlogger.LoggerFromContext(r.Context())
-		l.Info("Запрос требуемого количества кодов", "func", "v1.GetGoodsReqCodes")
+		l = l.With("func", "v1.GetGoodsReqCodes")
 
 		// Получаем список продуктов и требуемое количество кодов
 		codereq, err := usecase.GetGoodsReqCodes(r.Context())
@@ -48,7 +48,7 @@ func GetGoodsReqCodes(usecase IExchangeUsecase) http.HandlerFunc {
 		}
 
 		resp_body := toResponse(true, "Успешно", mappedCodeReq)
-		l.Info("Получены продукты, требующие загрузки кодов", "resp_body", resp_body)
+		l.Info("Успешно", "resp_body", resp_body)
 		fmt.Fprint(w, resp_body)
 	}
 }
