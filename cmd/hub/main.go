@@ -40,7 +40,7 @@ func main() {
 
 	// Логгер slog встраивается в context
 	// Здесь же на каждый request создается уникальный req_id и встраивается в context
-	// он выводится для всего дерева вызовов
+	// он выводится в лог для всего дерева вызовов
 	router.Use(mymiddleware.Logger(logger))
 
 	router.Post("/v1/addGood", v1.AddGood(&admUsecase))
