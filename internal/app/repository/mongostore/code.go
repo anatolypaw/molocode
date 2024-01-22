@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+// Добавляет код как есть
 func (ths *MongoStore) AddCode(ctx context.Context, code entity.FullCode) error {
 	const op = "mongostore.AddCode"
 

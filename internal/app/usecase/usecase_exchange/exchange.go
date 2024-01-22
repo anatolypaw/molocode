@@ -2,8 +2,10 @@ package usecase_exchange
 
 import (
 	"context"
+	"errors"
 	"molocode/internal/app/entity"
 	"molocode/internal/app/repository"
+	"time"
 )
 
 type ExchangeUsecase struct {
@@ -63,4 +65,39 @@ func (eu *ExchangeUsecase) GetGoodsReqCodes(ctx context.Context) ([]CodeReq, err
 
 	// - Вернуть продукт, описание и недостающее количество кодов
 	return codesReq, nil
+}
+
+// Добавляет код для печати
+func (usecase *ExchangeUsecase) AddCodeForPrint(ctx context.Context, code entity.Code, source string) error {
+	// - Проверить корректность кода
+	err := code.Validate()
+	if err != nil {
+		return err
+	}
+
+	// - Проверить, разрешено ли для этого продукта добавление кодов
+	good, err := usecase.goodRepository.GetGood(ctx, code.Gtin)
+	if err != nil {
+		return err
+	}
+
+	if !good.GetCodeForPrint {
+		return errors.New("для этотого продукта запрещено получение кодов")
+	}
+
+	// - Добавить код для печати
+	fullCode := entity.FullCode{
+		Code: code,
+		SourceInfo: entity.SourceInfo{
+			Name: source,
+			Time: time.Now(),
+		},
+	}
+
+	err = usecase.codeRepository.AddCode(ctx, fullCode)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

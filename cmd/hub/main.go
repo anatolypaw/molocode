@@ -47,6 +47,7 @@ func main() {
 	router.Get("/v1/getAllGoods", v1.GetAllGoods(&admUsecase))
 
 	router.Get("/v1/getGoodsReqCodes", v1.GetGoodsReqCodes(&exchUsecase))
+	router.Post("/v1/addCodeForPrint", v1.AddCodeForPrint(&exchUsecase))
 
 	s := &http.Server{
 		Addr:         "localhost:3000",

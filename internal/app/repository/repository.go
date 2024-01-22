@@ -13,4 +13,5 @@ type IGoodRepository interface {
 
 type ICodeRepository interface {
 	GetCountPrintAvaible(context.Context, string) (uint, error)
+	AddCode(context.Context, entity.FullCode) error
 }
