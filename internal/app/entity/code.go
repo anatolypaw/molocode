@@ -5,18 +5,23 @@ import (
 	"time"
 )
 
+type Code struct {
+	Gtin   string
+	Serial string
+	Crypto string
+}
+
+type CodeForPrint struct {
+	Code    Code
+	PrintId uint64
+}
+
 type FullCode struct {
 	Code
 	SourceInfo   SourceInfo
 	PrintInfo    PrintInfo
 	ProducedInfo []ProducedInfo
 	UploadInfo   UploadInfo
-}
-
-type Code struct {
-	Gtin   string
-	Serial string
-	Crypto string
 }
 
 func (code *Code) Validate() error {
@@ -54,10 +59,10 @@ type ProducedInfo struct {
 
 // Информация, связанная с печатью
 type PrintInfo struct {
-	Avaible    bool      // Флаг, что код доступен для печати
-	UploadTime time.Time // Время выдачи кода из базы
-	Terminal   string    // Имя линии, куда передан код
-	PrintID    uint32    // Уникальный номер для кода, присваивается при выдаче кода из БД
+	Avaible      bool      // Флаг, что код доступен для печати
+	UploadTime   time.Time // Время выдачи кода из базы
+	TerminalName string    // Имя линии, куда передан код
+	PrintID      uint32    // Уникальный номер для кода, присваивается при выдаче кода из БД
 }
 
 // Информация о выгрузке во внешнюю систему

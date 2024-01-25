@@ -92,6 +92,9 @@ func (usecase *ExchangeUsecase) AddCodeForPrint(ctx context.Context, code entity
 			Name: source,
 			Time: time.Now(),
 		},
+		PrintInfo: entity.PrintInfo{
+			Avaible: true,
+		},
 	}
 
 	err = usecase.codeRepository.AddCode(ctx, fullCode)

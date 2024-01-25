@@ -4,9 +4,21 @@ import (
 	"context"
 	"fmt"
 	"molocode/internal/app/entity"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
+
+type Good_dto struct {
+	Gtin            string `bson:"_id"`
+	Desc            string
+	StoreCount      uint
+	GetCodeForPrint bool
+	AllowProduce    bool
+	AllowPrint      bool
+	Upload          bool
+	CreatedAt       time.Time
+}
 
 // Добавляет продукт в хранилище, возвращает все поля добавленного продукта
 func (ths *MongoStore) AddGood(ctx context.Context, good entity.Good) error {
@@ -18,6 +30,7 @@ func (ths *MongoStore) AddGood(ctx context.Context, good entity.Good) error {
 		StoreCount:      good.StoreCount,
 		GetCodeForPrint: good.GetCodeForPrint,
 		AllowProduce:    good.AllowProduce,
+		AllowPrint:      good.AllowPrint,
 		Upload:          good.Upload,
 		CreatedAt:       good.CreatedAt,
 	}
@@ -51,6 +64,7 @@ func (ths *MongoStore) GetGood(ctx context.Context, gtin string) (entity.Good, e
 		StoreCount:      good_dto.StoreCount,
 		GetCodeForPrint: good_dto.GetCodeForPrint,
 		AllowProduce:    good_dto.AllowProduce,
+		AllowPrint:      good_dto.AllowPrint,
 		Upload:          good_dto.Upload,
 		CreatedAt:       good_dto.CreatedAt,
 	}
@@ -82,6 +96,7 @@ func (ths *MongoStore) GetAllGoods(ctx context.Context) ([]entity.Good, error) {
 			StoreCount:      good_dto.StoreCount,
 			GetCodeForPrint: good_dto.GetCodeForPrint,
 			AllowProduce:    good_dto.AllowProduce,
+			AllowPrint:      good_dto.AllowPrint,
 			Upload:          good_dto.Upload,
 			CreatedAt:       good_dto.CreatedAt,
 		})

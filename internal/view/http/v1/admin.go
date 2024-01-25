@@ -1,28 +1,24 @@
 package v1
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"molocode/internal/app/ctxlogger"
 	"molocode/internal/app/entity"
+	"molocode/internal/app/usecase/usecase_admin"
 	"net/http"
 )
 
-type IAdminUsecase interface {
-	AddGood(context.Context, entity.Good) error
-	GetAllGoods(context.Context) ([]entity.Good, error)
-}
-
 // Добавляет продукт
 // метод POST
-func AddGood(usecase IAdminUsecase) http.HandlerFunc {
+func AddGood(usecase usecase_admin.AdminUsecase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
 		// Подготовка логгера
 		l := ctxlogger.LoggerFromContext(r.Context())
 		l = l.With("func", "v1.AddGood")
+		reqId := ctxlogger.GetReqID(r.Context())
 
 		// Декодируем полученный json
 		// Разрешить только поля, укаказанные в entity.Good
@@ -34,7 +30,7 @@ func AddGood(usecase IAdminUsecase) http.HandlerFunc {
 			l.Error("Json decoder", "error", err)
 
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, toResponse(false, err.Error(), nil))
+			fmt.Fprint(w, toResponse(reqId, false, err.Error(), nil))
 			return
 		}
 
@@ -45,6 +41,7 @@ func AddGood(usecase IAdminUsecase) http.HandlerFunc {
 			StoreCount:      good_dto.StoreCount,
 			GetCodeForPrint: good_dto.GetCodeForPrint,
 			AllowProduce:    good_dto.AllowProduce,
+			AllowPrint:      good_dto.AllowPrint,
 			Upload:          good_dto.Upload,
 		}
 
@@ -53,11 +50,11 @@ func AddGood(usecase IAdminUsecase) http.HandlerFunc {
 		if err != nil {
 			l.Warn("Продукт не добавлен", "error", err)
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, toResponse(false, err.Error(), nil))
+			fmt.Fprint(w, toResponse(reqId, false, err.Error(), nil))
 			return
 		}
 
-		resp_body := toResponse(true, "Успешно", nil)
+		resp_body := toResponse(reqId, true, "Успешно", nil)
 		l.Info("Продукт добавлен", "resp_body", resp_body)
 		fmt.Fprint(w, resp_body)
 	}
@@ -65,20 +62,21 @@ func AddGood(usecase IAdminUsecase) http.HandlerFunc {
 
 // Возвращает все продукты из базы
 // метод POST
-func GetAllGoods(usecase IAdminUsecase) http.HandlerFunc {
+func GetAllGoods(usecase usecase_admin.AdminUsecase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
 		// Подготовка логгера
 		l := ctxlogger.LoggerFromContext(r.Context())
 		l = l.With("func", "v1.GetAllGoods")
+		reqId := ctxlogger.GetReqID(r.Context())
 
 		// Получаем продукты
 		goods, err := usecase.GetAllGoods(r.Context())
 		if err != nil {
 			l.Error("Ошибка получения продуктов из базы", "error", err)
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, toResponse(false, err.Error(), nil))
+			fmt.Fprint(w, toResponse(reqId, false, err.Error(), nil))
 			return
 		}
 
@@ -96,7 +94,7 @@ func GetAllGoods(usecase IAdminUsecase) http.HandlerFunc {
 			})
 		}
 
-		resp_body := toResponse(true, "Успешно", mappedGoods)
+		resp_body := toResponse(reqId, true, "Успешно", mappedGoods)
 		l.Info("Успешно", "resp_body", resp_body)
 		fmt.Fprint(w, resp_body)
 	}

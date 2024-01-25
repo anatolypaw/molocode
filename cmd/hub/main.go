@@ -5,6 +5,7 @@ import (
 	"molocode/internal/app/repository/mongostore"
 	"molocode/internal/app/usecase/usecase_admin"
 	"molocode/internal/app/usecase/usecase_exchange"
+	"molocode/internal/app/usecase/usecase_produce"
 	"molocode/internal/view/http/mymiddleware"
 	v1 "molocode/internal/view/http/v1"
 	"net/http"
@@ -34,6 +35,7 @@ func main() {
 	/* Инициализация usecase */
 	admUsecase := usecase_admin.New(mstore)
 	exchUsecase := usecase_exchange.New(mstore, mstore)
+	prodUsecase := usecase_produce.New(mstore, mstore)
 
 	/* Инициализация http сервера */
 	router := chi.NewRouter()
@@ -43,11 +45,13 @@ func main() {
 	// он выводится в лог для всего дерева вызовов
 	router.Use(mymiddleware.Logger(logger))
 
-	router.Post("/v1/addGood", v1.AddGood(&admUsecase))
-	router.Get("/v1/getAllGoods", v1.GetAllGoods(&admUsecase))
+	router.Post("/v1/addGood", v1.AddGood(admUsecase))
+	router.Get("/v1/getAllGoods", v1.GetAllGoods(admUsecase))
 
-	router.Get("/v1/getGoodsReqCodes", v1.GetGoodsReqCodes(&exchUsecase))
-	router.Post("/v1/addCodeForPrint", v1.AddCodeForPrint(&exchUsecase))
+	router.Get("/v1/getGoodsReqCodes", v1.GetGoodsReqCodes(exchUsecase))
+	router.Post("/v1/addCodeForPrint", v1.AddCodeForPrint(exchUsecase))
+
+	router.Get("/v1/getCodeForPrint", v1.GetCodeForPrint(prodUsecase))
 
 	s := &http.Server{
 		Addr:         "localhost:3000",

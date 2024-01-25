@@ -2,18 +2,7 @@ package mongostore
 
 import (
 	"molocode/internal/app/entity"
-	"time"
 )
-
-type Good_dto struct {
-	Gtin            string `bson:"_id"`
-	Desc            string
-	StoreCount      uint
-	GetCodeForPrint bool
-	AllowProduce    bool
-	Upload          bool
-	CreatedAt       time.Time
-}
 
 type Code_dto struct {
 	Serial       string `bson:"_id"`
@@ -22,4 +11,9 @@ type Code_dto struct {
 	PrintInfo    entity.PrintInfo
 	ProducedInfo []entity.ProducedInfo
 	UploadInfo   entity.UploadInfo
+}
+
+type Counters struct {
+	Name  string `bson:"_id"`
+	Value uint64
 }

@@ -11,6 +11,7 @@ type Good struct {
 	StoreCount      uint
 	GetCodeForPrint bool
 	AllowProduce    bool
+	AllowPrint      bool
 	Upload          bool
 	CreatedAt       time.Time
 }
