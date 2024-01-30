@@ -89,6 +89,7 @@ func GetAllGoods(usecase usecase_admin.AdminUsecase) http.HandlerFunc {
 				StoreCount:      good.StoreCount,
 				GetCodeForPrint: good.GetCodeForPrint,
 				AllowProduce:    good.AllowProduce,
+				AllowPrint:      good.AllowPrint,
 				Upload:          good.Upload,
 				CreatedAt:       good.CreatedAt,
 			})

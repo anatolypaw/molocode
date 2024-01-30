@@ -26,7 +26,7 @@ func New(goodRepository repository.IGoodRepository) AdminUsecase {
 // Добавляет новый продукт
 // Валидация gtin, desc
 // Ошибка, если такой продукт с таким gtin уже существует
-func (au *AdminUsecase) AddGood(ctx context.Context, good entity.Good) error {
+func (usecase *AdminUsecase) AddGood(ctx context.Context, good entity.Good) error {
 	err := good.ValidateGtin()
 	if err != nil {
 		return err
@@ -38,7 +38,7 @@ func (au *AdminUsecase) AddGood(ctx context.Context, good entity.Good) error {
 	}
 
 	good.CreatedAt = time.Now()
-	return au.goodRepository.AddGood(ctx, good)
+	return usecase.goodRepository.AddGood(ctx, good)
 }
 
 func (ths *AdminUsecase) GetAllGoods(ctx context.Context) ([]entity.Good, error) {
