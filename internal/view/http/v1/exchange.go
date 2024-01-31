@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"molocode/internal/app/ctxlogger"
 	"molocode/internal/app/entity"
-	"molocode/internal/app/usecase/usecase_exchange"
+	"molocode/internal/app/usecase/exchange"
 	"net/http"
 )
 
 // Добавляет продукт
 // метод POST
-func GetGoodsReqCodes(usecase usecase_exchange.ExchangeUsecase) http.HandlerFunc {
+func GetGoodsReqCodes(u exchange.ExchangeUsecase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
@@ -21,7 +21,7 @@ func GetGoodsReqCodes(usecase usecase_exchange.ExchangeUsecase) http.HandlerFunc
 		reqId := ctxlogger.GetReqID(r.Context())
 
 		// Получаем список продуктов и требуемое количество кодов
-		codereq, err := usecase.GetGoodsReqCodes(r.Context())
+		codereq, err := u.GetGoodsReqCodes(r.Context())
 		if err != nil {
 			l.Warn("Ошибка запроса продуктов", "error", err)
 			w.WriteHeader(http.StatusBadRequest)
@@ -52,7 +52,7 @@ func GetGoodsReqCodes(usecase usecase_exchange.ExchangeUsecase) http.HandlerFunc
 }
 
 // Доабвляет код для печати
-func AddCodeForPrint(usecase usecase_exchange.ExchangeUsecase) http.HandlerFunc {
+func AddCodeForPrint(usecase exchange.ExchangeUsecase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 

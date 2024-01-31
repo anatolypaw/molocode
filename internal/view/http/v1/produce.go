@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"molocode/internal/app/ctxlogger"
-	"molocode/internal/app/usecase/usecase_produce"
+	"molocode/internal/app/usecase/produce"
 	"net/http"
 )
 
 // Возвращает код для печати
-func GetCodeForPrint(usecase usecase_produce.ProduceUsecase) http.HandlerFunc {
+func GetCodeForPrint(u produce.ProduceUsecase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
@@ -24,10 +24,10 @@ func GetCodeForPrint(usecase usecase_produce.ProduceUsecase) http.HandlerFunc {
 			TerminalName string `json:"terminal_name"`
 		}
 
-		req_json := Req_json{}
+		req := Req_json{}
 		decoder := json.NewDecoder(r.Body)
 		decoder.DisallowUnknownFields()
-		err := decoder.Decode(&req_json)
+		err := decoder.Decode(&req)
 		if err != nil {
 			l.Error("Json decoder", "error", err)
 
@@ -37,7 +37,9 @@ func GetCodeForPrint(usecase usecase_produce.ProduceUsecase) http.HandlerFunc {
 		}
 
 		// Запрашиваем КМ для печати
-		codeForPrint, err := usecase.GetCodeForPrint(r.Context(), req_json.Gtin, req_json.TerminalName)
+		code, err := u.GetCodeForPrint(r.Context(),
+			req.Gtin,
+			req.TerminalName)
 		if err != nil {
 			l.Error("Ошибка получения кода для печати", "error", err)
 			w.WriteHeader(http.StatusBadRequest)
@@ -54,10 +56,10 @@ func GetCodeForPrint(usecase usecase_produce.ProduceUsecase) http.HandlerFunc {
 		}
 
 		codeForPrint_json := CodeForPrint_json{
-			Gtin:    codeForPrint.Code.Gtin,
-			Serial:  codeForPrint.Code.Serial,
-			Crypto:  codeForPrint.Code.Crypto,
-			PrintId: codeForPrint.PrintId,
+			Gtin:    code.Code.Gtin,
+			Serial:  code.Code.Serial,
+			Crypto:  code.Code.Crypto,
+			PrintId: code.PrintId,
 		}
 
 		resp_body := toResponse(reqId, true, "Успешно", codeForPrint_json)
@@ -67,7 +69,7 @@ func GetCodeForPrint(usecase usecase_produce.ProduceUsecase) http.HandlerFunc {
 }
 
 // Отмечает напечатанный код произведенным
-func ProducePrinted(usecase usecase_produce.ProduceUsecase) http.HandlerFunc {
+func ProducePrinted(usecase produce.ProduceUsecase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
@@ -77,27 +79,15 @@ func ProducePrinted(usecase usecase_produce.ProduceUsecase) http.HandlerFunc {
 		reqId := ctxlogger.GetReqID(r.Context())
 
 		// - Получаем информацию о коде из body
-		type Req_json struct {
+		type Req struct {
 			Gtin         string `json:"gtin"`
 			Serial       string `json:"serial"`
 			TerminalName string `json:"terminal_name"`
 			ProdDate     string `json:"prod_date"`
 		}
 
-		req_json := Req_json{}
-		decoder := json.NewDecoder(r.Body)
-		decoder.DisallowUnknownFields()
-		err := decoder.Decode(&req_json)
-		if err != nil {
-			l.Error("Json decoder", "error", err)
-
-			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, toResponse(reqId, false, err.Error(), nil))
-			return
-		}
-
-		// Запрашиваем КМ для печати
-		codeForPrint, err := usecase.GetCodeForPrint(r.Context(), req_json.Gtin, req_json.TerminalName)
+		// Обращаемся к usecase
+		err := usecase.ProducePrinted(r.Context())
 		if err != nil {
 			l.Error("Ошибка получения кода для печати", "error", err)
 			w.WriteHeader(http.StatusBadRequest)

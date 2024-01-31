@@ -28,7 +28,8 @@ func Logger(logger *slog.Logger) func(next http.Handler) http.Handler {
 			//Считываем body, что бы вывести его в лог
 			rawBody, err := io.ReadAll(r.Body)
 			if err != nil {
-				l.Error("Ошбика чтения body", "error", err, "func", "mymiddleware.Logger")
+				l.Error("Ошбика чтения body", "error", err, "func",
+					"mymiddleware.Logger")
 			}
 			// Restore the io.ReadCloser to it's original state
 			r.Body = io.NopCloser(bytes.NewBuffer(rawBody))

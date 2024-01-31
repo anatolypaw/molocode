@@ -3,9 +3,9 @@ package main
 import (
 	"log/slog"
 	"molocode/internal/app/repository/mongostore"
-	"molocode/internal/app/usecase/usecase_admin"
-	"molocode/internal/app/usecase/usecase_exchange"
-	"molocode/internal/app/usecase/usecase_produce"
+	"molocode/internal/app/usecase/admin"
+	"molocode/internal/app/usecase/exchange"
+	"molocode/internal/app/usecase/produce"
 	"molocode/internal/view/http/mymiddleware"
 	v1 "molocode/internal/view/http/v1"
 	"net/http"
@@ -33,15 +33,15 @@ func main() {
 	}
 
 	/* Инициализация usecase */
-	admUsecase := usecase_admin.New(mstore)
-	exchUsecase := usecase_exchange.New(mstore, mstore)
-	prodUsecase := usecase_produce.New(mstore, mstore)
+	admUsecase := admin.New(mstore)
+	exchUsecase := exchange.New(mstore, mstore)
+	prodUsecase := produce.New(mstore, mstore)
 
 	/* Инициализация http сервера */
 	router := chi.NewRouter()
 
 	// Логгер slog встраивается в context
-	// Здесь же на каждый request создается уникальный req_id и встраивается в context
+	// на каждый request создается уникальный req_id и встраивается в context
 	// он выводится в лог для всего дерева вызовов
 	router.Use(mymiddleware.Logger(logger))
 

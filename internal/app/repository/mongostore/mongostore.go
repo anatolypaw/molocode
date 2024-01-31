@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	collectionGoods    = "goods"
-	collectionCounters = "counters"
+	COLLECTION_GOODS    = "goods"
+	COLLECTION_COUNTERS = "counters"
 )
 
 // TODO

@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"molocode/internal/app/ctxlogger"
 	"molocode/internal/app/entity"
-	"molocode/internal/app/usecase/usecase_admin"
+	"molocode/internal/app/usecase/admin"
 	"net/http"
 )
 
 // Добавляет продукт
 // метод POST
-func AddGood(usecase usecase_admin.AdminUsecase) http.HandlerFunc {
+func AddGood(u admin.AdminUsecase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
@@ -46,7 +46,7 @@ func AddGood(usecase usecase_admin.AdminUsecase) http.HandlerFunc {
 		}
 
 		// Добавляем продукт в хранилище
-		err = usecase.AddGood(r.Context(), mappedGood)
+		err = u.AddGood(r.Context(), mappedGood)
 		if err != nil {
 			l.Warn("Продукт не добавлен", "error", err)
 			w.WriteHeader(http.StatusBadRequest)
@@ -62,7 +62,7 @@ func AddGood(usecase usecase_admin.AdminUsecase) http.HandlerFunc {
 
 // Возвращает все продукты из базы
 // метод POST
-func GetAllGoods(usecase usecase_admin.AdminUsecase) http.HandlerFunc {
+func GetAllGoods(usecase admin.AdminUsecase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 

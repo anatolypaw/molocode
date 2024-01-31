@@ -1,4 +1,4 @@
-package usecase_admin
+package admin
 
 import (
 	"context"
@@ -26,7 +26,8 @@ func New(goodRepository repository.IGoodRepository) AdminUsecase {
 // Добавляет новый продукт
 // Валидация gtin, desc
 // Ошибка, если такой продукт с таким gtin уже существует
-func (usecase *AdminUsecase) AddGood(ctx context.Context, good entity.Good) error {
+func (usecase *AdminUsecase) AddGood(ctx context.Context, good entity.Good,
+) error {
 	err := good.ValidateGtin()
 	if err != nil {
 		return err
@@ -41,7 +42,8 @@ func (usecase *AdminUsecase) AddGood(ctx context.Context, good entity.Good) erro
 	return usecase.goodRepository.Add(ctx, good)
 }
 
-func (ths *AdminUsecase) GetAllGoods(ctx context.Context) ([]entity.Good, error) {
+func (ths *AdminUsecase) GetAllGoods(ctx context.Context,
+) ([]entity.Good, error) {
 	// TODO валидировать ответ хранилища
 	// на корректность gtin
 	return ths.goodRepository.GetAll(ctx)

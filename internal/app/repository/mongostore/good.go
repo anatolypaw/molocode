@@ -34,7 +34,8 @@ func (ths *MongoStore) Add(ctx context.Context, good entity.Good) error {
 		Upload:          good.Upload,
 		CreatedAt:       good.CreatedAt,
 	}
-	_, err := ths.db.Collection(collectionGoods).InsertOne(context.TODO(), mappedGood)
+	goods := ths.db.Collection(COLLECTION_GOODS)
+	_, err := goods.InsertOne(ctx, mappedGood)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
@@ -42,11 +43,13 @@ func (ths *MongoStore) Add(ctx context.Context, good entity.Good) error {
 	return nil
 }
 
-func (ths *MongoStore) Get(ctx context.Context, gtin string) (entity.Good, error) {
+func (ths *MongoStore) Get(ctx context.Context, gtin string,
+) (entity.Good, error) {
 	const op = "mongo.Get"
 
 	filter := bson.M{"_id": gtin}
-	reqResult := ths.db.Collection(collectionGoods).FindOne(context.TODO(), filter)
+	goods := ths.db.Collection(COLLECTION_GOODS)
+	reqResult := goods.FindOne(ctx, filter)
 
 	var good_dto Good_dto
 	err := reqResult.Decode(&good_dto)
@@ -76,7 +79,8 @@ func (ths *MongoStore) GetAll(ctx context.Context) ([]entity.Good, error) {
 	const op = "mongo.GetAll"
 
 	filter := bson.M{}
-	cursor, err := ths.db.Collection(collectionGoods).Find(context.TODO(), filter)
+	goods := ths.db.Collection(COLLECTION_GOODS)
+	cursor, err := goods.Find(ctx, filter)
 	if err != nil {
 		return []entity.Good{}, fmt.Errorf("%s: %w", op, err)
 	}

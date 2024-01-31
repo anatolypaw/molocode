@@ -1,4 +1,4 @@
-package usecase_exchange
+package exchange
 
 import (
 	"context"
@@ -9,14 +9,17 @@ import (
 )
 
 type ExchangeUsecase struct {
-	goodRepository repository.IGoodRepository
-	codeRepository repository.ICodeRepository
+	goodRepo repository.IGoodRepository
+	codeRepo repository.ICodeRepository
 }
 
-func New(goodRepository repository.IGoodRepository, codeRepository repository.ICodeRepository) ExchangeUsecase {
+func New(
+	goodRepository repository.IGoodRepository,
+	codeRepository repository.ICodeRepository,
+) ExchangeUsecase {
 	return ExchangeUsecase{
-		goodRepository: goodRepository,
-		codeRepository: codeRepository,
+		goodRepo: goodRepository,
+		codeRepo: codeRepository,
 	}
 }
 
@@ -29,9 +32,10 @@ type CodeReq struct {
 
 // Возвращает список продуктов, требующих наполнения кодами для печати
 // и количество требуемых кодов
-func (eu *ExchangeUsecase) GetGoodsReqCodes(ctx context.Context) ([]CodeReq, error) {
+func (eu *ExchangeUsecase) GetGoodsReqCodes(ctx context.Context,
+) ([]CodeReq, error) {
 	// - Получить продукты
-	allGoods, err := eu.goodRepository.GetAll(ctx)
+	allGoods, err := eu.goodRepo.GetAll(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +51,7 @@ func (eu *ExchangeUsecase) GetGoodsReqCodes(ctx context.Context) ([]CodeReq, err
 	// - Для каждого продукта получить доступное количество кодов
 	var codesReq []CodeReq
 	for _, good := range goodsAvaibleForPrint {
-		avaibleCount, err := eu.codeRepository.GetCountPrintAvaible(ctx, good.Gtin)
+		avaibleCount, err := eu.codeRepo.GetCountPrintAvaible(ctx, good.Gtin)
 		if err != nil {
 			return nil, err
 		}
@@ -68,7 +72,11 @@ func (eu *ExchangeUsecase) GetGoodsReqCodes(ctx context.Context) ([]CodeReq, err
 }
 
 // Добавляет код для печати
-func (usecase *ExchangeUsecase) AddCodeForPrint(ctx context.Context, code entity.Code, source string) error {
+func (usecase *ExchangeUsecase) AddCodeForPrint(
+	ctx context.Context,
+	code entity.Code,
+	source string,
+) error {
 	// - Проверить корректность кода
 	err := code.Validate()
 	if err != nil {
@@ -76,7 +84,7 @@ func (usecase *ExchangeUsecase) AddCodeForPrint(ctx context.Context, code entity
 	}
 
 	// - Проверить, разрешено ли для этого продукта добавление кодов
-	good, err := usecase.goodRepository.Get(ctx, code.Gtin)
+	good, err := usecase.goodRepo.Get(ctx, code.Gtin)
 	if err != nil {
 		return err
 	}
@@ -97,7 +105,7 @@ func (usecase *ExchangeUsecase) AddCodeForPrint(ctx context.Context, code entity
 		},
 	}
 
-	err = usecase.codeRepository.AddCode(ctx, fullCode)
+	err = usecase.codeRepo.AddCode(ctx, fullCode)
 	if err != nil {
 		return err
 	}
