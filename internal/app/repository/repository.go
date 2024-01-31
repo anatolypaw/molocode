@@ -6,9 +6,9 @@ import (
 )
 
 type IGoodRepository interface {
-	AddGood(context.Context, entity.Good) error
-	GetGood(context.Context, string) (entity.Good, error)
-	GetAllGoods(context.Context) ([]entity.Good, error)
+	Add(context.Context, entity.Good) error
+	Get(context.Context, string) (entity.Good, error)
+	GetAll(context.Context) ([]entity.Good, error)
 }
 
 type ICodeRepository interface {

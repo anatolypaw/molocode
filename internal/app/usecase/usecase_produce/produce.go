@@ -29,7 +29,7 @@ func (usecase *ProduceUsecase) GetCodeForPrint(ctx context.Context, gtin string,
 	}
 
 	// - Проверить, разрешено ли для этого продукта выдача кодов для нанесения
-	good, err := usecase.goodRepository.GetGood(ctx, gtin)
+	good, err := usecase.goodRepository.Get(ctx, gtin)
 	if err != nil {
 		return entity.CodeForPrint{}, fmt.Errorf("ошибка запроса продукта: %s", err)
 	}

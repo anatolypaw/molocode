@@ -31,7 +31,7 @@ type CodeReq struct {
 // и количество требуемых кодов
 func (eu *ExchangeUsecase) GetGoodsReqCodes(ctx context.Context) ([]CodeReq, error) {
 	// - Получить продукты
-	allGoods, err := eu.goodRepository.GetAllGoods(ctx)
+	allGoods, err := eu.goodRepository.GetAll(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (usecase *ExchangeUsecase) AddCodeForPrint(ctx context.Context, code entity
 	}
 
 	// - Проверить, разрешено ли для этого продукта добавление кодов
-	good, err := usecase.goodRepository.GetGood(ctx, code.Gtin)
+	good, err := usecase.goodRepository.Get(ctx, code.Gtin)
 	if err != nil {
 		return err
 	}

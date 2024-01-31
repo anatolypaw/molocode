@@ -7,10 +7,10 @@ import (
 type Code_dto struct {
 	Serial       string `bson:"_id"`
 	Crypto       string
-	SourceInfo   entity.SourceInfo
-	PrintInfo    entity.PrintInfo
-	ProducedInfo []entity.ProducedInfo
-	UploadInfo   entity.UploadInfo
+	SourceInfo   entity.SourceInfo     `bson:",omitempty"`
+	PrintInfo    entity.PrintInfo      `bson:",omitempty"`
+	ProducedInfo []entity.ProducedInfo `bson:",omitempty"`
+	UploadInfo   entity.UploadInfo     `bson:",omitempty"`
 }
 
 type Counters struct {

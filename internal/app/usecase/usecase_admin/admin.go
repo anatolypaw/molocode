@@ -38,11 +38,11 @@ func (usecase *AdminUsecase) AddGood(ctx context.Context, good entity.Good) erro
 	}
 
 	good.CreatedAt = time.Now()
-	return usecase.goodRepository.AddGood(ctx, good)
+	return usecase.goodRepository.Add(ctx, good)
 }
 
 func (ths *AdminUsecase) GetAllGoods(ctx context.Context) ([]entity.Good, error) {
 	// TODO валидировать ответ хранилища
 	// на корректность gtin
-	return ths.goodRepository.GetAllGoods(ctx)
+	return ths.goodRepository.GetAll(ctx)
 }
