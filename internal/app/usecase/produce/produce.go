@@ -18,7 +18,7 @@ type iCodeRepo interface {
 		ctx context.Context,
 		gtin string,
 		serial string,
-	) (entity.Code, error)
+	) (entity.FullCode, error)
 
 	GetCodeForPrint(
 		ctx context.Context,
@@ -61,7 +61,7 @@ func (usecase *ProduceUsecase) GetCodeForPrint(
 
 	if !good.AllowPrint {
 		return entity.CodeForPrint{},
-			errors.New("для этотого продукта запрещено выдача кодов для нанесения")
+			errors.New("для этого продукта запрещено выдача кодов для нанесения")
 	}
 
 	// - Получить код для печати
@@ -97,6 +97,8 @@ func (usecase *ProduceUsecase) ProducePrinted(
 
 	// - Проверить корректность даты
 
+	// - Проверить корректность имени терминала
+
 	// - Проверить, разрешено ли производство для этого продукта
 	good, err := usecase.goodRepo.Get(ctx, gtin)
 	if err != nil {
@@ -107,8 +109,16 @@ func (usecase *ProduceUsecase) ProducePrinted(
 		return errors.New("для этого продукта запрещено производство")
 	}
 
-	// - Проверить, не был ли этот код уже произведен
+	// - Проверки статуса кода
 	code, err := usecase.codeRepo.GetCode(ctx, gtin, serial)
-	_ = code
+
+	// Проверить, был ли этот код отправлен на печать
+	if code.PrintInfo.Avaible {
+		return errors.New("этот код не был передан на печать")
+	}
+
+	// - Проверить, со
+	panic("")
+
 	return nil
 }

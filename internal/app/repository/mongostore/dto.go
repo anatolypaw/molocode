@@ -4,7 +4,7 @@ import (
 	"molocode/internal/app/entity"
 )
 
-type Code_dto struct {
+type FullCode_dto struct {
 	Serial       string `bson:"_id"`
 	Crypto       string
 	SourceInfo   entity.SourceInfo     `bson:",omitempty"`

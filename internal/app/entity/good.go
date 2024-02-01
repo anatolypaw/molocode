@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"errors"
+	"fmt"
 	"time"
 )
 
@@ -17,8 +17,9 @@ type Good struct {
 }
 
 func (ths *Good) ValidateDesc() error {
-	if len(ths.Desc) < 3 || len(ths.Desc) > 40 {
-		return errors.New("описание меньше 3 или длиннее 40 символов")
+	if len([]rune(ths.Desc)) < 3 || len([]rune(ths.Desc)) > 30 {
+		return fmt.Errorf("требуется длина 3 < %d < 30 символов",
+			len([]rune(ths.Desc)))
 	}
 	return nil
 }

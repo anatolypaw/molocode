@@ -6,11 +6,8 @@ import (
 )
 
 func ValidateGtin(gtin string) error {
-	matched, err := regexp.MatchString(`^0\d{13}$`, gtin)
-	if err != nil {
-		return err
-	}
-	if !matched {
+	r := regexp.MustCompile(`^0\d{13}$`)
+	if !r.MatchString(gtin) {
 		return errors.New("некорректный формат gtin")
 	}
 	return nil

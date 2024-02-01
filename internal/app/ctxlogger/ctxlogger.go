@@ -8,16 +8,16 @@ import (
 	"github.com/lithammer/shortuuid/v4"
 )
 
-type CtxLogger struct{}
+type ctxLogger struct{}
 
 // ContextWithLogger добавляет логгер в контекст
 func ContextWithLogger(ctx context.Context, l *slog.Logger) context.Context {
-	return context.WithValue(ctx, CtxLogger{}, l)
+	return context.WithValue(ctx, ctxLogger{}, l)
 }
 
 // LoggerFromContext извлекает логгер из контекста
 func LoggerFromContext(ctx context.Context) *slog.Logger {
-	if l, ok := ctx.Value(CtxLogger{}).(*slog.Logger); ok {
+	if l, ok := ctx.Value(ctxLogger{}).(*slog.Logger); ok {
 		return l
 	}
 	slog.Error("Отсутсвует логгер в контексте", ctx)

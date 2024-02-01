@@ -86,10 +86,28 @@ func ProducePrinted(usecase produce.ProduceUsecase) http.HandlerFunc {
 			ProdDate     string `json:"prod_date"`
 		}
 
-		// Обращаемся к usecase
-		err := usecase.ProducePrinted(r.Context())
+		var req Req
+		decoder := json.NewDecoder(r.Body)
+		decoder.DisallowUnknownFields()
+
+		err := decoder.Decode(&req)
 		if err != nil {
-			l.Error("Ошибка получения кода для печати", "error", err)
+			l.Error("Json decoder", "error", err)
+
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Fprint(w, toResponse(reqId, false, err.Error(), nil))
+			return
+		}
+
+		// - Обращаемся к usecase
+		err = usecase.ProducePrinted(r.Context(),
+			req.Gtin,
+			req.Serial,
+			req.TerminalName,
+			req.ProdDate)
+
+		if err != nil {
+			l.Error("Ошибка", "error", err)
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprint(w, toResponse(reqId, false, err.Error(), nil))
 			return

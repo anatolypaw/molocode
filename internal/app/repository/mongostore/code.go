@@ -15,7 +15,7 @@ func (ths *MongoStore) AddCode(ctx context.Context, code entity.FullCode) error 
 	const op = "mongostore.AddCode"
 
 	// MAPPING
-	mappedCode := Code_dto{
+	mappedCode := FullCode_dto{
 		Serial:       string(code.Serial),
 		Crypto:       string(code.Crypto),
 		SourceInfo:   code.SourceInfo,
@@ -61,7 +61,7 @@ func (ths *MongoStore) GetCodeForPrint(
 		"printinfo.terminalname": terminalName,
 		"printinfo.uploadtime":   time.Now()}}
 
-	var code Code_dto
+	var code FullCode_dto
 	codes := ths.db.Collection(gtin)
 	err := codes.FindOneAndUpdate(ctx, filter, update).Decode(&code)
 	if err != nil {
@@ -112,4 +112,42 @@ func (ths *MongoStore) GetCodeForPrint(
 	}
 
 	return codeForPrint, nil
+}
+
+// Возвращает код
+func (ths *MongoStore) GetCode(
+	ctx context.Context,
+	gtin string,
+	serial string,
+) (entity.FullCode, error) {
+	const op = "mongo.GetCode"
+
+	filter := bson.M{"_id": serial}
+	codes := ths.db.Collection(gtin)
+	reqResult := codes.FindOne(ctx, filter)
+
+	var code FullCode_dto
+	err := reqResult.Decode(&code)
+	if err != nil {
+		return entity.FullCode{}, fmt.Errorf("%s: %w", op, err)
+	}
+	if code.Serial == "" {
+		return entity.FullCode{}, fmt.Errorf("%s: Продукт не найден", op)
+	}
+
+	// MAPPING
+	mappedCode := entity.FullCode{
+		Code: entity.Code{
+			Gtin:   gtin,
+			Serial: code.Serial,
+			Crypto: code.Crypto,
+		},
+		SourceInfo:   code.SourceInfo,
+		PrintInfo:    code.PrintInfo,
+		ProducedInfo: code.ProducedInfo,
+		UploadInfo:   code.UploadInfo,
+	}
+
+	return mappedCode, nil
+
 }

@@ -3,7 +3,6 @@ package admin
 import (
 	"context"
 	"molocode/internal/app/entity"
-	"molocode/internal/app/repository"
 	"time"
 )
 
@@ -13,13 +12,19 @@ import (
 - Получение списка добавленных продуктов
 - Изменение продукта
 */
-type AdminUsecase struct {
-	goodRepository repository.IGoodRepository
+type iGoodRepo interface {
+	Add(context.Context, entity.Good) error
+	Get(context.Context, string) (entity.Good, error)
+	GetAll(context.Context) ([]entity.Good, error)
 }
 
-func New(goodRepository repository.IGoodRepository) AdminUsecase {
+type AdminUsecase struct {
+	goodRepo iGoodRepo
+}
+
+func New(goodRepo iGoodRepo) AdminUsecase {
 	return AdminUsecase{
-		goodRepository: goodRepository,
+		goodRepo: goodRepo,
 	}
 }
 
@@ -39,12 +44,12 @@ func (usecase *AdminUsecase) AddGood(ctx context.Context, good entity.Good,
 	}
 
 	good.CreatedAt = time.Now()
-	return usecase.goodRepository.Add(ctx, good)
+	return usecase.goodRepo.Add(ctx, good)
 }
 
 func (ths *AdminUsecase) GetAllGoods(ctx context.Context,
 ) ([]entity.Good, error) {
 	// TODO валидировать ответ хранилища
 	// на корректность gtin
-	return ths.goodRepository.GetAll(ctx)
+	return ths.goodRepo.GetAll(ctx)
 }

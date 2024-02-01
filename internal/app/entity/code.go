@@ -2,6 +2,7 @@ package entity
 
 import (
 	"errors"
+	"regexp"
 	"time"
 )
 
@@ -72,15 +73,20 @@ type UploadInfo struct {
 }
 
 func ValidateSerial(serial string) error {
-	if len(serial) != 6 {
-		return errors.New("некорректная длинна serial")
+	r := regexp.MustCompile(`^([a-zA-Z0-9]|[!"%&'*+\-.\/_,:;=<>?]){6}$`)
+
+	if !r.MatchString(serial) {
+		return errors.New("некорректный формат serial")
 	}
 	return nil
 }
 
 func ValidateCrypto(crypto string) error {
-	if len(crypto) != 4 {
-		return errors.New("некорректная длинна crypto")
+	r := regexp.MustCompile(`^([a-zA-Z0-9]|[!"%&'*+\-.\/_,:;=<>?]){4}$`)
+
+	if !r.MatchString(crypto) {
+		return errors.New("некорректный формат crypto")
 	}
+
 	return nil
 }

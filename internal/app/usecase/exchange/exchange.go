@@ -4,22 +4,28 @@ import (
 	"context"
 	"errors"
 	"molocode/internal/app/entity"
-	"molocode/internal/app/repository"
 	"time"
 )
 
-type ExchangeUsecase struct {
-	goodRepo repository.IGoodRepository
-	codeRepo repository.ICodeRepository
+type iGoodRepo interface {
+	Get(context.Context, string) (entity.Good, error)
+	GetAll(context.Context) ([]entity.Good, error)
 }
 
-func New(
-	goodRepository repository.IGoodRepository,
-	codeRepository repository.ICodeRepository,
-) ExchangeUsecase {
+type iCodeRepo interface {
+	AddCode(context.Context, entity.FullCode) error
+	GetCountPrintAvaible(context.Context, string) (uint, error)
+}
+
+type ExchangeUsecase struct {
+	goodRepo iGoodRepo
+	codeRepo iCodeRepo
+}
+
+func New(goodRepo iGoodRepo, codeRepo iCodeRepo) ExchangeUsecase {
 	return ExchangeUsecase{
-		goodRepo: goodRepository,
-		codeRepo: codeRepository,
+		goodRepo: goodRepo,
+		codeRepo: codeRepo,
 	}
 }
 

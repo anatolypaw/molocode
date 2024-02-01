@@ -1,0 +1,21 @@
+mode: set
+molocode/internal/app/entity/code.go:28.36,30.16 2 1
+molocode/internal/app/entity/code.go:30.16,32.3 1 1
+molocode/internal/app/entity/code.go:34.2,35.16 2 1
+molocode/internal/app/entity/code.go:35.16,37.3 1 1
+molocode/internal/app/entity/code.go:39.2,40.16 2 1
+molocode/internal/app/entity/code.go:40.16,42.3 1 1
+molocode/internal/app/entity/code.go:44.2,44.12 1 1
+molocode/internal/app/entity/code.go:75.42,78.28 2 1
+molocode/internal/app/entity/code.go:78.28,80.3 1 1
+molocode/internal/app/entity/code.go:81.2,81.12 1 1
+molocode/internal/app/entity/code.go:84.42,87.28 2 1
+molocode/internal/app/entity/code.go:87.28,89.3 1 1
+molocode/internal/app/entity/code.go:91.2,91.12 1 1
+molocode/internal/app/entity/general.go:8.38,10.26 2 1
+molocode/internal/app/entity/general.go:10.26,12.3 1 1
+molocode/internal/app/entity/general.go:13.2,13.12 1 1
+molocode/internal/app/entity/good.go:19.39,20.61 1 1
+molocode/internal/app/entity/good.go:20.61,23.3 1 1
+molocode/internal/app/entity/good.go:24.2,24.12 1 1
+molocode/internal/app/entity/good.go:27.39,29.2 1 1
